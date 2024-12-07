@@ -1,0 +1,27 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/mysql_db?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&serverTimezone=system_timezone
+    username: root
+    password: 'mysql_password'
+  redis:
+    host: localhost
+    port: 37186
+    password: clientppp
+    database: 11
+  servlet:
+    multipart:
+      location: /usr/code/filetemp # 临时目录,上传图片用，需要手动创建
+#    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
+common:
+  env: prod # EnumEnv
+  files:
+    savePath: /usr/code/file
+jtd:
+  runOnStartUp: true
+  runType: createModifyTableAndMetas # 注意 EnumSqlRunType.createModifyDeleteAll 会删除代码移除的字段
+logging:
+  level:
+#    com.pro.lottery.common.dao: DEBUG
+    com.pro: WARN
+    com.baomidou.mybatisplus.mapper: WARN
+    org.springframework.web.socket: WARN

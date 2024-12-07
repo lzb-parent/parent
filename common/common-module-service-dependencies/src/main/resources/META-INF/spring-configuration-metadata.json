@@ -1,0 +1,27 @@
+{
+  "properties": {
+    "common.env": {
+      "type": "java.lang.Enum",
+      "sourceType": "io.github.example.CommonProperties.EnumEnv",
+      "defaultValue": "io.github.example.CommonProperties.EnumEnv.LOCAL",
+      "description": "本地/测试/生产"
+    },
+    "common.system": {
+      "type": "java.lang.Enum",
+      "sourceType": "io.github.example.CommonProperties.EnumApplication",
+      "defaultValue": "io.github.example.CommonProperties.EnumApplication.USER",
+      "description": "user/agent/admin/pay"
+    },
+    "common.public-paths": {
+      "type": "java.util.List",
+      "elementType": "java.lang.String",
+      "description": "公开路径"
+    },
+    "common.role-token-valid-second-map": {
+      "type": "java.util.Map",
+      "mapKeyType": "java.lang.String",
+      "mapValueType": "java.lang.Integer",
+      "description": "角色token默认时效(秒)"
+    }
+  }
+}

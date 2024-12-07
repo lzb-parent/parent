@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.pro</groupId>
+        <artifactId>common</artifactId>
+        <version>2.0.0</version>
+    </parent>
+
+    <artifactId>common-module-service-dependencies</artifactId>
+    <packaging>jar</packaging>
+    <description>基础的web配置-网关配置</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.pro</groupId>
+            <artifactId>common-module-api-system</artifactId>
+            <version>${common-common.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.pro</groupId>
+            <artifactId>framework-mybatis-plus</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-tomcat</artifactId>
+                </exclusion>
+<!--                <exclusion>-->
+<!--                    <groupId>org.springframework.boot</groupId>-->
+<!--                    <artifactId>spring-boot-starter-logging</artifactId>-->
+<!--                </exclusion>-->
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-undertow</artifactId>
+        </dependency>
+
+        <!--        <dependency>-->
+        <!--            <groupId>com.alibaba</groupId>-->
+        <!--            <artifactId>easyexcel</artifactId>-->
+        <!--            <version>2.2.11</version>-->
+        <!--        </dependency>-->
+        <dependency>
+            <groupId>com.pro</groupId>
+            <artifactId>framework-cache</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.pro</groupId>
+            <artifactId>framework-enums</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.pro</groupId>
+            <artifactId>framework-java-to-db-annotations</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.pro</groupId>
+            <artifactId>framework-multi-table-query</artifactId>
+            <version>${framework.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.28</version>
+        </dependency>
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
+            <version>${hutool-all.version}</version>
+        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.jthinking.common</groupId>-->
+<!--            <artifactId>ip-info</artifactId>-->
+<!--            <version>2.2.0</version>-->
+<!--        </dependency>-->
+
+    </dependencies>
+</project>
