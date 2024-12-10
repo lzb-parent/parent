@@ -1,0 +1,131 @@
+spring:
+  web:
+#    resources:
+#      add-mappings:false
+  mvc:
+    throw-exception-if-no-handler-found: true
+  profiles:
+    active: @profiles_active@
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      connectionTimeout: 60000 # 数据库连接超时时间,默认30秒，即30000
+      maxLifetime: 2400000 #一个连接的生命时长（毫秒），超时而且没被使用则被释放（retired），缺省:30分钟，建议设置比数据库超时时长少30秒以上
+      maximumPoolSize: 10 #连接池中允许的最大连接数。缺省值：10；推荐的公式：((core_count * 2) + effective_spindle_count)
+      data-source-properties:
+        cachePerStmts: true
+        preStmtCacheSize: 250
+        preStmtCacheSqlLimit: 2048
+        useServerPreStmts: true
+  servlet:
+    cors:
+      enabled: true
+    multipart:
+      max-file-size: 100MB # maxFileSize 单个数据大小
+      max-request-size: 100MB # maxRequestSize 是总数据大小
+  encoding:
+    charset: UTF-8
+  swagger:
+    enabled: true # swagger是否启动
+  messages:
+    fallback-to-system-locale: false
+    use-code-as-default-message: false
+    encoding: UTF-8 # i18n进行国际化乱码解决
+    basename: i18n_platform/messages, i18n_login/messages
+#    basename: i18n_service/messages, i18n_platform/messages, i18n_admin/messages, i18n_agent/messages, i18n_auth/messages, i18n_common/messages, i18n_login/messages, i18n_message/messages, i18n_pay/messages, i18n_user/messages, i18n_userlevel/messages, i18n_usermoney/messages
+  transaction:
+    rollback-on-commit-failure: true
+#  cache:
+#    type: none
+  mail:
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
+      mail.smtp.starttls.required: true
+      mail.smtp.socketFactory.class: javax.net.ssl.SSLSocketFactory
+      mail.smtp.socketFactory.fallback: false
+      #表示开启 DEBUG 模式，这样，邮件发送过程的日志会在控制台打印出来，方便排查错误
+      mail.debug: true
+  jackson:
+    serialization:
+      WRITE_DATES_AS_TIMESTAMPS: false
+    default-property-inclusion: non_null
+#    date-format: "yyyy-MM-dd"
+    date-format: yyyy/MM/dd HH:mm:ss
+#    time-format: "HH:mm:ss"
+server:
+  undertow:
+    buffer-size: 1024 #每块buffer的空间大小，越小的空间被利用越充分，不要设置太大，以免影响其他应用，合适即可
+    accesslog:
+      dir: ./logs/access_log
+      enabled: true
+      pattern: '[%{time,yyyy-MM-dd HH:mm:ss.S z}], %m, %U, "%q", %s, %D, %b, %{i,X-B3-TraceId}, %{i,X-B3-SpanId}, %{i,X-Real-IP}, %{i,Referer}, "%{i,User-Agent}", %{i,Platform}, %l, %u, %I, %v, %a'
+
+mybatis-plus:
+  # config-location: classpath:mybatis-config.xml
+#  mapper-locations: classpath*:mapper/*Mapper.xml
+  # MyBaits 别名包扫描路径，通过该属性可以给包中的类注册别名，注册后在 Mapper 对应的 XML 文件中可以直接使用类名，而不用使用全限定的类名（即 XML 中调用的时候不用包含包名
+#  type-aliases-package: com.pro.**.model
+  # TypeHandler 扫描路径，如果配置了该属性，SqlSessionFactoryBean 会把该包下面的类注册为对应的 TypeHandler
+  #  type-handlers-package: com.pro.**.config.typehandler
+  # 配置扫描通用枚举
+#  type-enums-package: com.pro.**.enums
+  global-config:
+    # Mapper 对应的 XML 文件会自动刷新，更改 XML 文件后，无需再次重启工程，由此节省大量时间, Mapper 对应的 XML 文件会自动刷新，更改 XML 文件后，无需再次重启工程，由此节省大量时间
+    refresh: true
+    db-config:
+      id-type: AUTO # 主键策略：AUTO->`0`("数据库ID自增")，INPUT->`1`(用户输入ID")，ID_WORKER->`2`("全局唯一ID")，UUID->`3`("全局唯一ID")
+      logic-delete-field: deleted # 全局逻辑删除的实体字段名(since 3.3.0,可以不用特别给字段加上@TableLogic注解)
+      logic-delete-value: 1 # 逻辑已删除值(默认为 1)
+      logic-not-delete-value: 0 # 逻辑未删除值(默认为 0)
+      table-prefix: '' # 表名前缀
+      table-underline: true # 表名、是否使用下划线命名，默认数据库表使用下划线命名
+      field-strategy: not_null
+  configuration:
+    map-underscore-to-camel-case: true
+    default-fetch-size: 500
+    default-statement-timeout: 120
+jtd:
+  fieldPatternNotNullDefaultValueMap:
+    '.*_id': ''
+    'enabled': '1'
+    'deleted': '0'
+    'sort': '100'
+    'create_time': 'CURRENT_TIMESTAMP'
+    'update_time': '''1970-01-01 00:00:00'''
+  basePackages[0]: com.pro.**.model.db
+common:
+  publicPaths:              # 公开路径
+    - /commonLogin
+    - /commonData/selectList/authDict
+    - /commonData/selectList/country
+    - /commonData/selectList/authRoute
+    - /commonData/selectList/translation
+    - /commonTable/info
+  roleTokenValidSecondMap: # 角色token默认时效(秒)
+    ANONYMOUS: 43200  # 12小时
+    USER: 43200
+    AGENT: 43200
+    ADMIN: 43200
+  files:
+    uploadPassword: ets894115h9a
+    modules:
+      cfg:
+        code: cfg
+        name: 管理员上传文件
+        dateFolder: true
+      activity:
+        code: activity
+        name: 活动图片
+      front:
+        code: front
+        name: 用户端图片
+      goods:
+        code: goods
+        name: 商品图片
+      pay:
+        code: pay
+        name: 支付
+      user:
+        code: user
+        name: 用户

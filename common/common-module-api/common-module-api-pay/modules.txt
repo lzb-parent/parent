@@ -1,0 +1,9 @@
+PayBank
+PayCardType
+PayChannel
+PayMerchant
+PayoutChannel
+
+UserRecharge
+UserWithdraw
+UserTransfer

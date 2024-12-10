@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pro.common.module.api.usermoney.dao.UserAmountTotalDao">
+
+    <update id="batchIncrease">
+            UPDATE user_amount_total
+            <set>
+                update_time = update_time
+                <foreach collection="list" item="item" separator="">
+                    <if test="item.todayCommissionMoney != null and item.todayCommissionMoney != 0">
+                        , today_commission_money = today_commission_money + #{item.todayCommissionMoney}
+                    </if>
+                    <if test="item.commissionMoney != null and item.commissionMoney != 0">
+                        , commission_money = commission_money + #{item.commissionMoney}
+                    </if>
+                    <if test="item.todayRechargeMoney != null and item.todayRechargeMoney != 0">
+                        , today_recharge_money = today_recharge_money + #{item.todayRechargeMoney}
+                    </if>
+                    <if test="item.totalRechargeMoney != null and item.totalRechargeMoney != 0">
+                        , total_recharge_money = total_recharge_money + #{item.totalRechargeMoney}
+                    </if>
+                    <if test="item.totalRechargeTimes != null and item.totalRechargeTimes != 0">
+                        , total_recharge_times = total_recharge_times + #{item.totalRechargeTimes}
+                    </if>
+                    <if test="item.todayTkMoney != null and item.todayTkMoney != 0">
+                        , today_tk_money = today_tk_money + #{item.todayTkMoney}
+                    </if>
+                    <if test="item.totalTkMoney != null and item.totalTkMoney != 0">
+                        , total_tk_money = total_tk_money + #{item.totalTkMoney}
+                    </if>
+                    <if test="item.todayTkTimes != null and item.todayTkTimes != 0">
+                        , today_tk_times = today_tk_times + #{item.todayTkTimes}
+                    </if>
+                    <if test="item.totalTkTimes != null and item.totalTkTimes != 0">
+                        , total_tk_times = total_tk_times + #{item.totalTkTimes}
+                    </if>
+                </foreach>
+            </set>
+            WHERE user_id IN
+            <foreach collection="list" item="item" open="(" separator="," close=")">
+                #{item.userId}
+            </foreach>
+        </update>
+</mapper>
