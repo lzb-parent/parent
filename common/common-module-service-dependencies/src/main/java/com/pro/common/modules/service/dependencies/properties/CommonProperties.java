@@ -27,7 +27,7 @@ public class CommonProperties implements IEntityProperties {
      */
     private EnumApplication application;
     /**
-     * ai/store/finance/grab...
+     * ai/store/
      */
     private String platform;
     /**
@@ -53,7 +53,7 @@ public class CommonProperties implements IEntityProperties {
     /**
      * 定制实体类
      * 例如:
-     * User: com.pro.lottery.api.model.db.UserLottery
+     * User: com.pro.snowball.api.model.db.Usersnowball
      * UserMoney: com.pro.xxx.api.model.db.UserMoneyXxx
      */
     private Map<String, Class<?>> entityClassReplaceMap = new ConcurrentHashMap<>();

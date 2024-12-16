@@ -41,7 +41,7 @@ public abstract class AmountEntityRecordBaseDTO implements IAmountEntityRecord {
     @ApiModelProperty("变化数额")//正数
     private BigDecimal amount;
 
-    // 例如 LotteryBuyOrder
+    // 例如 snowballBuyOrder
     @ApiModelProperty("变动类型")
     private String recordType;
     @ApiModelProperty("相关订单编号")

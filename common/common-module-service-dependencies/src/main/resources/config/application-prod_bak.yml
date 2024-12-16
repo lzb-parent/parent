@@ -21,7 +21,7 @@ jtd:
   runType: createModifyTableAndMetas # 注意 EnumSqlRunType.createModifyDeleteAll 会删除代码移除的字段
 logging:
   level:
-#    com.pro.lottery.common.dao: DEBUG
+#    com.pro.snowball.common.dao: DEBUG
     com.pro: WARN
     com.baomidou.mybatisplus.mapper: WARN
     org.springframework.web.socket: WARN

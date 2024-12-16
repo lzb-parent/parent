@@ -19,8 +19,8 @@ import java.math.BigDecimal;
 @Getter
 @AllArgsConstructor
 public enum EnumCountry implements IEnumToDbEnum<Country> {
-    _1("USA_1", null, "English", "美国", "en-US", "English", "英语", "1", "USA", "USD", "$", BigDecimal.valueOf(1), "America/New_York", true, null),
-    _2("CHN_1", null, "简体中文", "中国", "zh-CN", "简体中文", "简体中文", "86", "CHN", "CNY", "¥", BigDecimal.valueOf(1 / 6.8), "Asia/Shanghai", false, null),
+    _1("CHN_1", null, "简体中文", "中国", "zh-CN", "简体中文", "简体中文", "86", "CHN", "CNY", "¥", BigDecimal.valueOf(1 / 6.8), "Asia/Shanghai", false, null),
+    _2("USA_1", null, "English", "美国", "en-US", "English", "英语", "1", "USA", "USD", "$", BigDecimal.valueOf(1), "America/New_York", true, null),
     _3("CHN_2", null, "繁体中文", "中国台湾", "zh-TW", "繁体中文", "繁体中文", "", "", "", "", BigDecimal.valueOf(1 / 6.8), "Asia/Shanghai", true, null),
     ;
     private String code;

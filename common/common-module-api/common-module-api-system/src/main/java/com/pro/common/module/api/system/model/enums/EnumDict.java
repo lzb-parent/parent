@@ -33,8 +33,8 @@ public enum EnumDict implements IEnumAuthDict, IEnumToDbEnum<AuthDict> {
     SYSTEM_ONLY_MOBILE_OPEN("统一手机端界面开关", "1", SYSTEM_CONFIG, bool, true, null, null, null, null, null, 100, null),
     SYSTEM_PC_FORCE_APP("电脑端强制跳到app下载页", "0", SYSTEM_CONFIG, bool, true, null, null, null, null, null, 100, null),
     ADMIN_LANG_CHINESE("后台统一中文", "0", SYSTEM_CONFIG, bool, true, null, "", false, "", null, 100, null),
-//    DEV_UI_ADMIN_PATH("开发工具_本地ui_admin源码根目录绝对路径", "/Users/fa/projectnew/lottery/lottery-ui-admin/src/parent-ui-admin", null, text, null, null, null, null, null, null, null, null),
-    DEV_PROJECT_ROOT_PATH("开发工具_本地项目根目录", "/Users/z/projectNew/lottery", null, text, null, null, null, null, null, null, null, null),
+//    DEV_UI_ADMIN_PATH("开发工具_本地ui_admin源码根目录绝对路径", "/Users/fa/projectnew/snowball/snowball-ui-admin/src/parent-ui-admin", null, text, null, null, null, null, null, null, null, null),
+    DEV_PROJECT_ROOT_PATH("开发工具_本地项目根目录", "/Users/zubin/projectNew/snowball", null, text, null, null, null, null, null, null, null, null),
 
     // 用户端配置 USER_SITE_CONFIG
     USER_SITE_CONFIG("用户端配置", "", null, text, false, null, null, null, null, null, 1, null),

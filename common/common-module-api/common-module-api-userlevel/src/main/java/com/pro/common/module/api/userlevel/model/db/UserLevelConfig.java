@@ -108,8 +108,6 @@ public class UserLevelConfig extends BaseModel implements IConfigClass, IEnumToD
 //    private BigDecimal upgradeBalanceMin;
 //    @ApiModelProperty(value = "推广有效充值直接下级人数")
 //    private Integer upgradeChildNumber;
-//    @ApiModelProperty(value = "推广有理财直接下级人数")
-//    private Integer upgradeChildFinanceNumber;
 //    @ApiModelProperty(value = "直推下级个人累计在线充值")
 //    private BigDecimal upgradeChildOnlineRechargeMoney;
 //    @ApiModelProperty(value = "直推下级个人首次在线充值金额")
@@ -119,8 +117,6 @@ public class UserLevelConfig extends BaseModel implements IConfigClass, IEnumToD
 //    private Integer upgradeChildLevel;
 
 
-//    @ApiModelProperty(value = "理财增加收益率%")
-//    private BigDecimal financeAddIncomeRate;
 
 //    @ApiModelProperty(value = "赠送每日抽奖次数完成累计充值金额")//英文逗号分隔,从小到大
 //    private String userWheelTimesPresentRechargeApplyMoneys;

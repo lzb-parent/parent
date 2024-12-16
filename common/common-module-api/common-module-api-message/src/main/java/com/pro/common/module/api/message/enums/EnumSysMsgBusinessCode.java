@@ -25,8 +25,6 @@ public enum EnumSysMsgBusinessCode implements IEnum {
     RECHARGE_SUCCESS("充值成功"),
     WITHDRAW_SUCCESS("提现成功"),
     WITHDRAW_FAIL("提现失败"),
-    FINANCE_BUY_SUCCESS("理财购买成功"),
-    FINANCE_END_SUCCESS("理财项目到期"),
     OTHERS("营销类通知消息"),
     ;
     String label;

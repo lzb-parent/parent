@@ -11,8 +11,6 @@ import lombok.Getter;
 @Getter
 public enum EnumUserMoneyWaitType implements IEnum {
 
-    FINANCE_PROFIT("理财每日收益"),
-    FINANCE_PROFIT_COMMISSION("理财每日收益佣金"),
     ;
 
     private String label;

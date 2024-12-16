@@ -23,10 +23,10 @@ public class UserMoneyWaitController extends AmountEntityBaseController<UserMone
     private UserMoneyWaitService amountEntityService;
     @Autowired
     private UserMoneyWaitRecordService amountEntityRecordService;
-    // 待结算 余额           http://127.0.0.1:8094/userMoneyWait/getInfo?1=1&type=finance
-    // 待结算 帐变           http://127.0.0.1:8094/userMoneyWait/change?1=1&type=finance&amount=100&userId=1&upDown=up&orderId=1&orderNo=1
+    // 待结算 余额           http://127.0.0.1:8094/userMoneyWait/getInfo?1=1&type=invite
+    // 待结算 帐变           http://127.0.0.1:8094/userMoneyWait/change?1=1&type=invite&amount=100&userId=1&upDown=up&orderId=1&orderNo=1
     // 待结算 取消订单(反帐变) http://127.0.0.1:8094/userMoneyWait/cancelByOrders?1=1&orderId=1
-    // 待结算 帐变记录        http://127.0.0.1:8094/userMoneyWait/getRecordList?1=1&type=finance&orderNo=1
+    // 待结算 帐变记录        http://127.0.0.1:8094/userMoneyWait/getRecordList?1=1&type=invite&orderNo=1
 //    @ApiOperation(value = "取消待结算记录")
 //    @RequestMapping("/cancelByOrders")
 //    public R<List<UserMoneyWaitRecord>> cancelByOrders(UserMoneyWaitRecord record) {
