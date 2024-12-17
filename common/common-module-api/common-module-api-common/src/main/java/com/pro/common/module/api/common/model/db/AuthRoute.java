@@ -3,16 +3,17 @@ package com.pro.common.module.api.common.model.db;
 import com.pro.common.modules.api.dependencies.CommonConst;
 import com.pro.common.modules.api.dependencies.enums.EnumSysRole;
 import com.pro.common.modules.api.dependencies.model.classes.BaseConfigModel;
-import com.pro.common.module.api.common.model.enums.EnumAuthRouteType;
+import com.pro.common.modules.api.dependencies.enums.EnumAuthRouteType;
 import com.pro.framework.api.enums.IEnumToDbDb;
-import com.pro.framework.api.enums.IEnumToDbDbCode;
-import com.pro.framework.api.enums.IEnumToDbDbId;
 import com.pro.framework.javatodb.annotation.JTDField;
 import com.pro.framework.javatodb.annotation.JTDTable;
 import com.pro.framework.javatodb.constant.JTDConst;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 /**
  * 路由表

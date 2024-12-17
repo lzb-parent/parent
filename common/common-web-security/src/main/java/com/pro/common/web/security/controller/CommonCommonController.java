@@ -107,7 +107,7 @@ public class CommonCommonController {
     @GetMapping("/reload")
     public R<?> reload() {
         ClassCaches.clear();
-        reloadServices.forEach(IReloadService::reload);
+        reloadServices.stream().sorted(Comparator.comparing(IReloadService::getSort)).forEach(IReloadService::reload);
         return R.ok();
     }
 
