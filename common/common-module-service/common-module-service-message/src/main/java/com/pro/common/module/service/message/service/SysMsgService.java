@@ -28,6 +28,7 @@ import com.pro.framework.api.util.StrUtils;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,6 +45,7 @@ public class SysMsgService implements ISysMsgService {
     @Autowired
     private SysMsgChannelTemplateService sysMsgChannelTemplateService;
     @Autowired(required = false)
+    @Lazy
     private ISysMsgExtendInfoService msgExtendInfoService;
 //    @Autowired
 //    private TaskExecutor taskExecutor;
