@@ -46,7 +46,6 @@ public class CommonDataAuthService<T extends IModel> {
         this.filterRequest(methodType, beanClass, loginInfo);
         // 需要登录的请求,都登录了
         AssertUtil.isTrue(IConfigClass.class.isAssignableFrom(beanClass) || null != loginInfo.getId(), "error permission");
-        String userIdPropName = entityProperties.getEntityClassReplaceMap().get("User").equals(beanClass) ? "id" : "userId";
         switch (loginInfo.getSysRole()) {
             case ADMIN:
                 if (commonDataAuthFilterService != null) {
@@ -59,6 +58,7 @@ public class CommonDataAuthService<T extends IModel> {
                 }
                 break;
             case USER:
+                String userIdPropName = entityProperties.getEntityClassReplaceMap().get("User").equals(beanClass) ? "id" : "userId";
                 commonDataAuthFilterService.filterQueryUserTeam(loginInfo, paramMap, query, userIdPropName);
                 break;
             case ANONYMOUS:
