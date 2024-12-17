@@ -12,8 +12,6 @@ import cn.hutool.json.JSONUtil;
 import com.pro.common.module.api.message.intf.ISysMsgService;
 import com.pro.common.module.api.message.model.db.SysMsgRecord;
 import com.pro.common.module.api.system.model.enums.EnumDict;
-import com.pro.common.module.api.user.intf.IUserService;
-import com.pro.common.module.api.user.model.db.User;
 import com.pro.common.modules.api.dependencies.CommonConst;
 import com.pro.common.modules.api.dependencies.R;
 import com.pro.common.modules.api.dependencies.enums.EnumApplication;
@@ -23,12 +21,12 @@ import com.pro.common.modules.api.dependencies.model.ILoginInfo;
 import com.pro.common.modules.api.dependencies.model.classes.IConfigClass;
 import com.pro.common.modules.api.dependencies.model.classes.ISimpleInfo;
 import com.pro.common.modules.api.dependencies.service.ITestService;
+import com.pro.common.modules.api.dependencies.user.model.UserMsg;
 import com.pro.common.modules.service.dependencies.modelauth.base.MessageService;
-import com.pro.common.modules.service.dependencies.modelauth.base.UserDataQuery;
+import com.pro.common.modules.api.dependencies.auth.UserDataQuery;
 import com.pro.common.modules.service.dependencies.properties.CommonProperties;
 import com.pro.common.modules.service.dependencies.util.I18nUtils;
 import com.pro.common.web.security.model.request.UserSendMsgRequest;
-import com.pro.common.web.security.service.AgentUserService;
 import com.pro.common.web.security.upload.FileUploadUtils;
 import com.pro.common.web.security.websocket.MyWebSocketHandlerDecoratorFactory;
 import com.pro.framework.api.IReloadService;
@@ -81,33 +79,26 @@ public class CommonCommonController {
     @Autowired
     private ISysMsgService sysMsgService;
     @Autowired
-    private AgentUserService agentUserService;
-    @Autowired
-    private IUserService userService;
-    @Autowired
     private ICacheManagerCenter cacheManagerCenter;
 
     @ApiOperation(value = "发送短信")
     @PostMapping("/sendCode")
     public R<?> sendCode(ILoginInfo loginInfo, @RequestBody UserSendMsgRequest request) {
-        switch (loginInfo.getSysRole()) {
-            case USER:
-                User user = null == loginInfo.getId() ? User.EMPTY : userService.getById(loginInfo.getId());
-                BeanUtils.copyPropertiesModel(request.getUser(), user);
-                Locale locale = LocaleContextHolder.getLocale();
-                user.setLang(locale.toLanguageTag());
+        UserMsg userMsg = new UserMsg();
+        BeanUtils.copyPropertiesModel(loginInfo, userMsg);
 
-                SysMsgRecord sysMsgRecord = request.getSysMsgRecord();
-                String code = RandomUtil.randomNumbers(6);
+        SysMsgRecord sysMsgRecord = request.getSysMsgRecord();
+        String code = RandomUtil.randomNumbers(6);
 
-                String key = userService.getMsgKey(user, sysMsgRecord.getBusinessCode());
-                cacheManagerCenter.put(CommonConst.CacheKey.SmsCode, key, code, 10, TimeUnit.MINUTES);
-                sysMsgRecord.setParamMap(Collections.singletonMap("code", code));
-                List<SysMsgRecord> sysMsgRecords = sysMsgService.sendByUser(user, sysMsgRecord);
-                if (sysMsgRecords.isEmpty()) {
-                    throw new BusinessException("消息未发送_请检查消息配置");
-                }
-                break;
+        String key = sysMsgService.getMsgKey(userMsg, sysMsgRecord.getBusinessCode());
+
+        cacheManagerCenter.put(CommonConst.CacheKey.SmsCode, key, code, 10, TimeUnit.MINUTES);
+        sysMsgRecord.setParamMap(Collections.singletonMap("code", code));
+
+        userMsg.setLang(LocaleContextHolder.getLocale().toLanguageTag());
+        List<SysMsgRecord> sysMsgRecords = sysMsgService.send(userMsg, sysMsgRecord);
+        if (sysMsgRecords.isEmpty()) {
+            throw new BusinessException("消息未发送_请检查消息配置");
         }
         return R.ok();
     }

@@ -26,7 +26,5 @@ public interface IUserService<T extends User> {
 
     List<Long> listIdByPids(List<Long> userIds);
 
-    String getMsgKey(User user, String businessCode);
-
     String buildCode(String valueCache);
 }

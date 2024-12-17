@@ -1,39 +1,34 @@
 package com.pro.common.web.security.service;
 
 import cn.hutool.core.collection.CollUtil;
-import com.pro.common.module.api.system.model.enums.EnumDict;
-import com.pro.common.module.api.user.intf.IUserService;
+import com.pro.common.modules.api.dependencies.auth.ICommonDataAuthFilterService;
 import com.pro.common.modules.api.dependencies.model.ILoginInfo;
 import com.pro.common.modules.api.dependencies.model.classes.IConfigClass;
 import com.pro.common.modules.api.dependencies.model.classes.IUserClass;
 import com.pro.common.modules.service.dependencies.modelauth.base.AuthService;
 import com.pro.common.modules.service.dependencies.modelauth.base.AuthServiceFactory;
-import com.pro.common.modules.service.dependencies.modelauth.base.UserDataQuery;
+import com.pro.common.modules.api.dependencies.auth.UserDataQuery;
 import com.pro.framework.api.database.OrderItem;
 import com.pro.framework.api.database.page.IPageInput;
 import com.pro.framework.api.entity.IEntityProperties;
 import com.pro.framework.api.enums.EnumCommonDataMethodType;
 import com.pro.framework.api.model.IModel;
 import com.pro.framework.api.util.AssertUtil;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * 外层数据过滤服务
  */
 @Service
-@AllArgsConstructor
+//@AllArgsConstructor
 public class CommonDataAuthService<T extends IModel> {
     @Autowired
-    AuthServiceFactory authServiceFactory;
-    @Autowired
-    AgentUserService agentUserService;
-    @Autowired
-    private IUserService userService;
+    private AuthServiceFactory authServiceFactory;
+    @Autowired(required = false)
+    private ICommonDataAuthFilterService commonDataAuthFilterService;
     @Autowired
     private IEntityProperties entityProperties;
 
@@ -54,32 +49,17 @@ public class CommonDataAuthService<T extends IModel> {
         String userIdPropName = entityProperties.getEntityClassReplaceMap().get("User").equals(beanClass) ? "id" : "userId";
         switch (loginInfo.getSysRole()) {
             case ADMIN:
-                agentUserService.setUser(paramMap, null, query);
+                if (commonDataAuthFilterService != null) {
+                    commonDataAuthFilterService.filterQuery(paramMap, null, query);
+                }
                 break;
             case AGENT:
-                agentUserService.setUser(paramMap, loginInfo.getId(), query);
+                if (commonDataAuthFilterService != null) {
+                    commonDataAuthFilterService.filterQuery(paramMap, loginInfo.getId(), query);
+                }
                 break;
             case USER:
-                Long userId = loginInfo.getId();
-                // 是否查询用户下级的信息
-                Boolean userTeamFlag = query.getUserTeamFlag();
-                if (null != userTeamFlag && userTeamFlag) {
-                    // 查询下级信息
-                    List<Long> userIdAll = new ArrayList<>();
-                    List<Long> userIds = Collections.singletonList(userId);
-                    for (int i = 0; i < EnumDict.USER_TEAM_LEVELS.getValueCacheOrDefault(3); i++) {
-                        userIds = userService.listIdByPids(userIds);
-                        userIdAll.addAll(userIds);
-                    }
-                    if (userIdAll.isEmpty()) {
-                        paramMap.put(userIdPropName, "-10000");
-                    } else {
-                        paramMap.put(userIdPropName, "#in#" + userIdAll.stream().map(Objects::toString).collect(Collectors.joining(",")));
-                    }
-                } else {
-                    // 只能查询自己的
-                    paramMap.put(userIdPropName, userId);
-                }
+                commonDataAuthFilterService.filterQueryUserTeam(loginInfo, paramMap, query, userIdPropName);
                 break;
             case ANONYMOUS:
                 break;
@@ -127,6 +107,7 @@ public class CommonDataAuthService<T extends IModel> {
             }
         }
     }
+
 
     public <T extends IModel> void filterRequest(EnumCommonDataMethodType methodType, Class<T> beanClass, ILoginInfo loginInfo) {
         switch (methodType) {
@@ -188,8 +169,9 @@ public class CommonDataAuthService<T extends IModel> {
                             break;
                         case AGENT:
 //                            Set<Long> userIds = new HashSet<>();
-                            List<Long> userIds = agentUserService.getAgentUserIds(loginInfo.getId(), true, null, null);
-                            records.forEach(record -> AssertUtil.isTrue(userIds.contains(((IUserClass) record).getUserId()), "permission error"));
+                            if (commonDataAuthFilterService != null) {
+                                commonDataAuthFilterService.filterInsertUpdate(loginInfo, records);
+                            }
                             break;
                     }
                 }
@@ -204,8 +186,9 @@ public class CommonDataAuthService<T extends IModel> {
                             break;
                         case AGENT:
 //                            Set<Long> userIds = new HashSet<>();
-                            List<Long> userIds = agentUserService.getAgentUserIds(loginInfo.getId(), true, null, null);
-                            records.forEach(record -> AssertUtil.isTrue(userIds.contains(((IUserClass) record).getUserId()), "permission error"));
+                            if (commonDataAuthFilterService != null) {
+                                commonDataAuthFilterService.filterInsertUpdate(loginInfo, records);
+                            }
                             break;
                     }
                 }

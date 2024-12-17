@@ -24,15 +24,6 @@ public class MyWebSocketHandlerDecoratorFactory implements WebSocketHandlerDecor
             @Override
             public void afterConnectionEstablished(@NonNull WebSocketSession session) throws Exception {
                 log.info("建立连接==》[{} : {}] has be connected...", session.getUri(), session.getId());
-//                UserInfoVo userInfoVo = (UserInfoVo) session.getPrincipal();
-//                if (null != userInfoVo) {
-//                    UserInfoVo target = new UserInfoVo();
-//                    User user = (User) userService.getById(userInfoVo.getId());
-//                    log.info("建立连接==》 {}", user.getUsername());
-//                    BeanUtils.copyProperties(user, target);
-//                    target.setPrincipalName(userInfoVo.getPrincipalName());
-//                    loginUserMap.put(target.getId(), target);
-//                }
                 ILoginInfo userInfoVo = (ILoginInfo) session.getPrincipal();
                 if (userInfoVo != null && null != userInfoVo.getId()) {
                     loginUserMap.put(userInfoVo.getId(), userInfoVo);

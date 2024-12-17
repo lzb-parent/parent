@@ -262,12 +262,6 @@ public class UserService<M extends UserDao<T>, T extends User> extends BaseServi
                 .collect(Collectors.toList());
     }
 
-    @Override
-    public String getMsgKey(User user, String businessCode) {
-        return user.getId() + "_" + businessCode + "_" + user.getEmail() + "_" + user.getPhone();
-    }
-
-
     private void doSaveOrUpdate(T entity) {
         if (StrUtils.isNotBlank(entity.getPassword())) {
             this.checkOldPassword(entity, T::getPassword);

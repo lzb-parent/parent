@@ -1,5 +1,6 @@
 package com.pro.common.modules.service.dependencies.modelauth.base;
 
+import com.pro.common.modules.api.dependencies.auth.UserDataQuery;
 import com.pro.common.modules.api.dependencies.model.ILoginInfo;
 import com.pro.framework.api.database.AggregateResult;
 import com.pro.framework.api.database.GroupBy;
@@ -14,7 +15,7 @@ import java.util.Map;
 
 // 创建接口
 // 创建接口
-public interface ICommonDataService<T extends IModel>  {
+public interface  ICommonDataService<T extends IModel>  {
     IMultiPageResult<T> selectPage(ILoginInfo loginInfo, String entityClassName, IPageInput pageInput, Map<String, Object> paramMap, TimeQuery timeQuery, UserDataQuery query);
 
     List<AggregateResult> selectCountSum(ILoginInfo loginInfo, String entityClassName, Map<String, Object> paramMap, TimeQuery timeQuery, GroupBy groupBy, UserDataQuery query);

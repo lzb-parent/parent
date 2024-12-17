@@ -34,14 +34,6 @@
 <!--            <optional>true</optional>-->
         </dependency>
         <dependency>
-            <groupId>com.pro</groupId>
-            <artifactId>common-module-api-user</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.pro</groupId>
-            <artifactId>common-module-api-agent</artifactId>
-        </dependency>
-        <dependency>
             <groupId>com.opencsv</groupId>
             <artifactId>opencsv</artifactId>
             <version>5.9</version>

@@ -58,9 +58,6 @@ public class CommonLoginService {
         return tokenService.generate(loginInfo);
     }
 
-    /**
-     * userService / adminService / agentService
-     */
     private ILoginInfoService getLoginInfoService() {
         return applicationContext.getBean(commonProperties.getApplication().getRole().getServiceBean(), ILoginInfoService.class);
     }

@@ -1,4 +1,4 @@
-package com.pro.common.modules.service.dependencies.modelauth.base;
+package com.pro.common.modules.api.dependencies.auth;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

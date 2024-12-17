@@ -17,6 +17,10 @@
         </dependency>
         <dependency>
             <groupId>com.pro</groupId>
+            <artifactId>common-module-api-user</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.pro</groupId>
             <artifactId>common-module-api-agent</artifactId>
         </dependency>
     </dependencies>

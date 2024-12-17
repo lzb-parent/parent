@@ -1,11 +1,20 @@
-package com.pro.common.web.security.service;
+package com.pro.common.module.api.agent.service;
 
 
 import cn.hutool.core.util.ObjUtil;
 import com.pro.common.module.api.agent.intf.IAgentService;
+import com.pro.common.module.api.agent.model.db.Agent;
+import com.pro.common.module.api.system.model.enums.EnumDict;
 import com.pro.common.module.api.user.intf.IUserService;
-import com.pro.common.modules.service.dependencies.modelauth.base.UserDataQuery;
+import com.pro.common.modules.api.dependencies.auth.ICommonDataAuthFilterService;
+import com.pro.common.modules.api.dependencies.auth.UserDataQuery;
+import com.pro.common.modules.api.dependencies.message.ISysMsgExtendInfoService;
+import com.pro.common.modules.api.dependencies.model.ILoginInfo;
+import com.pro.common.modules.api.dependencies.model.classes.IUserClass;
+import com.pro.common.modules.api.dependencies.user.model.IUserMsg;
 import com.pro.common.modules.service.dependencies.properties.CommonProperties;
+import com.pro.framework.api.model.IModel;
+import com.pro.framework.api.structure.TriConsumer;
 import com.pro.framework.api.util.AssertUtil;
 import com.pro.framework.api.util.LogicUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,12 +26,12 @@ import java.util.stream.Collectors;
 
 @SuppressWarnings("unchecked")
 @Service
-public class AgentUserService {
+public class AgentUserService implements ICommonDataAuthFilterService, ISysMsgExtendInfoService {
     @Autowired
     private CommonProperties commonProperties;
-//    @Autowired
+    //    @Autowired
 //    private IEnumProperties enumProperties;
-    @Autowired
+    @Autowired(required = false)
     private IUserService userService;
     @Autowired(required = false)
     private IAgentService agentService;
@@ -79,16 +88,62 @@ public class AgentUserService {
             if (agentId == 0) {
                 agentId = loginAgentId;
             } else {
-                Collection<Long> agentIdSubs = agentService.getAllChildIdList(loginAgentId);
-                AssertUtil.isTrue(agentIdSubs.contains(agentId), "permission error");
+                if (agentService != null) {
+                    Collection<Long> agentIdSubs = agentService.getAllChildIdList(loginAgentId);
+                    AssertUtil.isTrue(agentIdSubs.contains(agentId), "permission error");
+                }
             }
         }
         Long agentIdTarget = ObjUtil.defaultIfNull(agentId, loginAgentId);
         agentIdsTarget.add(agentIdTarget);
         // 查询所有下级,在过滤看自己的数据,意义
-        if (isChildAll) {
+        if (isChildAll && null != agentService) {
             agentIdsTarget.addAll(agentService.getAllChildIdList(agentIdTarget));
         }
         return userService.getIdsByAgentIds(agentIdsTarget);
+    }
+
+    @Override
+    public void filterQuery(Map<String, Object> paramMap, Long loginAgentId, UserDataQuery query) {
+        setUser(paramMap, loginAgentId, query);
+    }
+
+    @Override
+    public <T extends IModel> void filterInsertUpdate(ILoginInfo loginInfo, List<T> records) {
+        List<Long> userIds = this.getAgentUserIds(loginInfo.getId(), true, null, null);
+        records.forEach(record -> AssertUtil.isTrue(userIds.contains(((IUserClass) record).getUserId()), "permission error"));
+    }
+
+    @Override
+    public void filterQueryUserTeam(ILoginInfo loginInfo, Map<String, Object> paramMap, UserDataQuery query, String userIdPropName) {
+        Long userId = loginInfo.getId();
+        // 是否查询用户下级的信息
+        Boolean userTeamFlag = query.getUserTeamFlag();
+        if (null != userTeamFlag && userTeamFlag) {
+            // 查询下级信息
+            List<Long> userIdAll = new ArrayList<>();
+            List<Long> userIds = Collections.singletonList(userId);
+            for (int i = 0; i < EnumDict.USER_TEAM_LEVELS.getValueCacheOrDefault(3); i++) {
+                userIds = userService.listIdByPids(userIds);
+                userIdAll.addAll(userIds);
+            }
+            if (userIdAll.isEmpty()) {
+                paramMap.put(userIdPropName, "-10000");
+            } else {
+                paramMap.put(userIdPropName, "#in#" + userIdAll.stream().map(Objects::toString).collect(Collectors.joining(",")));
+            }
+        } else {
+            // 只能查询自己的
+            paramMap.put(userIdPropName, userId);
+        }
+    }
+
+    @Override
+    public void setExtendInfo(Map<Long, IUserMsg> userMap, TriConsumer<Long, Long, String> consumer) {
+        Map<Long, Agent> agentMap = null == agentService ? Collections.emptyMap() : agentService.idMap(userMap.values().stream().map(IUserMsg::getAgentId).collect(Collectors.toList()));
+        userMap.values().forEach(u -> {
+            Agent agent = agentMap.get(u.getAgentId());
+            consumer.accept(u.getId(), agent.getId(), agent.getUsername());
+        });
     }
 }

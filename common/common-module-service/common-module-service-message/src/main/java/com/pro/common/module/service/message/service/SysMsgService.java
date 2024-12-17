@@ -1,13 +1,9 @@
 package com.pro.common.module.service.message.service;
 
 import cn.hutool.core.lang.Validator;
-import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
-import com.pro.common.module.api.agent.intf.IAgentService;
-import com.pro.common.module.api.agent.model.db.Agent;
-import com.pro.common.module.api.message.enums.EnumSysMsgBusinessCode;
 import com.pro.common.module.api.message.enums.EnumSysMsgChannel;
 import com.pro.common.module.api.message.enums.EnumSysMsgChannelType;
 import com.pro.common.module.api.message.enums.EnumSysMsgState;
@@ -17,20 +13,17 @@ import com.pro.common.module.api.message.model.db.SysMsgChannelTemplate;
 import com.pro.common.module.api.message.model.db.SysMsgRecord;
 import com.pro.common.module.api.message.model.vo.SysMsgRecordSendResult;
 import com.pro.common.module.api.system.model.enums.EnumDict;
-import com.pro.common.module.api.user.model.db.User;
 import com.pro.common.module.service.message.service.impl.ISysMsgChannelService;
 import com.pro.common.modules.api.dependencies.CommonConst;
 import com.pro.common.modules.api.dependencies.enums.EnumPosterCode;
 import com.pro.common.modules.api.dependencies.exception.BusinessException;
 import com.pro.common.modules.api.dependencies.exception.BusinessPosterException;
+import com.pro.common.modules.api.dependencies.message.ISysMsgExtendInfoService;
 import com.pro.common.modules.api.dependencies.user.model.IUserMsg;
-import com.pro.common.modules.service.dependencies.util.I18nUtils;
 import com.pro.common.modules.service.dependencies.util.SpringContextUtils;
-import com.pro.common.modules.service.dependencies.util.TransactionUtil;
 import com.pro.framework.api.structure.Tuple2;
 import com.pro.framework.api.util.AssertUtil;
 import com.pro.framework.api.util.CollUtils;
-import com.pro.framework.api.util.LogicUtils;
 import com.pro.framework.api.util.StrUtils;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -38,27 +31,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.Serializable;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 @Slf4j
 public class SysMsgService implements ISysMsgService {
-    //    @Autowired
-//    @Lazy
-//    private IUserMsgService userService;
-    @Autowired
-    private IAgentService agentService;
     @Autowired
     private SysMsgRecordService sysMsgRecordService;
     @Autowired
     private SysMsgChannelMerchantService sysMsgChannelMerchantService;
     @Autowired
     private SysMsgChannelTemplateService sysMsgChannelTemplateService;
+    @Autowired(required = false)
+    private ISysMsgExtendInfoService msgExtendInfoService;
 //    @Autowired
 //    private TaskExecutor taskExecutor;
 //    @Autowired
@@ -128,11 +114,7 @@ public class SysMsgService implements ISysMsgService {
     @SneakyThrows
     @Override
     public void sendMsgAllChannelType(IUserMsg user, String businessCode, Map<String, Object> paramMap, String lang, String ip, Boolean failThrow, Boolean limitTimesFlag, EnumSysMsgChannel channel) {
-        this.sendBatch(
-                Arrays.asList(EnumSysMsgChannelType.values()),
-                Collections.singletonList(new Tuple2<>(user, paramMap)),
-                businessCode,
-                user.getLang());
+        this.sendBatch(Arrays.asList(EnumSysMsgChannelType.values()), Collections.singletonList(new Tuple2<>(user, paramMap)), businessCode, user.getLang());
 //        if (user == null) {
 //            return;
 //        }
@@ -164,7 +146,7 @@ public class SysMsgService implements ISysMsgService {
      */
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public List<SysMsgRecord> sendByUser(IUserMsg user, SysMsgRecord sysMsgRecord) {
+    public List<SysMsgRecord> send(IUserMsg user, SysMsgRecord sysMsgRecord) {
         EnumSysMsgChannelType channelType = sysMsgRecord.getChannelType();
         String businessCode = sysMsgRecord.getBusinessCode();
         return sendBatch(Collections.singletonList(channelType), Collections.singletonList(new Tuple2<>(user, sysMsgRecord.getParamMap())), businessCode, user.getLang());
@@ -186,21 +168,13 @@ public class SysMsgService implements ISysMsgService {
             return Collections.emptyList();
         }
         // 渠道-商户
-        List<SysMsgChannelMerchant> merchants = sysMsgChannelMerchantService.lambdaQuery()
-                .in(SysMsgChannelMerchant::getChannelType, channelTypes)
-                .eq(SysMsgChannelMerchant::getEnabled, true)
-                .list();
+        List<SysMsgChannelMerchant> merchants = sysMsgChannelMerchantService.lambdaQuery().in(SysMsgChannelMerchant::getChannelType, channelTypes).eq(SysMsgChannelMerchant::getEnabled, true).list();
         if (merchants.isEmpty()) {
             return Collections.emptyList();
         }
         Map<EnumSysMsgChannel, SysMsgChannelMerchant> merchantMap = CollUtils.listToMapAllRight(merchants, SysMsgChannelMerchant::getChannel, v -> v);
         // 渠道-商户-消息模板 < 多语言 >
-        List<SysMsgChannelTemplate> templates = sysMsgChannelTemplateService.lambdaQuery()
-                .in(SysMsgChannelTemplate::getChannelType, channelTypes)
-                .in(SysMsgChannelTemplate::getEnabled, true)
-                .eq(SysMsgChannelTemplate::getBusinessCode, businessCode)
-                .eq(null != lang, SysMsgChannelTemplate::getLang, lang)
-                .list();
+        List<SysMsgChannelTemplate> templates = sysMsgChannelTemplateService.lambdaQuery().in(SysMsgChannelTemplate::getChannelType, channelTypes).in(SysMsgChannelTemplate::getEnabled, true).eq(SysMsgChannelTemplate::getBusinessCode, businessCode).eq(null != lang, SysMsgChannelTemplate::getLang, lang).list();
         if (templates.isEmpty()) {
             return Collections.emptyList();
         }
@@ -208,8 +182,6 @@ public class SysMsgService implements ISysMsgService {
 //        paramMap = null == paramMap ? Collections.emptyMap() : paramMap;
 //        userAndParams.get(0).getT1()
         Map<Long, IUserMsg> userMap = CollUtils.listToMapAllRight(userAndParams, t -> t.getT1().getId(), Tuple2::getT1);
-        Collection<IUserMsg> users = userMap.values();
-        Map<Long, Agent> agentMap = agentService.idMap(users.stream().map(IUserMsg::getAgentId).collect(Collectors.toList()));
 
         //MyLocalResolver.lang_default
 //
@@ -227,39 +199,38 @@ public class SysMsgService implements ISysMsgService {
                 return null;
             }
             Map<String, ?> paramMap = userAndParam.getT2();
-            Agent agent = agentMap.getOrDefault(user.getId(), Agent.EMPTY);
-            SysMsgRecord sysMsgRecord = SysMsgRecord.builder()
-                    .no(IdWorker.getIdStr() + "M")
-                    .state(EnumSysMsgState.SUBMITTED)
-                    .userId(user.getId())
-                    .fromUsername(user.getUsername())
+            SysMsgRecord sysMsgRecord = SysMsgRecord.builder().no(IdWorker.getIdStr() + "M").state(EnumSysMsgState.SUBMITTED).userId(user.getId()).fromUsername(user.getUsername())
                     // .overTime(LocalDateTime.now().plusMinutes(30)) // 30分钟后过期
                     //                                .ip(ip)
                     //                                .fromUserId(fromUserId)
                     //                                .fromUsername(user.getUsername())
                     //                                .account(account)
-                    .businessCode(businessCode)
-                    .channelType(template.getChannelType())
-                    .channel(template.getChannel())
+                    .businessCode(businessCode).channelType(template.getChannelType()).channel(template.getChannel())
 //                    .merchant(merchantMap.get(template.getChannel()))
-                    .titleTemplate(template.getTitleTemplate())
-                    .contentTemplate(template.getContentTemplate())
-                    .dialogPosterCode(template.getDialogPosterCode())
-                    .paramJson(JSONUtil.toJsonStr(paramMap))
+                    .titleTemplate(template.getTitleTemplate()).contentTemplate(template.getContentTemplate()).dialogPosterCode(template.getDialogPosterCode()).paramJson(JSONUtil.toJsonStr(paramMap))
                     // .sid()
                     // .smsCount()
                     // .fee()
                     // .unit()
-                    .fromAgentId(agent.getId())
-                    .fromAgentUsername(agent.getUsername())
+
 
                     // 临时信息
-                    .template(template)
-                    .paramMap(paramMap)
+                    .template(template).paramMap(paramMap)
 //                    .user(user)
                     .build();
             return sysMsgRecord;
         }).filter(Objects::nonNull).collect(Collectors.toList());
+        for (SysMsgRecord record : records) {
+
+        }
+        Map<Long, List<SysMsgRecord>> listMap = records.stream().collect(Collectors.groupingBy(SysMsgRecord::getUserId));
+
+        // 填充扩展信息
+        msgExtendInfoService.setExtendInfo(userMap, (userId, agentId, agentUsername) ->
+                listMap.get(userId).forEach(record -> {
+                    record.setFromAgentId(agentId);
+                    record.setFromUsername(agentUsername);
+                }));
 
         records.stream().collect(Collectors.groupingBy(SysMsgRecord::getTemplate)).forEach((template, subRecords) -> {
             EnumSysMsgChannel channel = template.getChannel();
@@ -340,7 +311,7 @@ public class SysMsgService implements ISysMsgService {
                 return null == user.getId() ? null : user.getId().toString();
             case EMAIL:
                 String email = user.getEmail();
-                AssertUtil.isTrue(Validator.isEmail(email),"邮箱格式不正确");
+                AssertUtil.isTrue(Validator.isEmail(email), "邮箱格式不正确");
                 return email;
             case PHONE_SMS:
                 return user.getPhone();
@@ -359,5 +330,10 @@ public class SysMsgService implements ISysMsgService {
 //            e.printStackTrace();
 //        }
 //    }
+
+    @Override
+    public String getMsgKey(IUserMsg user, String businessCode) {
+        return user.getSysRole() + "_" + user.getId() + "_" + businessCode + "_" + user.getEmail() + "_" + user.getPhone();
+    }
 
 }

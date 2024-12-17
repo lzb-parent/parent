@@ -4,9 +4,8 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.pro.common.module.api.message.enums.EnumSysMsgBusinessCode;
+import com.pro.common.module.api.message.intf.ISysMsgService;
 import com.pro.common.module.api.system.model.enums.EnumDict;
-import com.pro.common.module.api.user.intf.IUserService;
-import com.pro.common.module.api.user.model.db.User;
 import com.pro.common.modules.api.dependencies.CommonConst;
 import com.pro.common.modules.api.dependencies.R;
 import com.pro.common.modules.api.dependencies.enums.EnumSysRole;
@@ -14,9 +13,8 @@ import com.pro.common.modules.api.dependencies.exception.BusinessException;
 import com.pro.common.modules.api.dependencies.model.ILoginInfo;
 import com.pro.common.modules.api.dependencies.model.LoginRequest;
 import com.pro.common.modules.api.dependencies.service.IAuthRoleService;
-import com.pro.common.modules.api.dependencies.user.model.IUser;
+import com.pro.common.modules.api.dependencies.user.model.UserMsg;
 import com.pro.common.modules.service.dependencies.properties.CommonProperties;
-import com.pro.common.modules.service.dependencies.util.I18nUtils;
 import com.pro.common.modules.service.dependencies.util.IPUtils;
 import com.pro.common.web.security.service.CommonLoginService;
 import com.pro.common.web.security.service.TokenService;
@@ -32,7 +30,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
 @Api(tags = "公共登录")
 @RestController
@@ -47,8 +44,8 @@ public class CommonLoginController {
     private CommonProperties commonProperties;
     @Autowired
     private IAuthRoleService authRoleService;
-    @Autowired
-    private IUserService userService;
+    @Autowired(required = false)
+    private ISysMsgService msgService;
     @Autowired
     private ICacheManagerCenter cacheManagerCenter;
 
@@ -68,9 +65,9 @@ public class CommonLoginController {
         }
         if (EnumDict.REGISTER_PROPS.getValueCache().contains(",smsCode,")) {
             String codeInput = jo.getStr("smsCode");
-            String key = userService.getMsgKey(jo.toBean(User.class), EnumSysMsgBusinessCode.REGISTER_CODE.name());
+            String key = msgService.getMsgKey(jo.toBean(UserMsg.class), EnumSysMsgBusinessCode.REGISTER_CODE.name());
             String code = (String) cacheManagerCenter.get(CommonConst.CacheKey.SmsCode, key);
-            AssertUtil.isTrue(StrUtil.isNotBlank(code) && code.equals(codeInput),"短信或邮箱验证码不正确");
+            AssertUtil.isTrue(StrUtil.isNotBlank(code) && code.equals(codeInput), "短信或邮箱验证码不正确");
         }
 
 

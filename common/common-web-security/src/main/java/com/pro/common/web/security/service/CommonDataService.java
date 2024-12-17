@@ -3,7 +3,7 @@ package com.pro.common.web.security.service;
 import cn.hutool.core.bean.BeanUtil;
 import com.pro.common.modules.api.dependencies.model.ILoginInfo;
 import com.pro.common.modules.service.dependencies.modelauth.base.ICommonDataService;
-import com.pro.common.modules.service.dependencies.modelauth.base.UserDataQuery;
+import com.pro.common.modules.api.dependencies.auth.UserDataQuery;
 import com.pro.common.modules.service.dependencies.properties.CommonProperties;
 import com.pro.framework.api.database.AggregateResult;
 import com.pro.framework.api.database.GroupBy;

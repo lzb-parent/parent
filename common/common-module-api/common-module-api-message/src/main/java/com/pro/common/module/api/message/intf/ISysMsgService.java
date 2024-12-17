@@ -13,5 +13,8 @@ public interface ISysMsgService {
     @SneakyThrows
     void sendMsgAllChannelType(IUserMsg user, String businessCode, Map<String, Object> paramMap, String lang, String ip, Boolean failThrow, Boolean limitTimesFlag, EnumSysMsgChannel channel);
 
-    List<SysMsgRecord> sendByUser(IUserMsg user, SysMsgRecord sysMsgRecord);
+    List<SysMsgRecord> send(IUserMsg user, SysMsgRecord sysMsgRecord);
+
+    String getMsgKey(IUserMsg user, String businessCode);
+
 }
