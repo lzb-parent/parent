@@ -1,7 +1,10 @@
 package com.pro.common.web.security.controller;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.io.resource.ClassPathResource;
 import cn.hutool.core.util.StrUtil;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.pro.common.module.api.system.model.enums.EnumDict;
 import com.pro.common.modules.api.dependencies.R;
 import com.pro.common.modules.api.dependencies.exception.BusinessException;
@@ -13,6 +16,7 @@ import com.pro.common.modules.service.dependencies.util.I18nUtils;
 import com.pro.common.web.security.model.request.JTDTableInfoRequest;
 import com.pro.framework.api.FrameworkConst;
 import com.pro.framework.api.entity.IEntityProperties;
+import com.pro.framework.api.model.GeneratorDevConfig;
 import com.pro.framework.api.util.ClassUtils;
 import com.pro.framework.api.util.CollUtils;
 import com.pro.framework.api.util.StrUtils;
@@ -76,7 +80,7 @@ public class CommonTableInfoController {
 
     @SneakyThrows
     @ApiOperation(value = "增量加载 后端 messages_zh_CN.properties 待添加的键值")
-    @GetMapping(value = "/reloadTranslateKeys", produces = "text/html")
+    @GetMapping(value = "/reloadTranslateKeys")
     public String translateKeys(ILoginInfo loginInfo) {
 //        checkPermission(loginInfo);
 
@@ -105,6 +109,14 @@ public class CommonTableInfoController {
         translateKeys.addAll(translateKeysEntityPlatform);
 
         String devProjectRootPath = EnumDict.DEV_PROJECT_ROOT_PATH.getValueCache();
+        if (StrUtil.isBlank(devProjectRootPath)) {
+            ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+            GeneratorDevConfig generatorConfig = mapper.readValue(new ClassPathResource("system-dev.yml").getFile(), GeneratorDevConfig.class);
+            devProjectRootPath = generatorConfig.getWorkspace() + "/" + generatorConfig.getPlatformName();
+        }
+        System.out.println(translateKeysClassCommon.contains("执行订单"));
+        System.out.println(translateKeysEnumCommon.contains("执行订单"));
+        System.out.println(translateKeysEntityCommon.contains("执行订单"));
         if (StrUtil.isNotBlank(devProjectRootPath)) {
             // 生成到 messages_zh_CN.properties 本地文件中
             String subPathCommon = "/parent/common/common-module-service/common-module-service-login/src/main/resources/i18n_login/messages_zh_CN.properties";
@@ -131,6 +143,7 @@ public class CommonTableInfoController {
                 .filter(Objects::nonNull).filter(s -> !s.isEmpty())
                 .distinct().collect(Collectors.toList());
     }
+
     @SneakyThrows
     private static void saveNewKeys(String filePath, List<String> keys) {
         Properties properties = new Properties();
@@ -149,6 +162,7 @@ public class CommonTableInfoController {
                 new FileOutputStream(filePath), StandardCharsets.UTF_8);
         properties.store(writer, "Updated Properties File");
     }
+
     private List<String> getTranslateKeysEntity(boolean isCommon) {
         List<JTDTableInfoVo> tables = MultiClassRelationFactory.INSTANCE.getClassMap().values().stream()
                 .map(aClass -> jtdService.readTableInfo(aClass)).filter(Objects::nonNull)
@@ -188,9 +202,9 @@ public class CommonTableInfoController {
     }
 
 //    private static final Set<Class> classes = new HashSet(Arrays.asList(User.class
-////            ,         UserLevel.class, UserMoney.class)
-//    );
 
+    /// /            ,         UserLevel.class, UserMoney.class)
+//    );
     @SneakyThrows
     @ApiOperation(value = "查询表格信息")
     @GetMapping("/info/{entityClassName}")

@@ -24,4 +24,9 @@ public class UserMoneyWaitChangeDTO extends AmountEntityRecordDTO {
         setAmountType(key.split(FrameworkConst.Str.split_pound)[0]);
         setUserId(Long.valueOf(key.split(FrameworkConst.Str.split_pound)[1]));
     }
+
+    @Override
+    public Long getId() {
+        return 0L;
+    }
 }

@@ -23,6 +23,7 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.net.SocketException;
 
 /**
  * 异常处理器
@@ -40,9 +41,16 @@ public class BaseExceptionHandler {
     }
 
     @ExceptionHandler(IOException.class)
-    public void handleIOException(HttpServletRequest request, IOException e) {
-        // 用户端中断http连接 异常需要进行无视处理,不然日志太多
-        log.info("IOException {} {}", request.getRequestURI(), e.getMessage());
+    public IResponse<?> handleIOException(HttpServletRequest request, IOException e) {
+        // 判断是否为客户端中断（例如 SocketException）
+        if (e instanceof SocketException) {
+            // 用户端中断http连接 异常需要进行无视处理,不然日志太多
+            log.info("IOException {} {}", request.getRequestURI(), e.getMessage());
+
+        } else {
+            log.warn("IOException {} {}", request.getRequestURI(), e.getMessage(), e);
+        }
+        return R.fail(500, e.getMessage());
     }
 
     @ExceptionHandler(Exception.class)

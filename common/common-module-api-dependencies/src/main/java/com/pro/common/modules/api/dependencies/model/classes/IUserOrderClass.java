@@ -1,6 +1,7 @@
 package com.pro.common.modules.api.dependencies.model.classes;
 
 
+import com.pro.framework.api.model.IModel;
 
 /**
  * 用户订单类
@@ -11,5 +12,5 @@ package com.pro.common.modules.api.dependencies.model.classes;
  * 改    0      1      1       1
  * 查    1      1      1       1
  */
-public interface IUserOrderClass extends IUserClass {
+public interface IUserOrderClass extends IUserClass, IModel {
 }

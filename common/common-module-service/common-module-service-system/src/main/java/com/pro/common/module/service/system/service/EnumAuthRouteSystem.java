@@ -20,6 +20,7 @@ public enum EnumAuthRouteSystem implements IEnumToDbEnum {
     authDict_QUERY(ADMIN, authDict, BUTTON, "查询", null, null, "authDict", null, null, null, null, 200100, null),
     authDict_ALL(ADMIN, authDict, BUTTON, "管理", null, null, "#ALL#authDict", null, null, null, null, 200101, null),
     COMMON_TABLE_QUERY(ADMIN, catalog_config, URI, "通用表单访问权限", null, null, "/commonTable/info/**", null, null, null, null, 200200, null),
+    SYSTEM_reloadTranslateKeys(ADMIN, catalog_config, URI, "生成翻译键值", null, null, "/commonTable/reloadTranslateKeys", null, null, null, null, 200300, null),
     ;
     // 可以继续添加其他模块...
 

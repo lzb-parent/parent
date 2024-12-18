@@ -1,6 +1,7 @@
 package com.pro.common.modules.api.dependencies.model.classes;
 
 
+import com.pro.framework.api.model.IModel;
 
 /**
  * 用户开放数据类
@@ -11,5 +12,5 @@ package com.pro.common.modules.api.dependencies.model.classes;
  * 改    1      1      1       1
  * 查    1      1      1       1
  */
-public interface IUserDataClass extends IUserClass {
+public interface IUserDataClass extends IUserClass, IModel {
 }

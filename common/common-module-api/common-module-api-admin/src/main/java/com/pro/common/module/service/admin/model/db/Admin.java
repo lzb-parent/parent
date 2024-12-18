@@ -27,7 +27,7 @@ import java.time.LocalDateTime;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @ApiModel(description = "管理员表")
-@JTDTable(entityId = 1001, sequences = {"KEY `username` (`username`)"})
+@JTDTable(entityId = 10001, sequences = {"KEY `username` (`username`)"})
 public class Admin extends BaseModel implements IAdminClass, ILoginInfo, IEnumToDbDbId {
 
     @ApiModelProperty(value = "登录名")

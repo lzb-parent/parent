@@ -359,7 +359,6 @@
                         <layout>ZIP</layout>
                         <!-- 需要包含的jar包 -->
                         <includes>
-                            <!-- 不包含任何jar包 -->
                             <include>
                                 <groupId>com.pro</groupId>
                                 <artifactId>framework-api</artifactId>
@@ -371,10 +370,6 @@
                             <include>
                                 <groupId>com.pro</groupId>
                                 <artifactId>framework-enums</artifactId>
-                            </include>
-                            <include>
-                                <groupId>com.pro</groupId>
-                                <artifactId>framework-generator</artifactId>
                             </include>
                             <include>
                                 <groupId>com.pro</groupId>
