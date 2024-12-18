@@ -96,6 +96,8 @@ public class CommonConst {
     }
 
     public static class Num {
+        public static final Integer NO = 0;
+        public static final Integer YES = 1;
         public static final BigDecimal hundred = new BigDecimal("100");
     }
 }

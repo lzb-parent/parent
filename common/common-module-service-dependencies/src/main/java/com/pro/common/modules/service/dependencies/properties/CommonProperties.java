@@ -35,6 +35,10 @@ public class CommonProperties implements IEntityProperties {
      */
     private List<String> publicPaths = Collections.emptyList();
     /**
+     * 登陆的管理员公开路径
+     */
+    private List<String> publicPathsAdminLogin = Collections.emptyList();
+    /**
      * 角色token默认时效(秒)
      */
     private Map<String, Integer> roleTokenValidSecondMap = Collections.emptyMap();

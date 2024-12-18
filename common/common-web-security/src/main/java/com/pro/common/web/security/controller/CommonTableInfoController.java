@@ -67,6 +67,14 @@ public class CommonTableInfoController {
     private static final Set<String> fieldNamesIgnoreForm = new HashSet<>(Arrays.asList("createTime", "isDemo"));
 
     @SneakyThrows
+    @ApiOperation(value = "生成代码")
+    @GetMapping(value = "/generateCode")
+    public String generateCode(ILoginInfo loginInfo) {
+//        AbsGenerator
+        return "";
+    }
+
+    @SneakyThrows
     @ApiOperation(value = "增量加载 后端 messages_zh_CN.properties 待添加的键值")
     @GetMapping(value = "/reloadTranslateKeys", produces = "text/html")
     public String translateKeys(ILoginInfo loginInfo) {

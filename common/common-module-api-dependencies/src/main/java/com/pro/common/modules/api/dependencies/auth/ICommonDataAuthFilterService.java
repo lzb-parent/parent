@@ -12,4 +12,6 @@ public interface ICommonDataAuthFilterService {
     <T extends IModel> void filterInsertUpdate(ILoginInfo loginInfo, List<T> records);
 
     void filterQueryUserTeam(ILoginInfo loginInfo, Map<String, Object> paramMap, UserDataQuery query, String userIdPropName);
+
+    List<Long> getAgentUserIds(Long loginAgentId, Boolean isChildAll, Long agentId, Long userId);
 }

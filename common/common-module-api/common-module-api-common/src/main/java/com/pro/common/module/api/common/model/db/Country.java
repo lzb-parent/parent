@@ -43,6 +43,6 @@ public class Country extends BaseConfigModel implements ICountry, IEnumToDbDbId 
     @ApiModelProperty(value = "时区代码")
     private String zoneCode;
     @ApiModelProperty(value = "管理端显示")
-    @JTDField(defaultValue = "1") // todo 项目中后期时改为 0
+    @JTDField(defaultValue = "1")
     private Boolean showAdmin;
 }

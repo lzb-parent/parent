@@ -1,35 +1,19 @@
 package com.pro.common.web.security;
 
 import cn.hutool.core.util.ObjUtil;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalTimeDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
 import com.pro.common.modules.api.dependencies.CommonConst;
 import com.pro.common.modules.api.dependencies.common.model.ICountry;
 import com.pro.common.modules.api.dependencies.common.service.ICountryService;
-import com.pro.common.modules.api.dependencies.enums.EnumApplication;
 import com.pro.common.modules.api.dependencies.service.IAuthRoleService;
 import com.pro.common.modules.service.dependencies.properties.CommonProperties;
-import com.pro.common.web.security.component.CustomTokenResolver;
+import com.pro.common.web.security.component.TokenAuthResolver;
 import com.pro.common.web.security.component.MyLocalResolver;
-import com.pro.common.web.security.component.xss.JsonHtmlXssDeserializer;
 import com.pro.common.web.security.service.TokenService;
-import com.pro.framework.api.util.JSONUtils;
 import com.pro.framework.api.util.LogicUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
-import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
@@ -38,10 +22,6 @@ import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Configuration
@@ -59,7 +39,7 @@ public class WebConfig implements WebMvcConfigurer {
      */
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
-        resolvers.add(new CustomTokenResolver(authRouteService, tokenService, commonProperties));
+        resolvers.add(new TokenAuthResolver(authRouteService, tokenService, commonProperties));
     }
 
     @Bean

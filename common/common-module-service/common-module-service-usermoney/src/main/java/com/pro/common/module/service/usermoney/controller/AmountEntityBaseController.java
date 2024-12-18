@@ -1,5 +1,6 @@
 package com.pro.common.module.service.usermoney.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -10,9 +11,11 @@ import com.pro.common.module.api.usermoney.model.modelbase.AmountEntityRecord;
 import com.pro.common.module.api.usermoney.model.modelbase.intf.IAmountEntityRecord;
 import com.pro.common.module.service.usermoney.service.AmountEntityUnitService;
 import com.pro.common.modules.api.dependencies.R;
+import com.pro.common.modules.api.dependencies.auth.ICommonDataAuthFilterService;
 import com.pro.common.modules.api.dependencies.enums.EnumEnv;
 import com.pro.common.modules.api.dependencies.exception.BusinessException;
 import com.pro.common.modules.api.dependencies.model.ILoginInfo;
+import com.pro.common.modules.api.dependencies.model.classes.IUserClass;
 import com.pro.common.modules.service.dependencies.properties.CommonProperties;
 import com.pro.common.modules.service.dependencies.util.SpringContextUtils;
 import com.pro.framework.mybatisplus.wrapper.MyWrappers;
@@ -26,19 +29,20 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @Api(tags = "数额变化")
-@RestController
-@RequestMapping("/amountEntity")
+//@RestController
+//@RequestMapping("/amountEntity")
 public abstract class AmountEntityBaseController<Entity extends AmountEntity, Record extends AmountEntityRecord, DTO extends IAmountEntityRecord, UnitService extends AmountEntityUnitService<Entity, Record, DTO>> {
 
     @Autowired
     private CommonProperties commonProperties;
+    @Autowired
+    private ICommonDataAuthFilterService commonDataAuthFilterService;
 
     @ApiOperation(value = "变动记录")
     @RequestMapping("/getInfo")
-    public R<Entity> getInfo(ILoginInfo user, Entity params) {
+    public R<Entity> getInfo(ILoginInfo loginInfo, Entity params) {
         // 获取用户id过滤
-        params.setUserId(getFilterUserId(user));
-        List<Entity> entities = getAmountEntityService().list(MyWrappers.lambdaQuery(params));
+        List<Entity> entities = getAmountEntityService().list(getFilterUserId(MyWrappers.lambdaQuery(params), loginInfo));
         if (entities.isEmpty()) {
             return R.ok(null);
         }
@@ -48,22 +52,21 @@ public abstract class AmountEntityBaseController<Entity extends AmountEntity, Re
         return R.ok(entities.get(0));
     }
 
+
     @ApiOperation(value = "变动记录")
     @RequestMapping("/getInfos")
-    public R<List<Entity>> getInfos(ILoginInfo user, Entity params) {
+    public R<List<Entity>> getInfos(ILoginInfo loginInfo, Entity params) {
         // 获取用户id过滤
-        params.setUserId(getFilterUserId(user));
-        List<Entity> entities = getAmountEntityService().list(MyWrappers.lambdaQuery(params));
+        List<Entity> entities = getAmountEntityService().list(getFilterUserId(MyWrappers.lambdaQuery(params), loginInfo));
         return R.ok(entities);
     }
 
 
     @ApiOperation(value = "变动记录")
     @RequestMapping("/getRecordList")
-    public R<IPage<Record>> getRecordList(ILoginInfo user, Page<Record> pageInput, Record params) {
+    public R<IPage<Record>> getRecordList(ILoginInfo loginInfo, Page<Record> pageInput, Record params) {
         // 获取用户id过滤
-        params.setUserId(getFilterUserId(user));
-        IPage<Record> page = getAmountEntityRecordService().page(pageInput, MyWrappers.lambdaQuery(params));
+        IPage<Record> page = getAmountEntityRecordService().page(pageInput, getFilterUserId(MyWrappers.lambdaQuery(params), loginInfo));
         return R.ok(page);
     }
 
@@ -72,8 +75,8 @@ public abstract class AmountEntityBaseController<Entity extends AmountEntity, Re
      */
     @ApiOperation(value = "变动记录")
     @RequestMapping("/change")
-    public R<Record> change(ILoginInfo user, DTO dto, @RequestParam(value = "needSaveRecords", required = false) Boolean needSaveRecords) {
-        switch (user.getSysRole()){
+    public R<Record> change(ILoginInfo loginInfo, DTO dto, @RequestParam(value = "needSaveRecords", required = false) Boolean needSaveRecords) {
+        switch (loginInfo.getSysRole()) {
             case ADMIN:
             case AGENT:
                 break;
@@ -107,20 +110,27 @@ public abstract class AmountEntityBaseController<Entity extends AmountEntity, Re
     protected abstract UnitService getAmountEntityUnitService();
 
 
-    private static Long getFilterUserId(ILoginInfo loginInfo) {
+    private <T extends IUserClass> LambdaQueryWrapper<T> getFilterUserId(LambdaQueryWrapper<T> qw, ILoginInfo loginInfo) {
         if (null != loginInfo) {
             switch (loginInfo.getSysRole()) {
                 case USER:
-                    return loginInfo.getId();
-                case ADMIN:
-                    return null;// 开放查询
-                case AGENT:
-                    // todo 检查代理下的用户
+                    qw.eq(T::getUserId, loginInfo.getId());
                     break;
-                case ANONYMOUS:
+                case AGENT:
+                    List<Long> userIds = commonDataAuthFilterService.getAgentUserIds(loginInfo.getId(), true, null, null);
+                    if (userIds.isEmpty()) {
+                        qw.in(T::getUserId, userIds);
+                    } else {
+                        qw.last("limit 0");
+                    }
+                    break;
+                case ADMIN:
+                    break;
                 default:
+                    throw new BusinessException("无权限");
+
             }
         }
-        throw new BusinessException("无权限");
+        return qw;
     }
 }

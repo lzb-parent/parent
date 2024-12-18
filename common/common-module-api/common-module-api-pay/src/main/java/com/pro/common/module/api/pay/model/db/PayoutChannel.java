@@ -56,6 +56,6 @@ public class PayoutChannel extends BaseModel implements IConfigClass {
     @JTDField(group = "三方相关配置")
     private BigDecimal feeRate;
     @ApiModelProperty(value = "管理端显示")
-    @JTDField(defaultValue = "1") // todo 项目中后期时改为 0
+    @JTDField(defaultValue = "1")
     private Boolean showAdmin;
 }

@@ -52,7 +52,7 @@ public class AuthRoute extends BaseConfigModel implements IEnumToDbDb {
     @ApiModelProperty(value = "外部链接")
     private String url;
     @ApiModelProperty(value = "管理端显示")
-    @JTDField(defaultValue = "1") // todo 项目中后期时改为 0
+    @JTDField(defaultValue = "1")
     private Boolean showAdmin;
 
     @Override

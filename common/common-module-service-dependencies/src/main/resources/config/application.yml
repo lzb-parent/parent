@@ -101,6 +101,7 @@ common:
     - /commonData/selectList/country
     - /commonData/selectList/authRoute
     - /commonData/selectList/translation
+  publicPathsAdmin:              # 公开路径
     - /commonTable/info
   roleTokenValidSecondMap: # 角色token默认时效(秒)
     ANONYMOUS: 43200  # 12小时

@@ -79,7 +79,7 @@ public class PayMerchant extends BaseConfigModel implements IAdminClass, ISimple
     @JTDField(notNull = JTDConst.EnumFieldNullType.can_null)
     private String whitelist;
     @ApiModelProperty(value = "管理端显示")
-    @JTDField(defaultValue = "1") // todo 项目中后期时改为 0
+    @JTDField(defaultValue = "1")
     private Boolean showAdmin;
 
 }

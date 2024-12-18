@@ -99,7 +99,7 @@ public class PayChannel extends BaseModel implements IConfigClass {
     @JTDField(group = "线下充值配置", uiType = JTDConst.EnumFieldUiType.image)
     private String qrcodePic;
     @ApiModelProperty(value = "管理端显示")
-    @JTDField(defaultValue = "1") // todo 项目中后期时改为 0
+    @JTDField(defaultValue = "1")
     private Boolean showAdmin;
 //    @ApiModelProperty(value = "说明")
 //    @JTDField(mainLength = 2000, notNull = JTDConst.EnumFieldNullType.can_null)
