@@ -176,7 +176,7 @@ public class CommonTableInfoController {
                 Stream.of(
                         Stream.of(t.getLabel()),
                         t.getFields().stream().map(JTDFieldInfoDbVo::getGroup),
-                        t.getFields().stream().map(JTDFieldInfoDbVo::getSimpleLabel),
+                        t.getFields().stream().map(JTDFieldInfoDbVo::getLabel),
                         t.getFields().stream().map(JTDFieldInfoDbVo::getDescription)).flatMap(s -> s)).filter(Objects::nonNull).filter(s -> !s.isEmpty()).distinct().collect(Collectors.toList());
     }
 
@@ -451,7 +451,7 @@ public class CommonTableInfoController {
             case base:
 //                UITableInfo.FieldConfigOne fieldConfigOne = new UITableInfo.FieldConfigOne();
                 infoCopy.setFieldName(configField.getFieldName());
-                infoCopy.setSimpleLabel(StrUtils.or(I18nUtils.get(configField.getSimpleLabel()), configField.getSimpleLabel()));
+                infoCopy.setLabel(StrUtils.or(I18nUtils.get(configField.getLabel()), configField.getLabel()));
                 infoCopy.setUiType(defaultUiType.equals(configField.getUiType()) ? null : configField.getUiType());
                 infoCopy.setMainLength(defaultMainLength.equals(configField.getMainLength()) ? null : configField.getMainLength());
                 infoCopy.setDecimalLength(configField.getDecimalLength());
