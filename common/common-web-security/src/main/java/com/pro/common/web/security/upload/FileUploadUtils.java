@@ -104,7 +104,7 @@ public class FileUploadUtils {
         uploadFile.transferTo(saveFile);
         uploadFile.inputStreamClose();
 
-        return (File.separator + "file" + relativePath).replaceAll("\\\\", "/");
+        return (File.separator + "file" + relativePath).replaceAll("\\\\", File.separator);
     }
 
     public static String calSign(String fileName) {

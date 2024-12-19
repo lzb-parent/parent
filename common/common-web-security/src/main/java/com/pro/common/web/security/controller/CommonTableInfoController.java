@@ -112,7 +112,7 @@ public class CommonTableInfoController {
         if (StrUtil.isBlank(devProjectRootPath)) {
             ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
             GeneratorDevConfig generatorConfig = mapper.readValue(new ClassPathResource("system-dev.yml").getFile(), GeneratorDevConfig.class);
-            devProjectRootPath = generatorConfig.getWorkspace() + "/" + generatorConfig.getPlatformName();
+            devProjectRootPath = generatorConfig.getWorkspace() + File.separator + generatorConfig.getPlatformName();
         }
         System.out.println(translateKeysClassCommon.contains("执行订单"));
         System.out.println(translateKeysEnumCommon.contains("执行订单"));
