@@ -15,12 +15,12 @@ import static com.pro.common.modules.api.dependencies.enums.EnumSysRole.ADMIN;
 @AllArgsConstructor
 @EnumToDbEnum(entityClass = "com.pro.common.module.api.common.model.db.AuthRoute")
 public enum EnumAuthRouteSystem implements IEnumToDbEnum {
-    catalog_config(ADMIN, null, CATALOG, "系统设置", null, "el-icon-s-tools", null, null, null, null, null, 200000, null),
-    authDict(ADMIN, catalog_config, MENU, "字典", "/sys/authDict", null, null, null, null, null, null, 200100, null),
-    authDict_QUERY(ADMIN, authDict, BUTTON, "查询", null, null, "authDict", null, null, null, null, 200100, null),
-    authDict_ALL(ADMIN, authDict, BUTTON, "管理", null, null, "#ALL#authDict", null, null, null, null, 200101, null),
-    COMMON_TABLE_QUERY(ADMIN, catalog_config, URI, "通用表单访问权限", null, null, "/commonTable/info/**", null, null, null, null, 200200, null),
-    SYSTEM_reloadTranslateKeys(ADMIN, catalog_config, URI, "生成翻译键值", null, null, "/commonTable/reloadTranslateKeys", null, null, null, null, 200300, null),
+    catalog_config(ADMIN, null, CATALOG, "系统设置", null, "el-icon-s-tools", null, null, null, null, null, 200000, true, null),
+    authDict(ADMIN, catalog_config, MENU, "字典", "/sys/authDict", null, null, null, null, null, null, 200100, true, null),
+    authDict_QUERY(ADMIN, authDict, BUTTON, "查询", null, null, "authDict", null, null, null, null, 200100, true, null),
+    authDict_ALL(ADMIN, authDict, BUTTON, "管理", null, null, "#ALL#authDict", null, null, null, null, 200101, true, null),
+    COMMON_TABLE_QUERY(ADMIN, catalog_config, URI, "通用表单访问权限", null, null, "/commonTable/info/**", null, null, null, null, 200200, true, null),
+    SYSTEM_reloadTranslateKeys(ADMIN, catalog_config, URI, "生成翻译键值", null, null, "/commonTable/reloadTranslateKeys", null, null, null, null, 200300, true, null),
     ;
     // 可以继续添加其他模块...
 
@@ -36,6 +36,8 @@ public enum EnumAuthRouteSystem implements IEnumToDbEnum {
     private final String remark;
     private final Boolean enabled;
     private final Integer sort;
+    private final Boolean showFlag;
+    
     private final String forceChangeTime;
 
     @Override

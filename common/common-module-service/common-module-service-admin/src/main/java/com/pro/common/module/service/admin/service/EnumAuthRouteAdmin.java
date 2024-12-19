@@ -24,10 +24,10 @@ import static com.pro.common.modules.api.dependencies.enums.EnumSysRole.ADMIN;
 @AllArgsConstructor
 @EnumToDbEnum(entityClass = "com.pro.common.module.api.common.model.db.AuthRoute")
 public enum EnumAuthRouteAdmin implements IEnumToDbEnum {
-    catalog_config(ADMIN, null, CATALOG, "系统设置", null, "el-icon-s-tools", null, null, null, null, null, 200000, null),
-    admin(ADMIN, catalog_config, MENU, "管理员", "/sys/admin", null, null, null, null, null, null, 200400, null),
-    admin_QUERY(ADMIN, admin, BUTTON, "查询", null, null, "admin", null, null, null, null, 200400, null),
-    admin_ALL(ADMIN, admin, BUTTON, "管理", null, null, "#ALL#admin", null, null, null, null, 200401, null),
+    catalog_config(ADMIN, null, CATALOG, "系统设置", null, "el-icon-s-tools", null, null, null, null, null, 200000, true, null),
+    admin(ADMIN, catalog_config, MENU, "管理员", "/sys/admin", null, null, null, null, null, null, 200400, true, null),
+    admin_QUERY(ADMIN, admin, BUTTON, "查询", null, null, "admin", null, null, null, null, 200400, true, null),
+    admin_ALL(ADMIN, admin, BUTTON, "管理", null, null, "#ALL#admin", null, null, null, null, 200401, true, null),
 
 //    posterCode(ADMIN, catalog_content, MENU, "固有文章编号", "/content/posterCode", null, null, null, null, null, null, 180800, null),
 //    authRoleRoute(ADMIN, catalog_config, MENU, "角色权限", "/authRoleRoute", null, null, null, null, null, null, null),
@@ -45,6 +45,7 @@ public enum EnumAuthRouteAdmin implements IEnumToDbEnum {
     private final String remark;
     private final Boolean enabled;
     private final Integer sort;
+    private final Boolean showFlag;
     /**
      * 统一重置修改掉,这个配置时间以前的,旧的配置
      */

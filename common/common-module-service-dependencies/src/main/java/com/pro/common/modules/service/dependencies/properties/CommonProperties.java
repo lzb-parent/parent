@@ -27,7 +27,7 @@ public class CommonProperties implements IEntityProperties {
      */
     private EnumApplication application;
     /**
-     * ai/store/
+     * snowball/demo/
      */
     private String platform;
     /**

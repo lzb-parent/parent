@@ -2,6 +2,7 @@ package com.pro.common.modules.api.dependencies.model;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.pro.framework.api.model.IModel;
+import com.pro.framework.javatodb.annotation.JTDField;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;

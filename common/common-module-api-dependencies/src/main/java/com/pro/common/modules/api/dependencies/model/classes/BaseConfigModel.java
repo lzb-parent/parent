@@ -16,7 +16,7 @@ import lombok.experimental.SuperBuilder;
 public abstract class BaseConfigModel extends BaseModel implements IConfigClass {
 //    @ApiModelProperty(value = "主键id")
 //    protected Long id;
-    @ApiModelProperty(value = "启用")
+    @ApiModelProperty(value = "启用")// 功能关闭
     private Boolean enabled;
     @ApiModelProperty(value = "排序")
     @JTDField(defaultValue = "100")

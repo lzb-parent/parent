@@ -83,6 +83,7 @@ public class CommonTableInfoController {
     @GetMapping(value = "/reloadTranslateKeys")
     public String translateKeys(ILoginInfo loginInfo) {
 //        checkPermission(loginInfo);
+        String platform = commonProperties.getPlatform();
 
         // 枚举名称 - 公共
         List<String> translateKeysClassCommon = getTranslateKeysEntity(true);
@@ -90,9 +91,9 @@ public class CommonTableInfoController {
         List<String> translateKeysClassPlatform = getTranslateKeysEntity(false);
         translateKeysClassPlatform.removeAll(translateKeysClassCommon);
         // 类属性 - 公共
-        List<String> translateKeysEnumCommon = getTranslateKeysEnum(true, commonProperties.getPlatform());
+        List<String> translateKeysEnumCommon = getTranslateKeysEnum(true, platform);
         // 类属性 - 定制
-        List<String> translateKeysEnumPlatform = getTranslateKeysEnum(false, commonProperties.getPlatform());
+        List<String> translateKeysEnumPlatform = getTranslateKeysEnum(false, platform);
         translateKeysEnumPlatform.removeAll(translateKeysEnumCommon);
 
         // 实体数据名称 (字典,菜单) - 公共
@@ -120,7 +121,7 @@ public class CommonTableInfoController {
         if (StrUtil.isNotBlank(devProjectRootPath)) {
             // 生成到 messages_zh_CN.properties 本地文件中
             String subPathCommon = "/parent/common/common-module-service/common-module-service-login/src/main/resources/i18n_login/messages_zh_CN.properties";
-            String subPathPlatform = "/platform/" + commonProperties.getPlatform() + "-common/src/main/resources/i18n_platform/messages_zh_CN.properties";
+            String subPathPlatform = "/platform/" + platform + "-common/src/main/resources/i18n_platform/messages_zh_CN.properties";
             saveNewKeys(devProjectRootPath + subPathCommon, translateKeysClassCommon);
             saveNewKeys(devProjectRootPath + subPathPlatform, translateKeysClassPlatform);
             saveNewKeys(devProjectRootPath + subPathCommon, translateKeysEnumCommon);
@@ -372,7 +373,7 @@ public class CommonTableInfoController {
                 break;
             case form:
                 // 如果有关联实体 只显示id选择框,不显示其他属性
-                fieldNames = fieldNamesOri.stream().filter(fieldName -> {
+                fieldNames = fieldNamesOri.stream().filter(fieldName -> !fieldNamesIgnoreForm.contains(fieldName)).filter(fieldName -> {
                     String entityClassTargetProp = fieldMap.get(fieldName).getEntityClassTargetProp();
                     return null == fieldMap.get(fieldName).getEntityClass() || Objects.equals(entityClassTargetProp, "code") || Objects.equals(entityClassTargetProp, "id");
                 }).collect(Collectors.toList());

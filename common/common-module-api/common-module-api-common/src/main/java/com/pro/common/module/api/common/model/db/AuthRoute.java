@@ -38,8 +38,6 @@ public class AuthRoute extends BaseConfigModel implements IEnumToDbDb {
     private String pcode;
     @ApiModelProperty(value = "类型")
     private EnumAuthRouteType type;
-    //    @ApiModelProperty(value = "授权(多个用逗号分隔，如：user:list;user:create)")
-//    private String perms;
     @ApiModelProperty(value = "字体图标")
     private String icon;
     @ApiModelProperty(value = "图片图标")
@@ -51,7 +49,10 @@ public class AuthRoute extends BaseConfigModel implements IEnumToDbDb {
     private String permissionPaths;
     @ApiModelProperty(value = "外部链接")
     private String url;
-    @ApiModelProperty(value = "管理端显示")
+    @ApiModelProperty(value = "总开关显示")//显示太乱了,强制不显示
+    @JTDField(defaultValue = "1")
+    private Boolean showFlag;
+    @ApiModelProperty(value = "管理端显示")//功能完整,但未收费隐藏
     @JTDField(defaultValue = "1")
     private Boolean showAdmin;
 
