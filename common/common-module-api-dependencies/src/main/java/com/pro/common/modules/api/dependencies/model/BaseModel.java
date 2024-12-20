@@ -22,7 +22,7 @@ public abstract class BaseModel implements IModel {
     public static final String field_updateTime = "updateTime";
     public static final String field_deleted = "deleted";
 
-    @ApiModelProperty(value = "主键id", notes = "主键idDesc")
+    @ApiModelProperty(value = "主键id")
     @TableId
     protected Long id;
 
