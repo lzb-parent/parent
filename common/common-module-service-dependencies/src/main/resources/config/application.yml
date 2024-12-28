@@ -67,7 +67,7 @@ mybatis-plus:
   # MyBaits 别名包扫描路径，通过该属性可以给包中的类注册别名，注册后在 Mapper 对应的 XML 文件中可以直接使用类名，而不用使用全限定的类名（即 XML 中调用的时候不用包含包名
 #  type-aliases-package: com.pro.**.model
   # TypeHandler 扫描路径，如果配置了该属性，SqlSessionFactoryBean 会把该包下面的类注册为对应的 TypeHandler
-  #  type-handlers-package: com.pro.**.config.typehandler
+#  type-handlers-package: com.pro.**.config.typehandler
   # 配置扫描通用枚举
 #  type-enums-package: com.pro.**.enums
   global-config:
@@ -82,9 +82,11 @@ mybatis-plus:
       table-underline: true # 表名、是否使用下划线命名，默认数据库表使用下划线命名
       field-strategy: not_null
   configuration:
+    use-simple-enum-type: true
     map-underscore-to-camel-case: true
     default-fetch-size: 500
     default-statement-timeout: 120
+    default-enum-type-handler: com.pro.framework.mtq.service.multiwrapper.config.typehandler.EnumTypeHandler
 jtd:
   fieldPatternNotNullDefaultValueMap:
     '.*_id': ''
@@ -113,20 +115,20 @@ common:
     modules:
       cfg:
         code: cfg
-        name: 管理员上传文件
+        label: 管理员上传文件
         dateFolder: true
       activity:
         code: activity
-        name: 活动图片
+        label: 活动图片
       front:
         code: front
-        name: 用户端图片
+        label: 用户端图片
       goods:
         code: goods
-        name: 商品图片
+        label: 商品图片
       pay:
         code: pay
-        name: 支付
+        label: 支付
       user:
         code: user
-        name: 用户
+        label: 用户

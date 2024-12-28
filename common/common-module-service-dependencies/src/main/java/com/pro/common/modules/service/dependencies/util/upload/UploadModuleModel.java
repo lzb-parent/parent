@@ -6,7 +6,9 @@ import lombok.Data;
 import java.io.File;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 上传的模块
@@ -23,12 +25,16 @@ public class UploadModuleModel {
     /**
      * 模块上传 对应路径  (文件路径 统一为 前面拼接分隔符,后面不拼接 如: /folder1/subFolder1 )
      */
-    public String getPath(LocalDateTime time) {
+    public String getPath(LocalDateTime time, String fileSubFolder) {
         if (dateFolder) {//按照日期分目录
-            String f1 = File.separator + code;
-            String f2 = File.separator + time.getYear() + MathUtils.appendZore(time.getMonthValue(), 2);
-            String f3 = File.separator + time.format(DateTimeFormatter.ofPattern("dd"));
-            return f1 + f2 + f3;
+            List<String> list = new ArrayList<>();
+            list.add(File.separator + code);
+            if (fileSubFolder != null) {
+                list.add(File.separator + fileSubFolder);
+            }
+            list.add(File.separator + time.getYear() + MathUtils.appendZore(time.getMonthValue(), 2));
+            list.add(File.separator + time.format(DateTimeFormatter.ofPattern("dd")));
+            return String.join("", list);
         } else {
             return File.separator + code;
         }

@@ -27,7 +27,7 @@ import com.pro.common.modules.api.dependencies.auth.UserDataQuery;
 import com.pro.common.modules.service.dependencies.properties.CommonProperties;
 import com.pro.common.modules.service.dependencies.util.I18nUtils;
 import com.pro.common.web.security.model.request.UserSendMsgRequest;
-import com.pro.common.web.security.upload.FileUploadUtils;
+import com.pro.common.modules.service.dependencies.util.upload.FileUploadUtils;
 import com.pro.common.web.security.websocket.MyWebSocketHandlerDecoratorFactory;
 import com.pro.framework.api.IReloadService;
 import com.pro.framework.api.cache.ICacheManagerCenter;

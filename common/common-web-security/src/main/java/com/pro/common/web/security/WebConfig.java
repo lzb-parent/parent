@@ -9,6 +9,7 @@ import com.pro.common.modules.service.dependencies.properties.CommonProperties;
 import com.pro.common.web.security.component.TokenAuthResolver;
 import com.pro.common.web.security.component.MyLocalResolver;
 import com.pro.common.web.security.service.TokenService;
+import com.pro.framework.api.util.AssertUtil;
 import com.pro.framework.api.util.LogicUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -22,6 +23,7 @@ import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import java.io.File;
 import java.util.List;
 
 @Configuration
@@ -68,8 +70,17 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        // 新建目录
+        String savePath = commonProperties.getFiles().getSavePath();
+        commonProperties.getFiles().getModules().values().forEach(fileModule -> {
+            File saveFile = new File(savePath + File.separator + fileModule.getCode());
+            if (!saveFile.exists()) {
+                boolean mkdirs = saveFile.mkdirs();
+                AssertUtil.isTrue(mkdirs,"目录创建失败:"+saveFile.getAbsolutePath());
+            }
+        });
         //静态文件
-        registry.addResourceHandler("/file/**").addResourceLocations("file:" + commonProperties.getFiles().getSavePath() + "/");
+        registry.addResourceHandler("/file/**").addResourceLocations("file:" + savePath + "/");
     }
 
     @Bean

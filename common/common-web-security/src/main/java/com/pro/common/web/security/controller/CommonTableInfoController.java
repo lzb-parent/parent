@@ -400,6 +400,7 @@ public class CommonTableInfoController {
 
     private static final Integer defaultMainLength = 200;
     private static final JTDConst.EnumFieldNullType defaultNotNull = JTDConst.EnumFieldNullType.not_null;
+    private static final JTDConst.EnumFieldEmptyType defaultNotEmpty = JTDConst.EnumFieldEmptyType.can_empty;
     private static final JTDConst.EnumFieldUiType defaultUiType = JTDConst.EnumFieldUiType.text;
 
     /**
@@ -478,6 +479,7 @@ public class CommonTableInfoController {
                 infoCopy.setDescription(StrUtils.or(I18nUtils.get(configField.getDescription()), configField.getDescription()));
                 infoCopy.setSortable(trueOrNull(configField.getSortable()));
                 infoCopy.setNotNull(defaultNotNull.equals(configField.getNotNull()) ? null : configField.getNotNull());
+                infoCopy.setNotEmpty(defaultNotEmpty.equals(configField.getNotEmpty()) ? null : configField.getNotEmpty());
 
                 //                infoCopy.setDefaultValue(configField.getDefaultValue());
 //                infoCopy.setAutoIncrement(trueOrNull(configField.getAutoIncrement()));

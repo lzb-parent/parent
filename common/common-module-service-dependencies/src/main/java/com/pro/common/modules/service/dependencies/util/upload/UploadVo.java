@@ -1,4 +1,4 @@
-package com.pro.common.web.security.upload;
+package com.pro.common.modules.service.dependencies.util.upload;
 
 import cn.hutool.core.img.ImgUtil;
 import cn.hutool.core.util.ObjUtil;

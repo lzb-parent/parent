@@ -1,12 +1,11 @@
-package com.pro.common.web.security.upload;
+package com.pro.common.modules.service.dependencies.util.upload;
 
 
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.crypto.SecureUtil;
 import com.pro.common.modules.api.dependencies.exception.BusinessException;
 import com.pro.common.modules.service.dependencies.properties.CommonProperties;
-import com.pro.common.modules.service.dependencies.util.I18nUtils;
-import com.pro.common.modules.service.dependencies.util.upload.UploadModuleModel;
+import com.pro.framework.api.structure.Tuple2;
 import com.pro.framework.api.util.StrUtils;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -67,10 +66,27 @@ public class FileUploadUtils {
      * @param uploadFile 文件内容
      * @param moduleEnum 上传模块
      * @param time       目录时间(可以是上传时间/用户创建时间等等)
+     * @param fileSubFolder 文件目录
+     * @param fileName   文件名称
      * @return 文件路径
      */
     @SneakyThrows
-    private static String uploadFile(UploadVo uploadFile, UploadModuleModel moduleEnum, LocalDateTime time) {
+    public static Tuple2<String,String> newFile(UploadModuleModel moduleEnum, LocalDateTime time, String fileSubFolder, String fileName) {
+        String relativePath = moduleEnum.getPath(time, fileSubFolder) + File.separator + IdUtil.simpleUUID() + fileName;
+        String fullPath = commonProperties.getFiles().getSavePath() + relativePath;
+        new File(fullPath).createNewFile();
+        return new Tuple2<>((File.separator + "file" + relativePath).replaceAll("\\\\", File.separator), fullPath);
+    }
+    /**
+     * 上传文件
+     *
+     * @param uploadFile 文件内容
+     * @param moduleEnum 上传模块
+     * @param time       目录时间(可以是上传时间/用户创建时间等等)
+     * @return 文件路径
+     */
+    @SneakyThrows
+    public static String uploadFile(UploadVo uploadFile, UploadModuleModel moduleEnum, LocalDateTime time) {
         String oriName = uploadFile.getOriName();
         Integer maxSize = moduleEnum.getMaxSize();
         if (null != maxSize && uploadFile.getSize() / (1024 * 1024) > maxSize) {
@@ -78,7 +94,7 @@ public class FileUploadUtils {
         }
         //相对路径 (包括文件名,相对于根路径)
 //        String relativePath = moduleEnum.getPath(time) + File.separator + IdUtil.simpleUUID() + "_" + oriName;
-        String relativePath = moduleEnum.getPath(time) + File.separator + IdUtil.simpleUUID() + uploadFile.getSuffix();
+        String relativePath = moduleEnum.getPath(time, null) + File.separator + IdUtil.simpleUUID() + uploadFile.getSuffix();
         File saveFile = new File(commonProperties.getFiles().getSavePath() + relativePath);
         boolean dirOK = true;
         if (!saveFile.getParentFile().exists()) {

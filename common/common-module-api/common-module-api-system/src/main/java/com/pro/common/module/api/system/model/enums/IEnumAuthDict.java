@@ -1,6 +1,7 @@
 package com.pro.common.module.api.system.model.enums;
 
 import com.pro.common.module.api.system.model.util.AuthDictUtil;
+import com.pro.framework.api.enums.IEnum;
 
 import java.math.BigDecimal;
 
