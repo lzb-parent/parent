@@ -26,18 +26,16 @@ public class UploadModuleModel {
      * 模块上传 对应路径  (文件路径 统一为 前面拼接分隔符,后面不拼接 如: /folder1/subFolder1 )
      */
     public String getPath(LocalDateTime time, String fileSubFolder) {
+        List<String> list = new ArrayList<>();
+        list.add(File.separator + code);
         if (dateFolder) {//按照日期分目录
-            List<String> list = new ArrayList<>();
-            list.add(File.separator + code);
-            if (fileSubFolder != null) {
-                list.add(File.separator + fileSubFolder);
-            }
             list.add(File.separator + time.getYear() + MathUtils.appendZore(time.getMonthValue(), 2));
             list.add(File.separator + time.format(DateTimeFormatter.ofPattern("dd")));
-            return String.join("", list);
-        } else {
-            return File.separator + code;
         }
+        if (fileSubFolder != null) {
+            list.add(File.separator + fileSubFolder);
+        }
+        return String.join("", list);
     }
 //    Boolean imgCompress;//图片压缩
 //    Long imgCompressSize;//图片起始压缩大小

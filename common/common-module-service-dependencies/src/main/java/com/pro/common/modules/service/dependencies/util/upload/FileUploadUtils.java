@@ -61,22 +61,27 @@ public class FileUploadUtils {
     }
 
     /**
-     * 上传文件
-     *
-     * @param uploadFile 文件内容
-     * @param moduleEnum 上传模块
-     * @param time       目录时间(可以是上传时间/用户创建时间等等)
-     * @param fileSubFolder 文件目录
-     * @param fileName   文件名称
-     * @return 文件路径
+     * 新建文件
      */
     @SneakyThrows
-    public static Tuple2<String,String> newFile(UploadModuleModel moduleEnum, LocalDateTime time, String fileSubFolder, String fileName) {
-        String relativePath = moduleEnum.getPath(time, fileSubFolder) + File.separator + IdUtil.simpleUUID() + fileName;
+    public static Tuple2<String, String> newFile(UploadModuleModel moduleEnum, LocalDateTime time, String fileSubFolder, String fileName) {
+        String relativePath = moduleEnum.getPath(time, fileSubFolder) + File.separator + fileName;
         String fullPath = commonProperties.getFiles().getSavePath() + relativePath;
         new File(fullPath).createNewFile();
         return new Tuple2<>((File.separator + "file" + relativePath).replaceAll("\\\\", File.separator), fullPath);
     }
+
+    /**
+     * 新建目录
+     */
+    @SneakyThrows
+    public static Tuple2<String, String> newFolder(UploadModuleModel moduleEnum, LocalDateTime time, String fileSubFolder) {
+        String relativePath = moduleEnum.getPath(time, fileSubFolder) + File.separator;
+        String fullPath = commonProperties.getFiles().getSavePath() + relativePath;
+        new File(fullPath).mkdirs();
+        return new Tuple2<>((File.separator + "file" + relativePath).replaceAll("\\\\", File.separator), fullPath);
+    }
+
     /**
      * 上传文件
      *
