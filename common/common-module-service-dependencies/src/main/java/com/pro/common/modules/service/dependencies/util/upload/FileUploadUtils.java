@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 @Component
 public class FileUploadUtils {
     private static CommonProperties commonProperties;
+    public static final String FILE_PREPEND = "{host}";
 
     @Autowired
     public void setCommonProperties(CommonProperties commonProperties) {

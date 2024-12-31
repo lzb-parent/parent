@@ -15,8 +15,10 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class ToSocket implements Serializable {
     private static final long serialVersionUID = 3110367564503529058L;
+    public static final String DEFAULT_TOPIC = "/defaultTopic";
     public static final String OPT_DEFAULT = EnumSocketOpt.doUpdate.name();
 
+    private String topic;
     private Boolean isAllUser;
     private String opt;
     private String dataClass;
@@ -25,11 +27,11 @@ public class ToSocket implements Serializable {
 
 
     public static ToSocket toAllUser(String dataClass, Object data) {
-        return new ToSocket(true, OPT_DEFAULT, dataClass, getData(data), null);
+        return new ToSocket(DEFAULT_TOPIC, true, OPT_DEFAULT, dataClass, getData(data), null);
     }
 
     public static ToSocket toUser(String dataClass, Object data, List<Long> userIds) {
-        return new ToSocket(false, OPT_DEFAULT, dataClass, getData(data), userIds);
+        return new ToSocket(DEFAULT_TOPIC, false, OPT_DEFAULT, dataClass, getData(data), userIds);
     }
 
     public static ToSocket toUser(String dataClass, Object data, Long... userIds) {
@@ -37,6 +39,6 @@ public class ToSocket implements Serializable {
     }
 
     private static String getData(Object data) {
-        return null == data ? null : JSONUtils.toString(data);
+        return null == data ? null : data instanceof String ? (String) data : JSONUtils.toString(data);
     }
 }

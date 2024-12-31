@@ -151,7 +151,7 @@ public class CommonCommonController {
             @RequestParam(name = "sign", required = false) String sign) {
         List<String> list = FileUploadUtils.uploadFiles(files, module, sign);
         // 拼接图片prefix
-        list = list.stream().map(o -> StrUtil.addPrefixIfNot(o, "{host}")).collect(Collectors.toList());
+        list = list.stream().map(o -> StrUtil.addPrefixIfNot(o, FileUploadUtils.FILE_PREPEND)).collect(Collectors.toList());
         return list;
     }
 

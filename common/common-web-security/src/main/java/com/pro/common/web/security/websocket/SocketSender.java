@@ -36,7 +36,7 @@ public class SocketSender {
     public void sendUserAll(ToSocket data) {
         data.setIsAllUser(null);
         data.setUserIds(null);
-        socketSender.convertAndSend("/defaultTopic", data);
+        socketSender.convertAndSend(data.getTopic(), data);
     }
 
     /**
@@ -45,6 +45,6 @@ public class SocketSender {
     public void sendToUser(String principleUsername, ToSocket data) {
         data.setIsAllUser(null);
         data.setUserIds(null);
-        socketSender.convertAndSendToUser(principleUsername, "/defaultTopic", data);
+        socketSender.convertAndSendToUser(principleUsername, data.getTopic(), data);
     }
 }
