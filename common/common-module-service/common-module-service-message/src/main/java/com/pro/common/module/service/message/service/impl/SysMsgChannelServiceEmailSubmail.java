@@ -6,7 +6,7 @@ import cn.hutool.json.JSONUtil;
 import com.pro.common.module.api.message.model.db.SysMsgChannelMerchant;
 import com.pro.common.module.api.message.model.db.SysMsgChannelTemplate;
 import com.pro.common.module.api.message.model.vo.SysMsgRecordSendResult;
-import com.pro.common.module.api.system.model.enums.EnumDict;
+import com.pro.common.module.api.system.model.enums.EnumAuthDict;
 import com.pro.common.module.service.message.util.SubMailUtils;
 import com.pro.common.modules.service.dependencies.util.I18nUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -48,7 +48,7 @@ public class SysMsgChannelServiceEmailSubmail implements ISysMsgChannelService {
                     account, // 邮箱地址
                     //                        StrUtil.format("【{}】{}", EnumDict.SITE_NAME.getValueCache(), I18nUtils.get(smsRecord.getType().getLabel())),
                     //                        I18nUtils.get("邮件验证码内容", smsRecord.getCode()));
-                    I18nUtils.get("欢迎加入", EnumDict.SITE_NAME.getValueCache()),
+                    I18nUtils.get("欢迎加入", EnumAuthDict.SITE_NAME.getValueCache()),
                     I18nUtils.get("邮件验证码", paramMap.get("code")));
 //            smsRecord.setSid(jo.getString("send_id"));
             return SysMsgRecordSendResult.success(jo.getStr("messageId"));

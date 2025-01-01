@@ -12,7 +12,7 @@ import com.pro.common.module.api.message.model.db.SysMsgChannelMerchant;
 import com.pro.common.module.api.message.model.db.SysMsgChannelTemplate;
 import com.pro.common.module.api.message.model.db.SysMsgRecord;
 import com.pro.common.module.api.message.model.vo.SysMsgRecordSendResult;
-import com.pro.common.module.api.system.model.enums.EnumDict;
+import com.pro.common.module.api.system.model.enums.EnumAuthDict;
 import com.pro.common.module.service.message.service.impl.ISysMsgChannelService;
 import com.pro.common.modules.api.dependencies.CommonConst;
 import com.pro.common.modules.api.dependencies.enums.EnumPosterCode;
@@ -55,7 +55,7 @@ public class SysMsgService implements ISysMsgService {
     private void checkChannelType(EnumSysMsgChannelType channelType, String account) {
         switch (channelType) {
             case PHONE_SMS:
-                String register_phone_pattern = EnumDict.REGISTER_PHONE_PATTERN.getValueCache();
+                String register_phone_pattern = EnumAuthDict.REGISTER_PHONE_PATTERN.getValueCache();
                 if (StrUtils.isNotBlank(register_phone_pattern)) {
                     //自定义 手机号格式校验
                     if (!account.matches(register_phone_pattern)) {

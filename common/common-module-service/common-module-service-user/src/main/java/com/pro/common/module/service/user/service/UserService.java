@@ -5,7 +5,7 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpUtil;
 import com.pro.common.module.api.message.enums.EnumSysMsgBusinessCode;
 import com.pro.common.module.api.message.intf.ISysMsgService;
-import com.pro.common.module.api.system.model.enums.EnumDict;
+import com.pro.common.module.api.system.model.enums.EnumAuthDict;
 import com.pro.common.module.service.user.dao.UserDao;
 import com.pro.common.module.api.user.enums.EnumRegisterUsernameFrom;
 import com.pro.common.module.api.user.intf.IUserService;
@@ -79,7 +79,7 @@ public class UserService<M extends UserDao<T>, T extends User> extends BaseServi
     public T register(String request, String ip, String lang) {
         T user = JSONUtils.fromString(request, entityClass);
         String username = user.getUsername();
-        EnumRegisterUsernameFrom usernameFrom = EnumRegisterUsernameFrom.MAP.getOrDefault(EnumDict.REGISTER_USERNAME_FROM.getValueCache(), EnumRegisterUsernameFrom.INPUT);
+        EnumRegisterUsernameFrom usernameFrom = EnumRegisterUsernameFrom.MAP.getOrDefault(EnumAuthDict.REGISTER_USERNAME_FROM.getValueCache(), EnumRegisterUsernameFrom.INPUT);
         switch (usernameFrom) {
             case INPUT:
                 break;
@@ -170,7 +170,7 @@ public class UserService<M extends UserDao<T>, T extends User> extends BaseServi
     @Override
     public boolean save(T entity) {
         // 个人推荐码
-        entity.setCode(this.buildCode(EnumDict.REGISTER_CODE_LETTERS_USER.getValueCache()));
+        entity.setCode(this.buildCode(EnumAuthDict.REGISTER_CODE_LETTERS_USER.getValueCache()));
         // 上级推荐码
         this.loadInviteCode(entity);
         // 其他保存
@@ -186,7 +186,7 @@ public class UserService<M extends UserDao<T>, T extends User> extends BaseServi
     private void loadInviteCode(T entity) {
         String inviteCode = entity.getInviteCode();
         if (StrUtils.isBlank(inviteCode)) {
-            if (("," + EnumDict.REGISTER_PROPS_REQUIRE.getValueCacheOrDefault("") + ",").contains(",inviteCode,")) {
+            if (("," + EnumAuthDict.REGISTER_PROPS_REQUIRE.getValueCacheOrDefault("") + ",").contains(",inviteCode,")) {
                 throw new BusinessException("邀请码必填");
             }
         } else {
@@ -347,7 +347,7 @@ public class UserService<M extends UserDao<T>, T extends User> extends BaseServi
      */
     public Set<Long> getOnlineUserIds() {
         Set<Long> userIdList = new HashSet<>(4096);
-        Arrays.stream(StrUtil.blankToDefault(EnumDict.FRONT_API.getValueCache(), EnumDict.FRONT_DOMAIN.getValueCache() + "/api").split(",")).forEach(frontUrl -> {
+        Arrays.stream(StrUtil.blankToDefault(EnumAuthDict.FRONT_API.getValueCache(), EnumAuthDict.FRONT_DOMAIN.getValueCache() + "/api").split(",")).forEach(frontUrl -> {
             try {
                 String result = HttpUtil.get(frontUrl + "/common" + CommonConst.Str.path_loginUserIds, 10000);
                 if (StrUtil.isNotBlank(result)) {

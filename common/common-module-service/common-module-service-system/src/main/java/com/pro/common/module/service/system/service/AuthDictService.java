@@ -2,7 +2,7 @@ package com.pro.common.module.service.system.service;
 
 import com.pro.common.module.service.system.dao.AuthDictDao;
 import com.pro.common.module.api.system.model.db.AuthDict;
-import com.pro.common.module.api.system.model.enums.EnumDict;
+import com.pro.common.module.api.system.model.enums.EnumAuthDict;
 import com.pro.common.module.api.system.model.enums.IEnumAuthDict;
 import com.pro.common.module.api.system.model.intf.IAuthDictService;
 import com.pro.common.modules.api.dependencies.CommonConst;
@@ -133,7 +133,7 @@ public class AuthDictService extends BaseService<AuthDictDao, AuthDict> implemen
 
     @Override
     public LinkedHashMap<String, String> getKeyValueMap(boolean isCommon) {
-        Set<String> baseCodes = Arrays.stream(EnumDict.values()).map(Enum::name).collect(Collectors.toSet());
+        Set<String> baseCodes = Arrays.stream(EnumAuthDict.values()).map(Enum::name).collect(Collectors.toSet());
         return this.list().stream().filter(e -> isCommon == baseCodes.contains(e.getCode())).collect(Collectors.toMap(AuthDict::getLabel, AuthDict::getLabel, (v1, v2) -> v1, LinkedHashMap::new));
     }
 }

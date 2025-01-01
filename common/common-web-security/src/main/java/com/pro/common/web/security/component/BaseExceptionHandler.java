@@ -1,10 +1,9 @@
 package com.pro.common.web.security.component;
 
 import cn.hutool.core.util.StrUtil;
-import com.pro.common.module.api.system.model.enums.EnumDict;
+import com.pro.common.module.api.system.model.enums.EnumAuthDict;
 import com.pro.common.modules.api.dependencies.R;
 import com.pro.common.modules.api.dependencies.enums.EnumApplication;
-import com.pro.common.modules.api.dependencies.enums.EnumEnv;
 import com.pro.common.modules.api.dependencies.exception.BusinessException;
 import com.pro.common.modules.api.dependencies.exception.BusinessPosterException;
 import com.pro.common.modules.api.dependencies.model.IResponse;
@@ -15,7 +14,6 @@ import com.pro.framework.api.util.LogicUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -100,7 +98,7 @@ public class BaseExceptionHandler {
         if (StrUtil.isBlank(errorMsg)) {
             switch (commonProperties.getApplication()) {
                 case admin:
-                    if (EnumDict.ADMIN_LANG_CHINESE.getValueCacheOrDefault(true)) {
+                    if (EnumAuthDict.ADMIN_LANG_CHINESE.getValueCacheOrDefault(true)) {
                         errorMsg = e.getMsg();
                     }
                     break;

@@ -12,7 +12,7 @@ import com.pro.common.module.api.pay.intf.IRechargeSuccessService;
 import com.pro.common.module.api.pay.model.db.PayChannel;
 import com.pro.common.module.api.pay.model.db.PayMerchant;
 import com.pro.common.module.api.pay.model.db.UserRecharge;
-import com.pro.common.module.api.system.model.enums.EnumDict;
+import com.pro.common.module.api.system.model.enums.EnumAuthDict;
 import com.pro.common.module.api.user.intf.IUserService;
 import com.pro.common.module.api.user.model.db.User;
 import com.pro.common.module.api.usermoney.model.db.UserMoneyRecord;
@@ -121,7 +121,7 @@ public class UserRechargeService extends BaseService<UserRechargeDao, UserRechar
 
         TransactionUtil.doAfter(() -> {
             // 推送给管理端
-            if (EnumDict.PUSH_ADMIN_RECHARGE_OPEN.getValueCacheOrDefault(true)) {
+            if (EnumAuthDict.PUSH_ADMIN_RECHARGE_OPEN.getValueCacheOrDefault(true)) {
                 messageService.sendToManager(ToSocket.toAllUser(CommonConst.EntityClass.UserRecharge, orders));
             }
         });
@@ -171,7 +171,7 @@ public class UserRechargeService extends BaseService<UserRechargeDao, UserRechar
             rechargeSuccessService.forEach(x-> x.afterRechargeSuccess(user,record));
         }
         // 推送给管理端
-        if (EnumDict.PUSH_ADMIN_RECHARGE_OPEN.getValueCacheOrDefault(true)) {
+        if (EnumAuthDict.PUSH_ADMIN_RECHARGE_OPEN.getValueCacheOrDefault(true)) {
 //            MessageRedisUtils.toSocket(new ToSocket(true, ToSocketUrl.getRechargeList, JSONUtil.toJsonStr(this.getById(target.getId()))));
             messageService.sendToManager(ToSocket.toUser(CommonConst.EntityClass.UserRecharge, this.getById(target.getId()), user.getId()));
         }

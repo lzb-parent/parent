@@ -1,6 +1,5 @@
 package com.pro.common.modules.service.dependencies.util;
 
-import com.pro.common.module.api.system.model.enums.EnumDict;
 import com.pro.common.modules.api.dependencies.CommonConst;
 import com.pro.common.modules.api.dependencies.exception.BusinessException;
 import com.pro.framework.api.util.LogicUtils;

@@ -4,7 +4,7 @@ package com.pro.common.module.service.agent.service;
 import cn.hutool.core.util.ObjUtil;
 import com.pro.common.module.api.agent.intf.IAgentService;
 import com.pro.common.module.api.agent.model.db.Agent;
-import com.pro.common.module.api.system.model.enums.EnumDict;
+import com.pro.common.module.api.system.model.enums.EnumAuthDict;
 import com.pro.common.module.api.user.intf.IUserService;
 import com.pro.common.modules.api.dependencies.auth.ICommonDataAuthFilterService;
 import com.pro.common.modules.api.dependencies.auth.UserDataQuery;
@@ -123,7 +123,7 @@ public class AgentUserService implements ICommonDataAuthFilterService, ISysMsgEx
             // 查询下级信息
             List<Long> userIdAll = new ArrayList<>();
             List<Long> userIds = Collections.singletonList(userId);
-            for (int i = 0; i < EnumDict.USER_TEAM_LEVELS.getValueCacheOrDefault(3); i++) {
+            for (int i = 0; i < EnumAuthDict.USER_TEAM_LEVELS.getValueCacheOrDefault(3); i++) {
                 userIds = userService.listIdByPids(userIds);
                 userIdAll.addAll(userIds);
             }

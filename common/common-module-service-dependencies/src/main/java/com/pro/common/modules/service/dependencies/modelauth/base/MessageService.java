@@ -1,6 +1,6 @@
 package com.pro.common.modules.service.dependencies.modelauth.base;
 
-import com.pro.common.module.api.system.model.enums.EnumDict;
+import com.pro.common.module.api.system.model.enums.EnumAuthDict;
 import com.pro.common.module.api.system.model.intf.IAuthDictService;
 import com.pro.common.modules.api.dependencies.CommonConst;
 import com.pro.common.modules.api.dependencies.enums.EnumApplication;
@@ -37,6 +37,6 @@ public class MessageService {
     }
 
     private String getTopicName(EnumApplication application, String topicAppend) {
-        return authDictService.getValueOnStart(EnumDict.SYSTEM_VERSION) + "_" + application + "_" + topicAppend;
+        return authDictService.getValueOnStart(EnumAuthDict.SYSTEM_VERSION) + "_" + application + "_" + topicAppend;
     }
 }

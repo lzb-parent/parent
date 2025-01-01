@@ -13,7 +13,7 @@ import com.pro.common.module.api.pay.model.db.PayMerchant;
 import com.pro.common.module.api.pay.model.db.UserRecharge;
 import com.pro.common.module.api.pay.model.db.UserTransfer;
 import com.pro.common.module.api.pay.model.dto.PayoutIO;
-import com.pro.common.module.api.system.model.enums.EnumDict;
+import com.pro.common.module.api.system.model.enums.EnumAuthDict;
 import com.pro.common.module.service.pay.model.request.UnifiedOrderRequest;
 import com.pro.common.module.service.pay.model.request.UserTransferRequest;
 import com.pro.common.module.service.pay.service.PayChannelService;
@@ -83,7 +83,7 @@ public class QePayNewController implements IPayController<RechargeResult, Withdr
         UserRecharge record = rechargeService.createRechargeOrder(requestVo, channel, merchant);
 
         // 回调地址
-        String notifyUrl = EnumDict.PAY_NOTIFY_URL.getValueCache() + "pay/" + _MER_CODE.toLowerCase() + "/" + MER_CODE + "/notify";
+        String notifyUrl = EnumAuthDict.PAY_NOTIFY_URL.getValueCache() + "pay/" + _MER_CODE.toLowerCase() + "/" + MER_CODE + "/notify";
 
         // 参数
         Map<String, Object> params = new LinkedHashMap<>();
@@ -97,10 +97,10 @@ public class QePayNewController implements IPayController<RechargeResult, Withdr
         params.put("goods_name", MER_CODE);
         if (!StrUtils.isNotBlank(channel.getBankCode())) {
             params.put("bank_code", channel.getBankCode());
-        } else if ("IDN".equals(EnumDict.SYSTEM_COUNTRY.getValueCache())) { // 印尼
+        } else if ("IDN".equals(EnumAuthDict.SYSTEM_COUNTRY.getValueCache())) { // 印尼
             params.put("bank_code", channel.getBankCode());
 //            params.put("bank_code", StrUtils.blankToDefault(channel.getPayType(), "BCA"));
-        } else if ("NGA".equals(EnumDict.SYSTEM_COUNTRY.getValueCache())) {
+        } else if ("NGA".equals(EnumAuthDict.SYSTEM_COUNTRY.getValueCache())) {
             params.put("bank_code", "NGR044");
         } else if ("021".equals(channel.getPayType())) { // 网银直联 bank_code填写ACB
             params.put("bank_code", "ACB");
@@ -195,7 +195,7 @@ public class QePayNewController implements IPayController<RechargeResult, Withdr
         }
 
         // 回调地址
-        String notifyUrl = EnumDict.PAY_NOTIFY_URL.getValueCache() + "pay/" + _MER_CODE.toLowerCase() + "/" + MER_CODE + "/payout/notify";
+        String notifyUrl = EnumAuthDict.PAY_NOTIFY_URL.getValueCache() + "pay/" + _MER_CODE.toLowerCase() + "/" + MER_CODE + "/payout/notify";
 
         // 参数
         Map<String, Object> params = new LinkedHashMap<>();
@@ -208,7 +208,7 @@ public class QePayNewController implements IPayController<RechargeResult, Withdr
         params.put("receive_account", requestVo.getBankAccount());
         params.put("bank_code", LogicUtils.or(requestVo.getBankId(), "MAY"));
 
-        String country = EnumDict.SYSTEM_COUNTRY.getValueCache();
+        String country = EnumAuthDict.SYSTEM_COUNTRY.getValueCache();
         if ("IND".equals(country)) {
             params.put("remark", requestVo.getBankAccount1()); // 印度代付必填 IFSC 码
             params.put("bank_code", "IDPT0001"); // 印度IDPT0001，巴西BRL001；通过统一的银行代码方式传入

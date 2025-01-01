@@ -5,7 +5,7 @@ import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.pro.common.module.api.message.enums.EnumSysMsgBusinessCode;
 import com.pro.common.module.api.message.intf.ISysMsgService;
-import com.pro.common.module.api.system.model.enums.EnumDict;
+import com.pro.common.module.api.system.model.enums.EnumAuthDict;
 import com.pro.common.modules.api.dependencies.CommonConst;
 import com.pro.common.modules.api.dependencies.R;
 import com.pro.common.modules.api.dependencies.enums.EnumSysRole;
@@ -54,7 +54,7 @@ public class CommonLoginController {
     public R<String> register(HttpServletRequest request, HttpServletResponse response, @RequestBody String requestBody) {
         // 图形验证码
         JSONObject jo = JSONUtil.parseObj(requestBody);
-        if (EnumDict.REGISTER_PROPS.getValueCache().contains(",captcha,")) {
+        if (EnumAuthDict.REGISTER_PROPS.getValueCache().contains(",captcha,")) {
             String captcha = jo.getStr("captcha");
             String code = (String) request.getSession().getAttribute(CommonConst.Str.SYSTEM_CAPTCHA);
             if (StrUtils.isBlank(captcha)) {
@@ -63,7 +63,7 @@ public class CommonLoginController {
                 throw new BusinessException("图形验证码不正确");
             }
         }
-        if (EnumDict.REGISTER_PROPS.getValueCache().contains(",smsCode,")) {
+        if (EnumAuthDict.REGISTER_PROPS.getValueCache().contains(",smsCode,")) {
             String codeInput = jo.getStr("smsCode");
             String key = msgService.getMsgKey(jo.toBean(UserMsg.class), EnumSysMsgBusinessCode.REGISTER_CODE.name());
             String code = (String) cacheManagerCenter.get(CommonConst.CacheKey.SmsCode, key);

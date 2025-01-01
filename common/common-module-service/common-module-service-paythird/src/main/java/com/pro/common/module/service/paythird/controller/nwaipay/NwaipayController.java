@@ -11,7 +11,7 @@ import com.pro.common.module.api.pay.model.db.PayChannel;
 import com.pro.common.module.api.pay.model.db.PayMerchant;
 import com.pro.common.module.api.pay.model.db.UserRecharge;
 import com.pro.common.module.api.pay.model.dto.PayoutIO;
-import com.pro.common.module.api.system.model.enums.EnumDict;
+import com.pro.common.module.api.system.model.enums.EnumAuthDict;
 import com.pro.common.module.api.user.intf.IUserService;
 import com.pro.common.module.service.pay.model.request.UnifiedOrderRequest;
 import com.pro.common.module.service.pay.model.request.UserTransferRequest;
@@ -120,7 +120,7 @@ public class NwaipayController extends PayCommonController {
         UserRecharge record = rechargeService.createRechargeOrder(requestVo, channel, merchant);
 
         // 回调地址
-        String notifyUrl = EnumDict.PAY_NOTIFY_URL.getValueCache() + "pay/" + getMerCode().toLowerCase() + "/" + MER_CODE + "/notify";
+        String notifyUrl = EnumAuthDict.PAY_NOTIFY_URL.getValueCache() + "pay/" + getMerCode().toLowerCase() + "/" + MER_CODE + "/notify";
 
         String mchKey = LogicUtils.or(merchant.getPublicKey(), merchant.getMchKey(), signName);
 
@@ -147,7 +147,7 @@ public class NwaipayController extends PayCommonController {
                 .now_long(now.getTime())
                 .now_yyyy_MM_dd_HH_mm_ss(DateUtil.format(now, "yyyy-MM-dd HH:mm:ss"))
                 .now_yyyyMMddHHmmss(DateUtil.format(now, "yyyyMMddHHmmss"))
-                .countryCurrency(EnumDict.SYSTEM_COUNTRY_CURRENCY.getValueCache())
+                .countryCurrency(EnumAuthDict.SYSTEM_COUNTRY_CURRENCY.getValueCache())
                 .build();
         Map<String, Object> params = this.unifiedOrderBuildParams(orderParams);
 
@@ -187,7 +187,7 @@ public class NwaipayController extends PayCommonController {
         }
 
         // 回调地址
-        String notifyUrl = EnumDict.PAY_NOTIFY_URL.getValueCache() + "pay/" + getMerCode().toLowerCase() + "/" + MER_CODE + "/payout/notify";
+        String notifyUrl = EnumAuthDict.PAY_NOTIFY_URL.getValueCache() + "pay/" + getMerCode().toLowerCase() + "/" + MER_CODE + "/payout/notify";
 
         String mchKey = LogicUtils.or(merchant.getPayoutMchKey(), merchant.getPublicKey(), merchant.getMchKey());
 
@@ -217,7 +217,7 @@ public class NwaipayController extends PayCommonController {
                 .cci(requestVo.getBankAccount1())//秘鲁CCI
                 .wallet(LogicUtils.or(requestVo.getWallet(), requestVo.getBankAccount2()))
                 .username(requestVo.getUsername())
-                .countryCurrency(EnumDict.SYSTEM_COUNTRY_CURRENCY.getValueCache())
+                .countryCurrency(EnumAuthDict.SYSTEM_COUNTRY_CURRENCY.getValueCache())
                 .ip(IPUtils.getIpAddress(request))
                 .build();
 

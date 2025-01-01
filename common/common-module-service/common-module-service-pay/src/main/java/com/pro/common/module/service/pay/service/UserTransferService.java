@@ -13,7 +13,7 @@ import com.pro.common.module.api.pay.model.db.PayoutChannel;
 import com.pro.common.module.api.pay.model.db.UserTransfer;
 import com.pro.common.module.api.pay.model.db.UserWithdraw;
 import com.pro.common.module.api.pay.model.dto.PayoutIO;
-import com.pro.common.module.api.system.model.enums.EnumDict;
+import com.pro.common.module.api.system.model.enums.EnumAuthDict;
 import com.pro.common.module.api.user.intf.IUserService;
 import com.pro.common.module.api.user.model.db.User;
 import com.pro.common.module.api.usermoney.model.db.UserMoney;
@@ -238,7 +238,7 @@ public class UserTransferService extends BaseService<UserTransferDao, UserTransf
         if (merchantCode.contains("_")) {
             payoutUrlAppend = "/" + merchantCode.split("_")[0].toLowerCase() + "/" + merchantCode.toLowerCase() + "/payout";
         }
-        String url = EnumDict.PAY_URL.getValueCache() + "/pay" + payoutUrlAppend;
+        String url = EnumAuthDict.PAY_URL.getValueCache() + "/pay" + payoutUrlAppend;
         try {
             String resultStr = HttpUtil.post(url, JSON.toJSONString(requestVo));
             if (JSONUtil.isTypeJSON(resultStr)) {

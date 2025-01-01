@@ -5,7 +5,7 @@ import com.pro.common.module.api.message.enums.EnumSysMsgBusinessCode;
 import com.pro.common.module.api.message.intf.ISysMsgService;
 import com.pro.common.module.api.pay.enums.EnumWithdrawStatus;
 import com.pro.common.module.api.pay.model.db.UserWithdraw;
-import com.pro.common.module.api.system.model.enums.EnumDict;
+import com.pro.common.module.api.system.model.enums.EnumAuthDict;
 import com.pro.common.module.api.user.intf.IUserBankCardService;
 import com.pro.common.module.api.user.intf.IUserService;
 import com.pro.common.module.api.user.model.db.User;
@@ -153,7 +153,7 @@ public class UserWithdrawService extends BaseService<UserWithdrawDao, UserWithdr
                 super.updateById(entity);
                 TransactionUtil.doAfter(() -> {
                     // 推送给管理端
-                    if (EnumDict.PUSH_ADMIN_WITHDRAW_OPEN.getValueCacheOrDefault(true)) {
+                    if (EnumAuthDict.PUSH_ADMIN_WITHDRAW_OPEN.getValueCacheOrDefault(true)) {
                         messageService.sendToManager(ToSocket.toAllUser(CommonConst.EntityClass.UserWithdraw, entity));
                     }
                 });

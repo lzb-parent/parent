@@ -1,6 +1,6 @@
 package com.pro.common.web.security;
 
-import com.pro.common.module.api.system.model.enums.EnumDict;
+import com.pro.common.module.api.system.model.enums.EnumAuthDict;
 import com.pro.common.module.api.system.model.intf.IAuthDictService;
 import com.pro.common.modules.api.dependencies.enums.EnumApplication;
 import com.pro.common.modules.service.dependencies.properties.CommonProperties;
@@ -31,7 +31,7 @@ public class MessageRedisConfig {
                                             List<IApplicationMessageReceiveService> messageReceiveServices,
                                             IApplicationMessageSerializer serializeService
     ) {
-        String systemVersion = authDictService.getValueOnStart(EnumDict.SYSTEM_VERSION);
+        String systemVersion = authDictService.getValueOnStart(EnumAuthDict.SYSTEM_VERSION);
         EnumApplication application = commonProperties.getApplication();
 
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();

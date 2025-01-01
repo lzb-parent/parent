@@ -11,7 +11,7 @@ import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.pro.common.module.api.message.intf.ISysMsgService;
 import com.pro.common.module.api.message.model.db.SysMsgRecord;
-import com.pro.common.module.api.system.model.enums.EnumDict;
+import com.pro.common.module.api.system.model.enums.EnumAuthDict;
 import com.pro.common.modules.api.dependencies.CommonConst;
 import com.pro.common.modules.api.dependencies.R;
 import com.pro.common.modules.api.dependencies.enums.EnumApplication;
@@ -129,7 +129,7 @@ public class CommonCommonController {
     public R<Map<String, List<Map<String, Object>>>> dictEnumFull(@PathVariable String simpleClassNames) {
 
         boolean isAdmin = EnumApplication.admin.equals(commonProperties.getApplication());
-        boolean isAdminChinese = isAdmin && EnumDict.ADMIN_LANG_CHINESE.getValueCacheOrDefault(true);
+        boolean isAdminChinese = isAdmin && EnumAuthDict.ADMIN_LANG_CHINESE.getValueCacheOrDefault(true);
         Map<String, List<Map<String, Object>>> map = Arrays.stream(simpleClassNames.split(",")).collect(Collectors.toMap(c -> c,
                 simpleClassName -> {
                     Class<? extends Enum> eClass = enumsService.getEnumClass(simpleClassName);
@@ -158,7 +158,7 @@ public class CommonCommonController {
     @RequestMapping("/uploadAdmin")
     public List<String> upload(@RequestParam(value = "file") MultipartFile[] files,
                                @RequestParam(value = "module") String module) {
-        String host = EnumDict.FILE_UPLOAD_DOMAIN.getValueCache();
+        String host = EnumAuthDict.FILE_UPLOAD_DOMAIN.getValueCache();
         String msg = null;
         if (StrUtils.isNotBlank(host)) {
             String body = null;

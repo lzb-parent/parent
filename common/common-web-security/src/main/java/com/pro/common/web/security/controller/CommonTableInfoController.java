@@ -5,7 +5,7 @@ import cn.hutool.core.io.resource.ClassPathResource;
 import cn.hutool.core.util.StrUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import com.pro.common.module.api.system.model.enums.EnumDict;
+import com.pro.common.module.api.system.model.enums.EnumAuthDict;
 import com.pro.common.modules.api.dependencies.R;
 import com.pro.common.modules.api.dependencies.exception.BusinessException;
 import com.pro.common.modules.api.dependencies.model.ILoginInfo;
@@ -109,7 +109,7 @@ public class CommonTableInfoController {
         translateKeys.addAll(translateKeysEntityCommon);
         translateKeys.addAll(translateKeysEntityPlatform);
 
-        String devProjectRootPath = EnumDict.DEV_PROJECT_ROOT_PATH.getValueCache();
+        String devProjectRootPath = EnumAuthDict.DEV_PROJECT_ROOT_PATH.getValueCache();
         if (StrUtil.isBlank(devProjectRootPath)) {
             ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
             GeneratorDevConfig generatorConfig = mapper.readValue(new ClassPathResource("system-dev.yml").getFile(), GeneratorDevConfig.class);

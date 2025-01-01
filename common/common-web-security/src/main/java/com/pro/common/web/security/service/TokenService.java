@@ -1,6 +1,6 @@
 package com.pro.common.web.security.service;
 
-import com.pro.common.module.api.system.model.enums.EnumDict;
+import com.pro.common.module.api.system.model.enums.EnumAuthDict;
 import com.pro.common.module.api.system.model.intf.IAuthDictService;
 import com.pro.common.modules.api.dependencies.enums.EnumApplication;
 import com.pro.common.modules.api.dependencies.enums.EnumSysRole;
@@ -10,7 +10,6 @@ import com.pro.framework.api.FrameworkConst;
 import com.pro.framework.api.cache.ICacheManagerCenter;
 
 import java.security.SecureRandom;
-import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -20,7 +19,7 @@ public class TokenService {
     public TokenService(CommonProperties commonProperties, ICacheManagerCenter cacheManagerRemote, IAuthDictService authDictService) {
         this.commonProperties = commonProperties;
         this.cacheManagerRemote = cacheManagerRemote;
-        TokenService.tokenKey = authDictService.getValueOnStart(EnumDict.SYSTEM_VERSION, 0) + "-" + commonProperties.getApplication().name().toUpperCase();
+        TokenService.tokenKey = authDictService.getValueOnStart(EnumAuthDict.SYSTEM_VERSION, 0) + "-" + commonProperties.getApplication().name().toUpperCase();
     }
 
     /**

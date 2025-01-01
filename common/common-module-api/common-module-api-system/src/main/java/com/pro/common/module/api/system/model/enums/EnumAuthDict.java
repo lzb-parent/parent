@@ -14,7 +14,7 @@ import static com.pro.framework.javatodb.constant.JTDConst.EnumFieldUiType.*;
  */
 @Getter
 @AllArgsConstructor
-public enum EnumDict implements IEnumAuthDict, IEnumToDbEnum<AuthDict> {
+public enum EnumAuthDict implements IEnumAuthDict,  IEnumToDbEnum<AuthDict> {
     // 系统配置 SYSTEM_CONFIG
     SYSTEM_CONFIG("系统配置", "", null, text, null, null, null, null, null, null, 0, null),
     SITE_NAME("平台名称", "siteName", SYSTEM_CONFIG, text, true, null, null, null, null, null, 1, null),
@@ -76,7 +76,7 @@ public enum EnumDict implements IEnumAuthDict, IEnumToDbEnum<AuthDict> {
     ;
     private final String label;
     private final String value;
-    private final EnumDict pcode;
+    private final EnumAuthDict pcode;
     private final JTDConst.EnumFieldUiType inputType;
     private final Boolean showUser;
     private final Boolean showAdmin;
