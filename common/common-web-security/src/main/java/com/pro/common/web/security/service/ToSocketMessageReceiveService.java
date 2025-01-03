@@ -22,7 +22,7 @@ public class ToSocketMessageReceiveService implements IApplicationMessageReceive
     @Override
     public void doReceive(ToSocket object, Message message) {
         String line = object.getData();
-        if (line.contains("Building snowball-admin 2.0.0")) {
+        if (line.contains("snowball-admin")) {
             log.warn("===line 3{}", line);
         }
         socketSender.send(object);
