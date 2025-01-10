@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * 国家 服务实现类
@@ -132,8 +133,9 @@ public class AuthDictService extends BaseService<AuthDictDao, AuthDict> implemen
     }
 
     @Override
-    public LinkedHashMap<String, String> getKeyValueMap(boolean isCommon) {
+    public List<String> getTranslateKeys(boolean isCommon) {
         Set<String> baseCodes = Arrays.stream(EnumAuthDict.values()).map(Enum::name).collect(Collectors.toSet());
-        return this.list().stream().filter(e -> isCommon == baseCodes.contains(e.getCode())).collect(Collectors.toMap(AuthDict::getLabel, AuthDict::getLabel, (v1, v2) -> v1, LinkedHashMap::new));
+        return this.list().stream().filter(e -> isCommon == baseCodes.contains(e.getCode()))
+                .flatMap(authDict -> Stream.of(authDict.getLabel(), authDict.getRemark())).distinct().collect(Collectors.toList());
     }
 }

@@ -1,7 +1,8 @@
 package com.pro.common.modules.api.dependencies.service;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 
 public interface ITranslateDateService {
-    LinkedHashMap<String, String> getKeyValueMap(boolean isCommon);
+    List<String> getTranslateKeys(boolean isCommon);
 }

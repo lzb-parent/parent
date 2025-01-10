@@ -16,6 +16,7 @@ import com.pro.common.modules.service.dependencies.util.I18nUtils;
 import com.pro.common.web.security.model.request.JTDTableInfoRequest;
 import com.pro.framework.api.FrameworkConst;
 import com.pro.framework.api.entity.IEntityProperties;
+import com.pro.framework.api.enums.IEnumsService;
 import com.pro.framework.api.model.GeneratorDevConfig;
 import com.pro.framework.api.util.ClassUtils;
 import com.pro.framework.api.util.CollUtils;
@@ -30,6 +31,7 @@ import com.pro.framework.javatodb.model.JTDTableInfoVo;
 import com.pro.framework.javatodb.model.UITableInfo;
 import com.pro.framework.javatodb.service.IJTDService;
 import com.pro.framework.mtq.service.multiwrapper.util.MultiClassRelationFactory;
+import com.pro.framework.service.EnumsServiceImpl;
 import io.swagger.annotations.ApiOperation;
 import lombok.Cleanup;
 import lombok.SneakyThrows;
@@ -57,6 +59,8 @@ public class CommonTableInfoController {
     private CommonProperties commonProperties;
     @Autowired
     private IEntityProperties entityProperties;
+    @Autowired
+    private IEnumsService enumsService;
 
     @Autowired
     private IJTDService jtdService;
@@ -66,7 +70,8 @@ public class CommonTableInfoController {
 
     public static final String NULL = "NULL";
     public static final String CURRENT_TIMESTAMP = "CURRENT_TIMESTAMP";
-    private static final List<String> fieldNamesSortEnd = Arrays.asList("enabled", "remark", "sort", "isDemo", "createTime");
+    private static final List<String> fieldNamesSortEnd = Arrays.asList("enabled", "remark", "sort", "isDemo",
+            "createTime");
     private static final Set<String> fieldNamesIgnore = new HashSet<>(Arrays.asList("deleted", "updateTime"));
     private static final Set<String> fieldNamesIgnoreForm = new HashSet<>(Arrays.asList("createTime", "isDemo"));
 
@@ -95,11 +100,19 @@ public class CommonTableInfoController {
         // 类属性 - 定制
         List<String> translateKeysEnumPlatform = getTranslateKeysEnum(false, platform);
         translateKeysEnumPlatform.removeAll(translateKeysEnumCommon);
+        // 类属性 - 公共
+        List<String> translateKeysEnumDataCommon = enumsService.getTranslateKeys(true, platform);
+        // 类属性 - 定制
+        List<String> translateKeysEnumDataPlatform = enumsService.getTranslateKeys(false, platform);
 
         // 实体数据名称 (字典,菜单) - 公共
-        List<String> translateKeysEntityCommon = translateDateServices.stream().flatMap(service -> service.getKeyValueMap(true).values().stream()).collect(Collectors.toList());
+        List<String> translateKeysEntityCommon = translateDateServices.stream()
+                .flatMap(service -> service.getTranslateKeys(true).stream())
+                .collect(Collectors.toList());
         // 实体数据名称 (字典,菜单) - 公共
-        List<String> translateKeysEntityPlatform = translateDateServices.stream().flatMap(service -> service.getKeyValueMap(false).values().stream()).collect(Collectors.toList());
+        List<String> translateKeysEntityPlatform = translateDateServices.stream()
+                .flatMap(service -> service.getTranslateKeys(false).stream())
+                .collect(Collectors.toList());
 
         Set<String> translateKeys = new LinkedHashSet<>();
         translateKeys.addAll(translateKeysClassCommon);
@@ -108,16 +121,19 @@ public class CommonTableInfoController {
         translateKeys.addAll(translateKeysEnumPlatform);
         translateKeys.addAll(translateKeysEntityCommon);
         translateKeys.addAll(translateKeysEntityPlatform);
+        translateKeys.addAll(translateKeysEnumDataCommon);
+        translateKeys.addAll(translateKeysEnumDataPlatform);
 
         String devProjectRootPath = EnumAuthDict.DEV_PROJECT_ROOT_PATH.getValueCache();
         if (StrUtil.isBlank(devProjectRootPath)) {
             ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
-            GeneratorDevConfig generatorConfig = mapper.readValue(new ClassPathResource("system-dev.yml").getFile(), GeneratorDevConfig.class);
+            GeneratorDevConfig generatorConfig = mapper.readValue(new ClassPathResource("system-dev.yml").getFile(),
+                    GeneratorDevConfig.class);
             devProjectRootPath = generatorConfig.getWorkspace() + File.separator + generatorConfig.getPlatformName();
         }
-        System.out.println(translateKeysClassCommon.contains("执行订单"));
-        System.out.println(translateKeysEnumCommon.contains("执行订单"));
-        System.out.println(translateKeysEntityCommon.contains("执行订单"));
+//        System.out.println(translateKeysClassCommon.contains("执行订单"));
+//        System.out.println(translateKeysEnumCommon.contains("执行订单"));
+//        System.out.println(translateKeysEntityCommon.contains("执行订单"));
         if (StrUtil.isNotBlank(devProjectRootPath)) {
             // 生成到 messages_zh_CN.properties 本地文件中
             String subPathCommon = "/parent/common/common-module-service/common-module-service-login/src/main/resources/i18n_login/messages_zh_CN.properties";
@@ -128,6 +144,8 @@ public class CommonTableInfoController {
             saveNewKeys(devProjectRootPath + subPathPlatform, translateKeysEnumPlatform);
             saveNewKeys(devProjectRootPath + subPathCommon, translateKeysEntityCommon);
             saveNewKeys(devProjectRootPath + subPathPlatform, translateKeysEntityPlatform);
+            saveNewKeys(devProjectRootPath + subPathCommon, translateKeysEnumDataCommon);
+            saveNewKeys(devProjectRootPath + subPathPlatform, translateKeysEnumDataPlatform);
         }
 
         return String.join("<br/>", translateKeys);
@@ -147,22 +165,42 @@ public class CommonTableInfoController {
 
     @SneakyThrows
     private static void saveNewKeys(String filePath, List<String> keys) {
+        // 创建新键的映射表
+        LinkedHashMap<String, String> oriKeyShortKeyMap = keys.stream().collect(Collectors.toMap(
+                key -> key, StrUtils::replaceSpecialStr, (v1, v2) -> v1, LinkedHashMap::new));
+
+        // 使用 LinkedHashSet 来存储新键值对的顺序
+        LinkedHashSet<String> newEntries = new LinkedHashSet<>();
+
+        // 读取现有属性文件
         Properties properties = new Properties();
+        try (FileInputStream inputStream = new FileInputStream(filePath);
+             InputStreamReader reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8)) {
+            properties.load(reader);
+        }
 
-        // 使用 UTF-8 编码读取现有的 properties 文件
-        @Cleanup FileInputStream inputStream = new FileInputStream(filePath);
-        properties.load(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
-
-        // 添加新的键值对
+        // 筛选出新增的键值对
         keys.stream()
-                .filter(key -> !properties.containsKey(key))
-                .forEach(key -> properties.setProperty(key, key));
+                .filter(Objects::nonNull)
+                .filter(s -> !s.isEmpty())
+                .forEach(key -> {
+                    String shortKey = oriKeyShortKeyMap.get(key);
+                    if (!properties.containsKey(shortKey)) {
+                        newEntries.add(shortKey + "=" + key);
+                    }
+                });
 
-        // 使用 UTF-8 编码保存文件
-        @Cleanup OutputStreamWriter writer = new OutputStreamWriter(
-                new FileOutputStream(filePath), StandardCharsets.UTF_8);
-        properties.store(writer, "Updated Properties File");
+        // 将现有的属性保留并追加新的属性到文件末尾
+        try (BufferedWriter writer = new BufferedWriter(
+                new OutputStreamWriter(new FileOutputStream(filePath, true), StandardCharsets.UTF_8))) {
+            for (String entry : newEntries) {
+                writer.write(entry);
+                writer.newLine();
+            }
+        }
     }
+
+
 
     private List<String> getTranslateKeysEntity(boolean isCommon) {
         List<JTDTableInfoVo> tables = MultiClassRelationFactory.INSTANCE.getClassMap().values().stream()
@@ -172,14 +210,20 @@ public class CommonTableInfoController {
                         .comparingInt(JTDTableInfoVo::getEntityId)
                         .thenComparing(JTDTableInfoVo::getEntityName)
                         .thenComparing(JTDTableInfoVo::getLabel)
-                ).collect(Collectors.toList());
-        return tables.stream().flatMap(t ->
-                Stream.of(
-                        Stream.of(t.getLabel()),
-                        t.getFields().stream().map(JTDFieldInfoDbVo::getGroup),
-                        t.getFields().stream().map(JTDFieldInfoDbVo::getLabel),
-                        t.getFields().stream().map(JTDFieldInfoDbVo::getDescription)).flatMap(s -> s)).filter(Objects::nonNull).filter(s -> !s.isEmpty()).distinct().collect(Collectors.toList());
+                ).toList();
+        return tables.stream()
+                .flatMap(t ->
+                        Stream.of(
+                                Stream.of(t.getLabel()),
+                                t.getFields().stream().map(JTDFieldInfoDbVo::getGroup),
+                                t.getFields().stream().map(JTDFieldInfoDbVo::getLabel),
+                                t.getFields().stream().map(JTDFieldInfoDbVo::getDescription)).flatMap(s -> s))
+                .filter(Objects::nonNull)
+                .filter(s -> !s.isEmpty())
+                .distinct()
+                .collect(Collectors.toList());
     }
+
 
     @SneakyThrows
     @ApiOperation(value = "查询表格信息")
@@ -187,7 +231,8 @@ public class CommonTableInfoController {
     public R<JTDTableInfoVo> simpleInfo(ILoginInfo loginInfo, @PathVariable(required = false) String entityClassName) {
         checkPermission(loginInfo);
 
-        JTDTableInfoVo tableInfo = jtdService.readTableInfo(MultiClassRelationFactory.INSTANCE.getEntityClass(entityClassName));
+        JTDTableInfoVo tableInfo = jtdService.readTableInfo(
+                MultiClassRelationFactory.INSTANCE.getEntityClass(entityClassName));
         List<JTDFieldInfoDbVo> fields = tableInfo.getFields();
         tableInfo.setTableName(StrUtil.toCamelCase(tableInfo.getTableName()));
         fields.forEach(field ->
@@ -211,7 +256,9 @@ public class CommonTableInfoController {
     @GetMapping("/info/{entityClassName}")
     public R<UITableInfo> info(ILoginInfo loginInfo, @PathVariable(required = false) String entityClassName, JTDTableInfoRequest request) {
         checkPermission(loginInfo);
-        Class<?> clazz = entityProperties.getEntityClassReplaceMap().computeIfAbsent(StrUtils.firstToUpperCase(entityClassName), c -> MultiClassRelationFactory.INSTANCE.getEntityClass(entityClassName));
+        Class<?> clazz = entityProperties.getEntityClassReplaceMap()
+                .computeIfAbsent(StrUtils.firstToUpperCase(entityClassName),
+                        c -> MultiClassRelationFactory.INSTANCE.getEntityClass(entityClassName));
         if (clazz == null) {
             return R.ok();
         }
@@ -245,10 +292,17 @@ public class CommonTableInfoController {
                 .filter(f -> !f.getUiType().equals(JTDConst.EnumFieldUiType.hide))
                 .filter(vo -> !fieldNamesIgnore.contains(vo.getFieldName()))
                 .sorted(Comparator.comparing(vo -> fieldNamesSortEnd.indexOf(vo.getFieldName())))
+                .toList();
+        List<JTDFieldInfoDbVo> fieldsSort = fields.stream()
+                .filter(vo -> null != vo.getSort() && vo.getSort() >= 0)
+                .toList();
+        List<JTDFieldInfoDbVo> fieldsNoSort = fields.stream()
+                .filter(vo -> null == vo.getSort() || vo.getSort() < 0)
+                .toList();
+        List<String> fieldNames = fieldsNoSort.stream()
+                .map(JTDFieldInfoDbVo::getFieldName)
+                .filter(n -> !"id".equals(n))
                 .collect(Collectors.toList());
-        List<JTDFieldInfoDbVo> fieldsSort = fields.stream().filter(vo -> null != vo.getSort() && vo.getSort() >= 0).collect(Collectors.toList());
-        List<JTDFieldInfoDbVo> fieldsNoSort = fields.stream().filter(vo -> null == vo.getSort() || vo.getSort() < 0).collect(Collectors.toList());
-        List<String> fieldNames = fieldsNoSort.stream().map(JTDFieldInfoDbVo::getFieldName).filter(n -> !"id".equals(n)).collect(Collectors.toList());
         fieldsSort.forEach(fieldSort -> fieldNames.add(fieldSort.getSort(), fieldSort.getFieldName()));
 
 
@@ -333,7 +387,8 @@ public class CommonTableInfoController {
                     case number:
                         return new BigDecimal(defaultValue);
                     case bool:
-                        return FrameworkConst.Str.TRUE.equals(defaultValue) || FrameworkConst.Num.TRUE.toString().equals(defaultValue);
+                        return FrameworkConst.Str.TRUE.equals(defaultValue) || FrameworkConst.Num.TRUE.toString()
+                                .equals(defaultValue);
                     case datetime:
                         if (CURRENT_TIMESTAMP.equals(defaultValue)) {
                             return null;
@@ -354,29 +409,40 @@ public class CommonTableInfoController {
 //        ObjectUtil.clone(tableConfigOne)
         UITableInfo.TableConfigOne infoNew = new UITableInfo.TableConfigOne();
 //        String tableName = tableInfo.getTableName();
-        Map<String, JTDFieldInfoDbVo> fieldMap = CollUtils.listToMap(tableInfo.getFields(), JTDFieldInfoDbVo::getFieldName);
+        Map<String, JTDFieldInfoDbVo> fieldMap = CollUtils.listToMap(tableInfo.getFields(),
+                JTDFieldInfoDbVo::getFieldName);
         // 排序
         List<String> fieldNamesOri = infoOri.getFieldNames();
         Set<String> fieldUserDataId = fieldNamesOri.stream().filter(fieldName -> {
             JTDFieldInfoDbVo field = fieldMap.get(fieldName);
             Class<?> entityClass = field.getEntityClass();
-            return null != entityClass && IUserClass.class.isAssignableFrom(entityClass) && Objects.equals(field.getEntityClassTargetProp(), "id");
+            return null != entityClass && IUserClass.class.isAssignableFrom(entityClass) && Objects.equals(
+                    field.getEntityClassTargetProp(), "id");
         }).collect(Collectors.toSet());
-        List<String> fieldNamesNotId = fieldNamesOri.stream().filter(fieldName -> !fieldUserDataId.contains(fieldName)).collect(Collectors.toList());
+        List<String> fieldNamesNotId = fieldNamesOri.stream()
+                .filter(fieldName -> !fieldUserDataId.contains(fieldName))
+                .collect(Collectors.toList());
         List<String> fieldNames;
         boolean isEdit;
         switch (uiArea) {
             case search:
-                List<JTDConst.EnumFieldUiType> uiTypes = List.of(JTDConst.EnumFieldUiType.text, JTDConst.EnumFieldUiType.select);
-                fieldNames = fieldNamesNotId.stream().filter(fieldName -> uiTypes.contains(fieldMap.get(fieldName).getUiType())).collect(Collectors.toList());
+                List<JTDConst.EnumFieldUiType> uiTypes = List.of(JTDConst.EnumFieldUiType.text,
+                        JTDConst.EnumFieldUiType.select);
+                fieldNames = fieldNamesNotId.stream()
+                        .filter(fieldName -> uiTypes.contains(fieldMap.get(fieldName).getUiType()))
+                        .collect(Collectors.toList());
                 isEdit = true;
                 break;
             case form:
                 // 如果有关联实体 只显示id选择框,不显示其他属性
-                fieldNames = fieldNamesOri.stream().filter(fieldName -> !fieldNamesIgnoreForm.contains(fieldName)).filter(fieldName -> {
-                    String entityClassTargetProp = fieldMap.get(fieldName).getEntityClassTargetProp();
-                    return null == fieldMap.get(fieldName).getEntityClass() || Objects.equals(entityClassTargetProp, "code") || Objects.equals(entityClassTargetProp, "id");
-                }).collect(Collectors.toList());
+                fieldNames = fieldNamesOri.stream()
+                        .filter(fieldName -> !fieldNamesIgnoreForm.contains(fieldName))
+                        .filter(fieldName -> {
+                            String entityClassTargetProp = fieldMap.get(fieldName).getEntityClassTargetProp();
+                            return null == fieldMap.get(fieldName).getEntityClass() || Objects.equals(
+                                    entityClassTargetProp, "code") || Objects.equals(entityClassTargetProp, "id");
+                        })
+                        .collect(Collectors.toList());
                 isEdit = true;
                 infoOri.setLabelPosition(EnumPositionAlign.left);
                 break;
@@ -436,14 +502,14 @@ public class CommonTableInfoController {
                         infoCopy.setWidth(80);
                         break;
                     case "enabled":
-                        infoCopy.setWidth(70);
+                        infoCopy.setWidth(80);
                         infoCopy.setAlign(EnumPositionAlign.center);
                         break;
                     case "createTime":
                         infoCopy.setWidth(98);
                         break;
                     case "remark":
-                        infoCopy.setWidth(80);
+                        infoCopy.setWidth(90);
                         break;
                     case "state":
                         infoCopy.setWidth(110);
@@ -453,9 +519,10 @@ public class CommonTableInfoController {
             case base:
 //                UITableInfo.FieldConfigOne fieldConfigOne = new UITableInfo.FieldConfigOne();
                 infoCopy.setFieldName(configField.getFieldName());
-                infoCopy.setLabel(StrUtils.or(I18nUtils.get(configField.getLabel()), configField.getLabel()));
+                infoCopy.setLabel(StrUtils.or(I18nUtils.get(StrUtils.replaceSpecialStr(configField.getLabel())), configField.getLabel()));
                 infoCopy.setUiType(defaultUiType.equals(configField.getUiType()) ? null : configField.getUiType());
-                infoCopy.setMainLength(defaultMainLength.equals(configField.getMainLength()) ? null : configField.getMainLength());
+                infoCopy.setMainLength(
+                        defaultMainLength.equals(configField.getMainLength()) ? null : configField.getMainLength());
                 infoCopy.setDecimalLength(configField.getDecimalLength());
                 infoCopy.setCharset(configField.getCharset());
                 infoCopy.setRenameFrom(configField.getRenameFrom());
@@ -474,12 +541,16 @@ public class CommonTableInfoController {
                 infoCopy.setClearable(trueOrNull(configField.getClearable()));
                 infoCopy.setWidth(configField.getWidth());
                 infoCopy.setAlign(configField.getAlign());
-                infoCopy.setJavaTypeEnumClassName(null == configField.getJavaTypeEnumClass() ? null : ClassUtils.getClassName(configField.getJavaTypeEnumClass()));
+                infoCopy.setJavaTypeEnumClassName(
+                        null == configField.getJavaTypeEnumClass() ? null : ClassUtils.getClassName(
+                                configField.getJavaTypeEnumClass()));
                 infoCopy.setDefaultValueObj(readDefaultValue(configField.getUiType(), configField.getDefaultValue()));
-                infoCopy.setDescription(StrUtils.or(I18nUtils.get(configField.getDescription()), configField.getDescription()));
+                infoCopy.setDescription(
+                        StrUtils.or(I18nUtils.get(configField.getDescription()), configField.getDescription()));
                 infoCopy.setSortable(trueOrNull(configField.getSortable()));
                 infoCopy.setNotNull(defaultNotNull.equals(configField.getNotNull()) ? null : configField.getNotNull());
-                infoCopy.setNotEmpty(defaultNotEmpty.equals(configField.getNotEmpty()) ? null : configField.getNotEmpty());
+                infoCopy.setNotEmpty(
+                        defaultNotEmpty.equals(configField.getNotEmpty()) ? null : configField.getNotEmpty());
 
                 //                infoCopy.setDefaultValue(configField.getDefaultValue());
 //                infoCopy.setAutoIncrement(trueOrNull(configField.getAutoIncrement()));

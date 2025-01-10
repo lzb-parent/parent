@@ -7,6 +7,9 @@ import com.pro.common.modules.api.dependencies.R;
 import com.pro.common.modules.api.dependencies.model.ILoginInfo;
 import com.pro.common.modules.service.dependencies.modelauth.base.ICommonDataService;
 import com.pro.common.modules.api.dependencies.auth.UserDataQuery;
+import com.pro.common.modules.service.dependencies.util.I18nUtils;
+import com.pro.common.web.security.model.dto.ExportConfigData;
+import com.pro.framework.api.FrameworkConst;
 import com.pro.framework.api.clazz.ClassCaches;
 import com.pro.framework.api.database.AggregateResult;
 import com.pro.framework.api.database.GroupBy;
@@ -16,6 +19,7 @@ import com.pro.framework.api.enums.IEnum;
 import com.pro.framework.api.model.IModel;
 import com.pro.framework.api.model.IdModel;
 import com.pro.framework.api.structure.Tuple3;
+import com.pro.framework.api.util.DateUtils;
 import com.pro.framework.api.util.StrUtils;
 import com.pro.framework.javatodb.model.JTDFieldInfoDbVo;
 import com.pro.framework.javatodb.model.JTDTableInfoVo;
@@ -33,6 +37,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -85,7 +90,9 @@ public class CommonDataController<T extends IModel> {
     @GetMapping("/selectLists/{entityClassNames}")
     public R<Map<String, List<T>>> selectLists(ILoginInfo loginInfo, @PathVariable String entityClassNames,
                                                PageInput page, @RequestParam Map<String, Object> paramMap, TimeQuery timeQuery, UserDataQuery query) {
-        return R.ok(Arrays.stream(entityClassNames.split(",")).collect(Collectors.toMap(c -> c, c -> commonDataService.selectList(loginInfo, c, paramMap, timeQuery, query, null, page))));
+        return R.ok(Arrays.stream(entityClassNames.split(","))
+                .collect(Collectors.toMap(c -> c,
+                        c -> commonDataService.selectList(loginInfo, c, paramMap, timeQuery, query, null, page))));
     }
 
     @ApiOperation(value = "查询单个信息")
@@ -139,9 +146,11 @@ public class CommonDataController<T extends IModel> {
                        TimeQuery timeQuery,
                        UserDataQuery query) {
         Class<T> beanClass = commonDataService.getBeanClass(entityClassName);
-        Map<String, Tuple3<Field, Method, Method>> classMetaMap = ClassCaches.computeIfAbsentClassFieldMapFull(beanClass);
+        Map<String, Tuple3<Field, Method, Method>> classMetaMap = ClassCaches.computeIfAbsentClassFieldMapFull(
+                beanClass);
         if (fields == null) {
-            JTDTableInfoVo tableInfo = jtdService.readTableInfo(MultiClassRelationFactory.INSTANCE.getEntityClass(StrUtils.firstToLowerCase(beanClass.getSimpleName())));
+            JTDTableInfoVo tableInfo = jtdService.readTableInfo(MultiClassRelationFactory.INSTANCE.getEntityClass(
+                    StrUtils.firstToLowerCase(beanClass.getSimpleName())));
             // 驼峰属性名
             tableInfo.getFields().forEach(field -> field.setFieldName(StrUtil.toCamelCase(field.getFieldName())));
             fields = tableInfo.getFields().stream()
@@ -158,47 +167,64 @@ public class CommonDataController<T extends IModel> {
         if (fileName == null) {
             fileName = entityClassName + "_" + DateUtil.now() + ".csv";
         }
-        List<String> selectFieldNames = fields.stream().map(JTDFieldInfoDbVo::getFieldName).collect(Collectors.toList());
+        List<String> selectFieldNames = fields.stream()
+                .map(JTDFieldInfoDbVo::getFieldName)
+                .collect(Collectors.toList());
         selectFieldNames.add(0, "id");
-        List<T> list = commonDataService.selectList(loginInfo, entityClassName, paramMap, timeQuery, query, selectFieldNames, page);
+        List<T> list = commonDataService.selectList(loginInfo, entityClassName, paramMap, timeQuery, query,
+                selectFieldNames, page);
 
         response.setContentType("text/csv");
         response.setCharacterEncoding("UTF-8"); // 设置字符编码为 UTF-8
         response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
 
+        ExportConfigData exportConfigData = new ExportConfigData();
+        exportConfigData.setBoolTrueValue(translate(FrameworkConst.Str.TRUE_TRANSLATE_KEY));
+        exportConfigData.setBoolFalseValue(translate(FrameworkConst.Str.FALSE_TRANSLATE_KEY));
         List<UITableInfo.FieldConfigOne> finalFields = fields;
 
         List<String[]> rows = new ArrayList<>(list.size() + 1);
         // 写入表头
-        rows.add(finalFields.stream().map(JTDFieldInfoDbVo::getLabel).toArray(String[]::new));
+        rows.add(finalFields.stream()
+                .map(JTDFieldInfoDbVo::getLabel)
+                .map(CommonDataController::translate)
+                .toArray(String[]::new));
         for (T data : list) {
-            rows.add(convertDataToCsvRow(data, finalFields, classMetaMap));
+            rows.add(convertDataToCsvRow(data, finalFields, classMetaMap, exportConfigData));
         }
         CSVWriter writer = new CSVWriter(response.getWriter());
         writer.writeAll(rows);
     }
 
-    private static <T extends IModel> String[] convertDataToCsvRow(T data, List<UITableInfo.FieldConfigOne> fields, Map<String, Tuple3<Field, Method, Method>> classFieldMap) {
-        return fields.stream().map(f -> invokeAndToString(data, classFieldMap.get(f.getFieldName()).getT3())).toArray(String[]::new);
+    private static String translate(String label) {
+        return StrUtils.or(I18nUtils.get(StrUtils.replaceSpecialStr(label)), label);
+    }
+
+    private static <T extends IModel> String[] convertDataToCsvRow(T data, List<UITableInfo.FieldConfigOne> fields, Map<String, Tuple3<Field, Method, Method>> classFieldMap, ExportConfigData exportConfigData) {
+        return fields.stream()
+                .map(f -> invokeAndToString(data, classFieldMap.get(f.getFieldName()).getT3(), exportConfigData))
+                .toArray(String[]::new);
     }
 
     @SneakyThrows
-    private static <T extends IModel> String invokeAndToString(T data, Method getMethod) {
+    private static <T extends IModel> String invokeAndToString(T data, Method getMethod, ExportConfigData exportConfigData) {
         Object val = getMethod.invoke(data);
         if (val == null) {
             return null;
         } else {
-            return valueRead(val);
+            return valueRead(val, exportConfigData);
         }
     }
 
 
-    private static String valueRead(Object o) {
+    private static String valueRead(Object o, ExportConfigData exportConfigData) {
         Class<?> aClass = o.getClass();
         if (Boolean.class.isAssignableFrom(aClass)) {
-            return ((Boolean) o) ? "是" : "否";
+            return ((Boolean) o) ? exportConfigData.getBoolTrueValue() : exportConfigData.getBoolFalseValue();
         } else if (IEnum.class.isAssignableFrom(aClass)) {
             return ((IEnum) o).getLabel();
+        } else if (LocalDateTime.class.isAssignableFrom(aClass)) {
+            return ((LocalDateTime) o).format(FrameworkConst.DateTimes.DATE_TIME_FORMAT);
         }
         return o.toString();
     }

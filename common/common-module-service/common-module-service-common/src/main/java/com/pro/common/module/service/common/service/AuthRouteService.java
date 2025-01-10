@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * 国家 服务实现类
@@ -44,7 +45,9 @@ public class AuthRouteService extends BaseService<AuthRouteDao, AuthRoute> imple
 
     @Override
     public List<AuthRoute> selectList(String entityClassName, Map<String, Object> paramMap, TimeQuery timeQuery, Long limit, List<String> selects, List<String> selectMores, List<String> selectLess, List<OrderItem> orderInfos) {
-        return getAuthRoutes(paramMap, (paramMapNew) -> super.selectList(entityClassName, paramMapNew, timeQuery, limit, selects, selectMores, selectLess, orderInfos));
+        return getAuthRoutes(paramMap,
+                (paramMapNew) -> super.selectList(entityClassName, paramMapNew, timeQuery, limit, selects, selectMores,
+                        selectLess, orderInfos));
     }
 
     private List<AuthRoute> getAuthRoutes(Map<String, Object> paramMap, Function<Map<String, Object>, List<AuthRoute>> queryListFunction) {
@@ -64,10 +67,17 @@ public class AuthRouteService extends BaseService<AuthRouteDao, AuthRoute> imple
             case user:
                 return Collections.emptyList();
             case agent:
-                Map<String, List<AuthRoute>> listMap = authRoutes.stream().collect(Collectors.groupingBy(AuthRoute::getCode));
+                Map<String, List<AuthRoute>> listMap = authRoutes.stream()
+                        .collect(Collectors.groupingBy(AuthRoute::getCode));
                 return listMap.values().stream().map(routes -> {
-                    AuthRoute authRouteAgent = routes.stream().filter(r -> EnumSysRole.AGENT.equals(r.getSysRole())).findFirst().orElse(null);
-                    AuthRoute authRouteAdmin = routes.stream().filter(r -> EnumSysRole.ADMIN.equals(r.getSysRole())).findFirst().orElse(null);
+                    AuthRoute authRouteAgent = routes.stream()
+                            .filter(r -> EnumSysRole.AGENT.equals(r.getSysRole()))
+                            .findFirst()
+                            .orElse(null);
+                    AuthRoute authRouteAdmin = routes.stream()
+                            .filter(r -> EnumSysRole.ADMIN.equals(r.getSysRole()))
+                            .findFirst()
+                            .orElse(null);
                     if (authRouteAgent == null) {
                         return authRouteAdmin;
                     } else if (authRouteAgent.getEnabled()) {
@@ -84,7 +94,8 @@ public class AuthRouteService extends BaseService<AuthRouteDao, AuthRoute> imple
     @Override
     public IMultiPageResult<AuthRoute> selectPage(String entityClassName, IPageInput pageInput, Map<String, Object> paramMap, TimeQuery timeQuery) {
         MultiPageResult<AuthRoute> page = new MultiPageResult<>();
-        page.setRecords(getAuthRoutes(paramMap, (paramMapNew) -> super.selectPage(entityClassName, pageInput, paramMapNew, timeQuery).getRecords()));
+        page.setRecords(getAuthRoutes(paramMap,
+                (paramMapNew) -> super.selectPage(entityClassName, pageInput, paramMapNew, timeQuery).getRecords()));
         return page;
     }
 
@@ -95,10 +106,18 @@ public class AuthRouteService extends BaseService<AuthRouteDao, AuthRoute> imple
     }
 
     @Override
-    public LinkedHashMap<String, String> getKeyValueMap(boolean isCommon) {
+    public List<String> getTranslateKeys(boolean isCommon) {
         Class<IEnumToDbEnum> intf = IEnumToDbEnum.class;
-        Set<Class> enumClasses = EnumConstant.simpleNameClassMapNoReplace.values().stream().filter(intf::isAssignableFrom).filter(c -> c.getPackage().getName().startsWith("com.pro.common.module.service.")).collect(Collectors.toSet());
-        Set<String> baseCodes = enumClasses.stream().flatMap(c -> ((List<Enum>) EnumUtil.enumList(c)).stream()).map(Enum::name).collect(Collectors.toSet());
-        return this.list().stream().filter(e -> isCommon == baseCodes.contains(e.getCode())).collect(Collectors.toMap(AuthRoute::getName, AuthRoute::getName, (v1, v2) -> v1, LinkedHashMap::new));
+        Set<Class> enumClasses = EnumConstant.simpleNameClassMapNoReplace.values()
+                .stream()
+                .filter(intf::isAssignableFrom)
+                .filter(c -> c.getPackage().getName().startsWith("com.pro.common.module.service."))
+                .collect(Collectors.toSet());
+        Set<String> baseCodes = enumClasses.stream()
+                .flatMap(c -> ((List<Enum>) EnumUtil.enumList(c)).stream())
+                .map(Enum::name)
+                .collect(Collectors.toSet());
+        return this.list().stream().filter(e -> isCommon == baseCodes.contains(e.getCode()))
+                .flatMap(authRoute -> Stream.of(authRoute.getName(), authRoute.getRemark())).distinct().collect(Collectors.toList());
     }
 }
