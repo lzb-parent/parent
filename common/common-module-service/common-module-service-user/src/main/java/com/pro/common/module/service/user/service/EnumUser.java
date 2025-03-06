@@ -20,7 +20,7 @@ public enum EnumUser implements IEnumToDbEnum<User> {
     private final String tkPassword;
     private final Boolean enabled;
     private final Boolean isDemo;
-    private final String nickName;
+    private final String nickname;
     private final Long levelId;
     private final String inviteCode;
     private final Long agentId;

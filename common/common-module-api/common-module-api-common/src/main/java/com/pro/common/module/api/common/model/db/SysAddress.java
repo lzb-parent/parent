@@ -29,7 +29,7 @@ public class SysAddress extends BaseConfigModel implements IConfigClass {
     @ApiModelProperty("三方编号")
     private String outCode;
     @ApiModelProperty("层级")
-    @JTDField(description = "1-国家 2-省份 3-市 4-县")
+    @JTDField(description = "1_国家_2_省份_3_市_4_县")
     private Integer level;
 
     public SysAddress(Long code, Long pcode, String country, String name, Integer level, String outCode) {

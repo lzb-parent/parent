@@ -3,16 +3,14 @@ package com.pro.common.module.api.user.model.db;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.pro.common.module.api.agent.model.db.Agent;
 import com.pro.common.module.api.common.model.db.Country;
-import com.pro.common.module.api.common.model.db.Poster;
 import com.pro.common.module.api.userlevel.model.db.UserLevelConfig;
 import com.pro.common.modules.api.dependencies.CommonConst;
 import com.pro.common.modules.api.dependencies.enums.EnumSysRole;
 import com.pro.common.modules.api.dependencies.model.BaseModel;
-import com.pro.common.modules.api.dependencies.model.ILoginInfo;
+import com.pro.common.modules.api.dependencies.model.ILoginInfoPrepare;
 import com.pro.common.modules.api.dependencies.model.classes.IUserOrderClass;
 import com.pro.common.modules.api.dependencies.user.model.IUser;
 import com.pro.common.modules.api.dependencies.user.model.IUserMsg;
-import com.pro.framework.api.enums.IEnumToDbDb;
 import com.pro.framework.api.enums.IEnumToDbDbId;
 import com.pro.framework.javatodb.annotation.JTDField;
 import com.pro.framework.javatodb.constant.JTDConst;
@@ -31,7 +29,7 @@ import java.time.LocalDateTime;
 //                "KEY `idx_code` (`code`)",
 //        }
 //)
-public class User extends BaseModel implements IUserOrderClass, ILoginInfo, IEnumToDbDbId, IUser, IUserMsg {
+public class User extends BaseModel implements IUserOrderClass, ILoginInfoPrepare, IEnumToDbDbId, IUser, IUserMsg {
     public static final User EMPTY = new User();
     @ApiModelProperty(value = "头像")
     @JTDField(group = "基础信息", uiType = JTDConst.EnumFieldUiType.image)
@@ -41,7 +39,7 @@ public class User extends BaseModel implements IUserOrderClass, ILoginInfo, IEnu
     private String username;
     @ApiModelProperty(value = "昵称")
     @JTDField(group = "基础信息")
-    private String nickName;
+    private String nickname;
     @ApiModelProperty(value = "手机号")
     @JTDField(group = "基础信息")
     private String phone;
@@ -156,7 +154,7 @@ public class User extends BaseModel implements IUserOrderClass, ILoginInfo, IEnu
     @ApiModelProperty(value = "5级推广人")
     @JTDField(group = "邀请", notNull = JTDConst.EnumFieldNullType.can_null)
     private Long pid5;
-    @ApiModelProperty(value = "父级id集合", notes = "越直接的在越后面,不包含自己,以逗号开头,以逗号结尾. 例如 ,1,100, ")
+    @ApiModelProperty(value = "父级id集合", notes = "越直接的在越后面_不包含自己_以逗号开头_以逗号结尾") //. 例如 ,1,100,
     @JTDField(group = "邀请", uiType = JTDConst.EnumFieldUiType.hide)
     private String pids;
     @ApiModelProperty(value = "个人推广码")

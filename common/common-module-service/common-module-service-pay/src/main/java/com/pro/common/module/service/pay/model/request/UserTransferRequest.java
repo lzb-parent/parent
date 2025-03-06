@@ -81,7 +81,7 @@ public class UserTransferRequest {
 
   @ApiModelProperty(value = "钱包地址，用于后期其他国家钱包通用字段")
   private String wallet;
-  @ApiModelProperty(value = "二级卡号", notes = "例如 pix号码 + cfp号码 才能定位唯一账号")
+  @ApiModelProperty(value = "二级卡号", notes = "例如_pix号码和cfp号码_才能定位唯一账号")
   private String bankAccount1;
   @ApiModelProperty(value = "三级卡号", notes = "")
   private String bankAccount2;

@@ -19,7 +19,7 @@ import java.math.BigDecimal;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-@ApiModel(value = "PayChannel对象", description = "支付渠道")
+@ApiModel(description = "支付渠道")
 @JTDTable(sequences = {
         "UNIQUE KEY `uk_merchantCode_name_payType` (`merchant_code`,`name`,`pay_type`)"
 }, entityId = 321)

@@ -21,8 +21,8 @@ import com.pro.framework.api.model.GeneratorDevConfig;
 import com.pro.framework.api.util.ClassUtils;
 import com.pro.framework.api.util.CollUtils;
 import com.pro.framework.api.util.StrUtils;
-import com.pro.framework.enums.EnumConstant;
-import com.pro.framework.enums.EnumUtil;
+import com.pro.framework.core.EnumConstant;
+import com.pro.framework.core.EnumUtil;
 import com.pro.framework.javatodb.constant.JTDConst;
 import com.pro.framework.javatodb.enums.EnumPositionAlign;
 import com.pro.framework.javatodb.enums.EnumUIArea;
@@ -31,9 +31,7 @@ import com.pro.framework.javatodb.model.JTDTableInfoVo;
 import com.pro.framework.javatodb.model.UITableInfo;
 import com.pro.framework.javatodb.service.IJTDService;
 import com.pro.framework.mtq.service.multiwrapper.util.MultiClassRelationFactory;
-import com.pro.framework.service.EnumsServiceImpl;
 import io.swagger.annotations.ApiOperation;
-import lombok.Cleanup;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,6 +81,7 @@ public class CommonTableInfoController {
         return "";
     }
 
+    @SuppressWarnings("CollectionAddAllCanBeReplacedWithConstructor")
     @SneakyThrows
     @ApiOperation(value = "增量加载 后端 messages_zh_CN.properties 待添加的键值")
     @GetMapping(value = "/reloadTranslateKeys")
@@ -96,9 +95,9 @@ public class CommonTableInfoController {
         List<String> translateKeysClassPlatform = getTranslateKeysEntity(false);
         translateKeysClassPlatform.removeAll(translateKeysClassCommon);
         // 类属性 - 公共
-        List<String> translateKeysEnumCommon = getTranslateKeysEnum(true, platform);
+        List<String> translateKeysEnumCommon = getTranslateKeysEnum(true);
         // 类属性 - 定制
-        List<String> translateKeysEnumPlatform = getTranslateKeysEnum(false, platform);
+        List<String> translateKeysEnumPlatform = getTranslateKeysEnum(false);
         translateKeysEnumPlatform.removeAll(translateKeysEnumCommon);
         // 类属性 - 公共
         List<String> translateKeysEnumDataCommon = enumsService.getTranslateKeys(true, platform);
@@ -114,15 +113,23 @@ public class CommonTableInfoController {
                 .flatMap(service -> service.getTranslateKeys(false).stream())
                 .collect(Collectors.toList());
 
-        Set<String> translateKeys = new LinkedHashSet<>();
-        translateKeys.addAll(translateKeysClassCommon);
-        translateKeys.addAll(translateKeysClassPlatform);
-        translateKeys.addAll(translateKeysEnumCommon);
-        translateKeys.addAll(translateKeysEnumPlatform);
-        translateKeys.addAll(translateKeysEntityCommon);
-        translateKeys.addAll(translateKeysEntityPlatform);
-        translateKeys.addAll(translateKeysEnumDataCommon);
-        translateKeys.addAll(translateKeysEnumDataPlatform);
+//        Set<String> translateKeys = new LinkedHashSet<>();
+        Set<String> translateKeysPlatform = new LinkedHashSet<>();
+        Set<String> translateKeysCommon = new LinkedHashSet<>();
+        translateKeysCommon.addAll(translateKeysClassCommon);
+        translateKeysPlatform.addAll(translateKeysClassPlatform);
+        translateKeysCommon.addAll(translateKeysEnumCommon);
+        translateKeysPlatform.addAll(translateKeysEnumPlatform);
+        translateKeysCommon.addAll(translateKeysEntityCommon);
+        translateKeysPlatform.addAll(translateKeysEntityPlatform);
+        translateKeysCommon.addAll(translateKeysEnumDataCommon);
+        translateKeysPlatform.addAll(translateKeysEnumDataPlatform);
+
+//        translateKeys.addAll(translateKeysCommon);
+//        translateKeys.addAll(translateKeysPlatform);
+        translateKeysCommon.removeIf(s -> null == s || s.isEmpty());
+        translateKeysPlatform.removeIf(s -> null == s || s.isEmpty());
+
 
         String devProjectRootPath = EnumAuthDict.DEV_PROJECT_ROOT_PATH.getValueCache();
         if (StrUtil.isBlank(devProjectRootPath)) {
@@ -138,23 +145,21 @@ public class CommonTableInfoController {
             // 生成到 messages_zh_CN.properties 本地文件中
             String subPathCommon = "/parent/common/common-module-service/common-module-service-login/src/main/resources/i18n_login/messages_zh_CN.properties";
             String subPathPlatform = "/platform/" + platform + "-common/src/main/resources/i18n_platform/messages_zh_CN.properties";
-            saveNewKeys(devProjectRootPath + subPathCommon, translateKeysClassCommon);
-            saveNewKeys(devProjectRootPath + subPathPlatform, translateKeysClassPlatform);
-            saveNewKeys(devProjectRootPath + subPathCommon, translateKeysEnumCommon);
-            saveNewKeys(devProjectRootPath + subPathPlatform, translateKeysEnumPlatform);
-            saveNewKeys(devProjectRootPath + subPathCommon, translateKeysEntityCommon);
-            saveNewKeys(devProjectRootPath + subPathPlatform, translateKeysEntityPlatform);
-            saveNewKeys(devProjectRootPath + subPathCommon, translateKeysEnumDataCommon);
-            saveNewKeys(devProjectRootPath + subPathPlatform, translateKeysEnumDataPlatform);
+            saveNewKeys(devProjectRootPath + subPathCommon, new ArrayList<>(translateKeysCommon));
+            saveNewKeys(devProjectRootPath + subPathPlatform, new ArrayList<>(translateKeysPlatform));
         }
 
-        return String.join("<br/>", translateKeys);
+        return
+                "<br/><br/>---------platform--------<br/>" + translateKeysPlatform.stream().map(str->StrUtils.replaceSpecialToUnderline(str)+"="+str).collect(Collectors.joining("<br/>"))+
+        "<br/><br/>---------common--------<br/>" + translateKeysCommon.stream().map(str->StrUtils.replaceSpecialToUnderline(str)+"="+str).collect(Collectors.joining("<br/>"))
+        ;
     }
 
-    private static List<String> getTranslateKeysEnum(boolean isCommon, String platform) {
-        String packagePlatform = "com.pro." + platform;
+    private static List<String> getTranslateKeysEnum(boolean isCommon) {
+        String packageCommon = "com.pro." + "common";
+        String packageFramework = "com.pro." + "framework";
         return EnumConstant.simpleNameClassMap.values()
-                .stream().filter(c -> isCommon != c.getPackage().getName().startsWith(packagePlatform))
+                .stream().filter(c -> isCommon == (c.getPackage().getName().startsWith(packageCommon) || c.getPackage().getName().startsWith(packageFramework)))
                 .flatMap(e -> {
                     Map<Serializable, String> map = EnumUtil.getNameLabelMap(e);
                     return map.values().stream();
@@ -167,7 +172,7 @@ public class CommonTableInfoController {
     private static void saveNewKeys(String filePath, List<String> keys) {
         // 创建新键的映射表
         LinkedHashMap<String, String> oriKeyShortKeyMap = keys.stream().collect(Collectors.toMap(
-                key -> key, StrUtils::replaceSpecialStr, (v1, v2) -> v1, LinkedHashMap::new));
+                key -> key, StrUtils::replaceSpecialToUnderline, (v1, v2) -> v1, LinkedHashMap::new));
 
         // 使用 LinkedHashSet 来存储新键值对的顺序
         LinkedHashSet<String> newEntries = new LinkedHashSet<>();
@@ -177,6 +182,8 @@ public class CommonTableInfoController {
         try (FileInputStream inputStream = new FileInputStream(filePath);
              InputStreamReader reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8)) {
             properties.load(reader);
+        } catch (IOException e) {
+            return;
         }
 
         // 筛选出新增的键值对
@@ -199,7 +206,6 @@ public class CommonTableInfoController {
             }
         }
     }
-
 
 
     private List<String> getTranslateKeysEntity(boolean isCommon) {
@@ -359,6 +365,7 @@ public class CommonTableInfoController {
         switch (commonProperties.getApplication()) {
             case admin:
             case agent:
+            case user:
                 if (loginInfo == null || loginInfo.getId() == null) {
                     throw new BusinessException("error permission");
                 }
@@ -519,7 +526,7 @@ public class CommonTableInfoController {
             case base:
 //                UITableInfo.FieldConfigOne fieldConfigOne = new UITableInfo.FieldConfigOne();
                 infoCopy.setFieldName(configField.getFieldName());
-                infoCopy.setLabel(StrUtils.or(I18nUtils.get(StrUtils.replaceSpecialStr(configField.getLabel())), configField.getLabel()));
+                infoCopy.setLabel(StrUtils.or(I18nUtils.get(StrUtils.replaceSpecialToUnderline(configField.getLabel())), configField.getLabel()));
                 infoCopy.setUiType(defaultUiType.equals(configField.getUiType()) ? null : configField.getUiType());
                 infoCopy.setMainLength(
                         defaultMainLength.equals(configField.getMainLength()) ? null : configField.getMainLength());

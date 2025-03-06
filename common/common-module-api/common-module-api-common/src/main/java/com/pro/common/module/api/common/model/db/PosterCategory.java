@@ -18,7 +18,7 @@ import lombok.EqualsAndHashCode;
 @Data
 
 @EqualsAndHashCode(callSuper = true)
-@ApiModel(value = "PosterCategory对象", description = "文章分类表")
+@ApiModel(description = "文章分类表")
 @JTDTable(entityId = 325)
 public class PosterCategory extends BaseConfigModel implements IConfigClass {
     @ApiModelProperty(value = "分类名称")

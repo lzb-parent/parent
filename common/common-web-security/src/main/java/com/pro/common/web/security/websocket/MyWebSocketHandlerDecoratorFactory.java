@@ -16,6 +16,8 @@ import java.util.concurrent.ConcurrentHashMap;
 public class MyWebSocketHandlerDecoratorFactory implements WebSocketHandlerDecoratorFactory {
     // 已登录用户
     public static final Map<Long, ILoginInfo> loginUserMap = new ConcurrentHashMap<>(4096);
+    // 一个用户可能打开多个窗口(页面刷新) 都需要收到websocket
+    public static final Map<Long, ILoginInfo> socketClientMap = new ConcurrentHashMap<>(4096);
 
     @Override
     public @NonNull
@@ -37,15 +39,16 @@ public class MyWebSocketHandlerDecoratorFactory implements WebSocketHandlerDecor
                 if (null != userInfoVo && null != userInfoVo.getId()) {
                     loginUserMap.remove(userInfoVo.getId());
                 }
-                log.debug("{}：断开连接了", session.getId());
+                log.info("{}：断开连接了", session.getId());
                 super.afterConnectionClosed(session, closeStatus);
             }
 
             @Override
             public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
-                log.debug("{}：handleTransportError", session.getId(), exception);
+                log.info("{}：handleTransportError", session.getId(), exception);
                 super.handleTransportError(session, exception);
             }
+
         };
     }
 }

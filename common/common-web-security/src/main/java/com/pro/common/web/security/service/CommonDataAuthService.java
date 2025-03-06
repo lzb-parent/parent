@@ -2,6 +2,7 @@ package com.pro.common.web.security.service;
 
 import cn.hutool.core.collection.CollUtil;
 import com.pro.common.modules.api.dependencies.auth.ICommonDataAuthFilterService;
+import com.pro.common.modules.api.dependencies.exception.BusinessException;
 import com.pro.common.modules.api.dependencies.model.ILoginInfo;
 import com.pro.common.modules.api.dependencies.model.classes.IConfigClass;
 import com.pro.common.modules.api.dependencies.model.classes.IUserClass;
@@ -43,7 +44,10 @@ public class CommonDataAuthService<T extends IModel> {
      * 执行前 过滤数据来源
      */
     public void filterRequestQuery(EnumCommonDataMethodType methodType, Class<T> beanClass, ILoginInfo loginInfo, Map<String, Object> paramMap, UserDataQuery query, IPageInput pageInput) {
-        this.filterRequest(methodType, beanClass, loginInfo);
+        this.filterRequest(methodType, beanClass, loginInfo, () -> this.filterRequestQueryMore(methodType, beanClass, loginInfo, paramMap, query, pageInput));
+    }
+
+    public void filterRequestQueryMore(EnumCommonDataMethodType methodType, Class<T> beanClass, ILoginInfo loginInfo, Map<String, Object> paramMap, UserDataQuery query, IPageInput pageInput) {
         // 需要登录的请求,都登录了
         AssertUtil.isTrue(IConfigClass.class.isAssignableFrom(beanClass) || null != loginInfo.getId(), "error permission");
         switch (loginInfo.getSysRole()) {
@@ -59,12 +63,11 @@ public class CommonDataAuthService<T extends IModel> {
                 break;
             case USER:
                 String userIdPropName = entityProperties.getEntityClassReplaceMap().get("User").equals(beanClass) ? "id" : "userId";
-                commonDataAuthFilterService.filterQueryUserTeam(loginInfo, paramMap, query, userIdPropName);
+                commonDataAuthFilterService.filterQueryUserTeam(loginInfo, paramMap, query, userIdPropName, beanClass);
                 break;
             case ANONYMOUS:
-                break;
             default:
-                break;
+                throw new BusinessException("error permission");
         }
 
         switch (loginInfo.getSysRole()) {
@@ -110,6 +113,11 @@ public class CommonDataAuthService<T extends IModel> {
 
 
     public <T extends IModel> void filterRequest(EnumCommonDataMethodType methodType, Class<T> beanClass, ILoginInfo loginInfo) {
+        filterRequest(methodType, beanClass, loginInfo, () -> {
+        });
+    }
+
+    public <T extends IModel> void filterRequest(EnumCommonDataMethodType methodType, Class<T> beanClass, ILoginInfo loginInfo, Runnable filterMore) {
         switch (methodType) {
             case selectById:
             case selectOne:
@@ -120,6 +128,7 @@ public class CommonDataAuthService<T extends IModel> {
                 // 查询公共资料不用登录
                 if (!IConfigClass.class.isAssignableFrom(beanClass)) {
                     AssertUtil.notEmpty(loginInfo.getId(), "Please login first");
+                    filterMore.run();
                 }
                 break;
             // 暂时只需要登录 先查询数据,才能检查
@@ -132,6 +141,7 @@ public class CommonDataAuthService<T extends IModel> {
             default:
                 // 其他都要登录
                 AssertUtil.notEmpty(loginInfo.getId(), "Please login first");
+                filterMore.run();
         }
     }
 

@@ -1,10 +1,12 @@
 package com.pro.common.web.security.service;
 
 import com.pro.common.modules.api.dependencies.exception.BusinessException;
-import com.pro.common.modules.api.dependencies.model.ILoginInfo;
+import com.pro.common.modules.api.dependencies.model.ILoginInfoPrepare;
 import com.pro.common.modules.api.dependencies.model.LoginRequest;
-import com.pro.common.modules.api.dependencies.service.IAuthRoleService;
 import com.pro.common.modules.api.dependencies.service.ILoginInfoService;
+import com.pro.common.modules.service.dependencies.modelauth.base.AccessToken;
+import com.pro.common.modules.service.dependencies.modelauth.base.LoginInfoService;
+import com.pro.common.modules.service.dependencies.modelauth.base.TokenService;
 import com.pro.common.modules.service.dependencies.properties.CommonProperties;
 import com.pro.framework.api.util.AssertUtil;
 import com.pro.framework.api.util.JSONUtils;
@@ -23,15 +25,15 @@ public class CommonLoginService {
     @Autowired
     private ApplicationContext applicationContext;
     @Autowired
-    private IAuthRoleService authRoleService;
+    private LoginInfoService loginInfoService;
 //    @Autowired
 //    private CacheManager cacheManager;
 
     @Transactional
-    public String login(String requestStr) {
+    public AccessToken login(String requestStr) {
         LoginRequest request = JSONUtils.fromString(requestStr, LoginRequest.class);
         // 查询 userService / adminService /agentService
-        ILoginInfo loginInfo = this.getLoginInfoService().doLogin(request);
+        ILoginInfoPrepare loginInfo = this.getLoginInfoService().doLogin(request);
         if (loginInfo == null) {
 //            I18nUtils.throwBusinessException("用户不存在", request.getUsername());
             throw new BusinessException("用户不存在_", request.getUsername());
@@ -45,15 +47,15 @@ public class CommonLoginService {
             throw new BusinessException("密码错误");
         }
         // 重载(清理)菜单缓存
-        authRoleService.clearCache(commonProperties.getApplication().getRole(), loginInfo.getId());
+//        loginInfoService.clearCache(commonProperties.getApplication().getRole(), loginInfo.getId());
         // 返回登录token
         return tokenService.generate(loginInfo);
     }
 
     @Transactional
-    public String register(String request, String ip, String lang) {
+    public AccessToken register(String request, String ip, String lang) {
         // 注册
-        ILoginInfo loginInfo = this.getLoginInfoService().register(request, ip, lang);
+        ILoginInfoPrepare loginInfo = this.getLoginInfoService().register(request, ip, lang);
         // 返回登录token
         return tokenService.generate(loginInfo);
     }
@@ -62,12 +64,12 @@ public class CommonLoginService {
         return applicationContext.getBean(commonProperties.getApplication().getRole().getServiceBean(), ILoginInfoService.class);
     }
 
-    public ILoginInfo getLoginInfo(Long id) {
+    public ILoginInfoPrepare getLoginInfo(Long id) {
         return this.getLoginInfoService().getById(id);
     }
 
     public Boolean getGoogleAuthOpen(LoginRequest request) {
-        ILoginInfo loginInfo = this.getLoginInfoService().doLogin(request);
+        ILoginInfoPrepare loginInfo = this.getLoginInfoService().doLogin(request);
         return null != loginInfo && loginInfo.getGoogleAuthOpen();
     }
 }

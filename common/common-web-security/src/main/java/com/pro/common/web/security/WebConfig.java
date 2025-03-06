@@ -4,11 +4,10 @@ import cn.hutool.core.util.ObjUtil;
 import com.pro.common.modules.api.dependencies.CommonConst;
 import com.pro.common.modules.api.dependencies.common.model.ICountry;
 import com.pro.common.modules.api.dependencies.common.service.ICountryService;
-import com.pro.common.modules.api.dependencies.service.IAuthRoleService;
+import com.pro.common.modules.service.dependencies.modelauth.base.LoginInfoService;
 import com.pro.common.modules.service.dependencies.properties.CommonProperties;
-import com.pro.common.web.security.component.TokenAuthResolver;
 import com.pro.common.web.security.component.MyLocalResolver;
-import com.pro.common.web.security.service.TokenService;
+import com.pro.common.web.security.component.TokenAuthResolver;
 import com.pro.framework.api.util.AssertUtil;
 import com.pro.framework.api.util.LogicUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,18 +29,16 @@ import java.util.List;
 @DependsOn("jTDServiceImpl")
 public class WebConfig implements WebMvcConfigurer {
     @Autowired
-    private IAuthRoleService authRouteService;
-    @Autowired
     private CommonProperties commonProperties;
     @Autowired
-    private TokenService tokenService;
+    private LoginInfoService loginInfoService;
 
     /**
      * 获取登录信息token
      */
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
-        resolvers.add(new TokenAuthResolver(authRouteService, tokenService, commonProperties));
+        resolvers.add(new TokenAuthResolver(commonProperties, loginInfoService));
     }
 
     @Bean

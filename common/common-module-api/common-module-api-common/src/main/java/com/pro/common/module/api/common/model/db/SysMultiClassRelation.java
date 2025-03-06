@@ -2,7 +2,6 @@ package com.pro.common.module.api.common.model.db;
 
 import com.pro.common.modules.api.dependencies.model.BaseModel;
 import com.pro.common.modules.api.dependencies.model.classes.IAdminClass;
-import com.pro.framework.api.model.IdModel;
 import com.pro.framework.javatodb.annotation.JTDTable;
 import com.pro.framework.mtq.service.multiwrapper.entity.ClassRelationOneOrManyEnum;
 import com.pro.framework.mtq.service.multiwrapper.entity.IMultiClassRelation;
@@ -41,9 +40,9 @@ public class SysMultiClassRelation extends BaseModel implements IMultiClassRelat
     /**
      * 两张表对应实体名称 例如 user userMoney
      */
-    @ApiModelProperty(value = "实体1 例如 user")
+    @ApiModelProperty(value = "实体1_例如_user")
     private String className1;
-    @ApiModelProperty(value = "实体2 例如 userMoney")
+    @ApiModelProperty(value = "实体2_例如_userMoney")
     private String className2;
 
 

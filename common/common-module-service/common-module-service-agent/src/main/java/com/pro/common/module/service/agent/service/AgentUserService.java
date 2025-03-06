@@ -115,7 +115,7 @@ public class AgentUserService implements ICommonDataAuthFilterService, ISysMsgEx
     }
 
     @Override
-    public void filterQueryUserTeam(ILoginInfo loginInfo, Map<String, Object> paramMap, UserDataQuery query, String userIdPropName) {
+    public void filterQueryUserTeam(ILoginInfo loginInfo, Map<String, Object> paramMap, UserDataQuery query, String userIdPropName, Class<?> entityClass) {
         Long userId = loginInfo.getId();
         // 是否查询用户下级的信息
         Boolean userTeamFlag = query.getUserTeamFlag();

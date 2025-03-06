@@ -3,7 +3,6 @@ package com.pro.common.module.api.common.model.db;
 import com.pro.common.module.api.common.model.enums.EnumInputFieldTypeOpt;
 import com.pro.common.modules.api.dependencies.model.classes.BaseConfigModel;
 import com.pro.common.modules.api.dependencies.model.classes.IConfigClass;
-import com.pro.framework.api.enums.IEnumToDbDb;
 import com.pro.framework.api.enums.IEnumToDbDbId;
 import com.pro.framework.javatodb.annotation.JTDField;
 import com.pro.framework.javatodb.annotation.JTDTable;

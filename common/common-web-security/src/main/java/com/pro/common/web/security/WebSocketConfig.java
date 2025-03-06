@@ -2,7 +2,7 @@ package com.pro.common.web.security;
 
 import com.pro.common.web.security.websocket.MyPrincipalHandshakeHandler;
 import com.pro.common.web.security.websocket.MyWebSocketHandlerDecoratorFactory;
-import com.pro.common.web.security.service.TokenService;
+import com.pro.common.modules.service.dependencies.modelauth.base.TokenService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;

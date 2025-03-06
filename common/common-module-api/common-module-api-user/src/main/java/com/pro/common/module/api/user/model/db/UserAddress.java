@@ -13,7 +13,7 @@ import lombok.EqualsAndHashCode;
 @Data
 
 @EqualsAndHashCode(callSuper = true)
-@ApiModel(value = "UserAddress对象", description = "用户收货地址")
+@ApiModel(description = "用户收货地址")
 @JTDTable(entityId = 126, module = "user")
 public class UserAddress extends BaseUserModel implements IUserDataClass {
     @ApiModelProperty(value = "用户ID")

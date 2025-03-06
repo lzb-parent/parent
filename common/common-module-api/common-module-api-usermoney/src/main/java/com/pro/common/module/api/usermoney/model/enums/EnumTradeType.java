@@ -20,7 +20,7 @@ public enum EnumTradeType implements IEnumTradeType {
     RECHARGE_BACK("101", EnumAmountUpDown.up, "后台充值"),
     RECHARGE_ONLINE("102", EnumAmountUpDown.up, "在线充值"),
     RECHARGE_REGISTER("106", EnumAmountUpDown.up, "注册赠送"),
-    RECHARGE_JACKPOT("103", EnumAmountUpDown.up, "充值彩金"),
+    RECHARGE_JACKPOT("103", EnumAmountUpDown.up, "充值2"),
     RECHARGE_PRESENT("108", EnumAmountUpDown.up, "充值奖励"),
     RECHARGE_TG_COMMISSION("104", EnumAmountUpDown.up, "充值推广佣金"),
     REGISTER_TG_COMMISSION("105", EnumAmountUpDown.up, "注册推广佣金"),

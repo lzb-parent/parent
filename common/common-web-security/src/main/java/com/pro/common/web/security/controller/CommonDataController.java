@@ -197,7 +197,7 @@ public class CommonDataController<T extends IModel> {
     }
 
     private static String translate(String label) {
-        return StrUtils.or(I18nUtils.get(StrUtils.replaceSpecialStr(label)), label);
+        return StrUtils.or(I18nUtils.get(StrUtils.replaceSpecialToUnderline(label)), label);
     }
 
     private static <T extends IModel> String[] convertDataToCsvRow(T data, List<UITableInfo.FieldConfigOne> fields, Map<String, Tuple3<Field, Method, Method>> classFieldMap, ExportConfigData exportConfigData) {

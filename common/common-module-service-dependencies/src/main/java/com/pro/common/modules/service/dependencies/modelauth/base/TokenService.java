@@ -1,10 +1,11 @@
-package com.pro.common.web.security.service;
+package com.pro.common.modules.service.dependencies.modelauth.base;
 
 import com.pro.common.module.api.system.model.enums.EnumAuthDict;
 import com.pro.common.module.api.system.model.intf.IAuthDictService;
+import com.pro.common.modules.api.dependencies.CommonConst;
 import com.pro.common.modules.api.dependencies.enums.EnumApplication;
 import com.pro.common.modules.api.dependencies.enums.EnumSysRole;
-import com.pro.common.modules.api.dependencies.model.ILoginInfo;
+import com.pro.common.modules.api.dependencies.model.ILoginInfoPrepare;
 import com.pro.common.modules.service.dependencies.properties.CommonProperties;
 import com.pro.framework.api.FrameworkConst;
 import com.pro.framework.api.cache.ICacheManagerCenter;
@@ -38,7 +39,7 @@ public class TokenService {
     /**
      * 生成token
      */
-    public String generate(ILoginInfo loginInfo) {
+    public AccessToken generate(ILoginInfoPrepare loginInfo) {
         return this.generate(loginInfo.getSysRole().toString(), loginInfo.getId().toString());
     }
 
@@ -71,7 +72,7 @@ public class TokenService {
     /**
      * 刷新token
      */
-    public String refresh(String tokenOld) {
+    public AccessToken refresh(String tokenOld) {
         String[] props = tokenOld.split("_");
         // 删除旧token
         this.evict(tokenOld);
@@ -87,21 +88,22 @@ public class TokenService {
         cacheManagerRemote.clearCache(getLoginCacheName(application.name(), id.toString())); // props[0], props[1]
     }
 
-    private String generate(String role, String id) {
+    private AccessToken generate(String role, String id) {
         String token = String.join(FrameworkConst.Str.UNDERLINE, role, id, generateToken(TOKEN_LENGTH) + System.currentTimeMillis());
-        cacheManagerRemote.put(getLoginCacheName(role, id), token, id, commonProperties.getRoleTokenValidSecondMap().getOrDefault(role, 3600), TimeUnit.SECONDS);
-        return token;
+        Integer expiresInSecond = commonProperties.getRoleTokenValidSecondMap().getOrDefault(role, 3600);
+        cacheManagerRemote.put(getLoginCacheName(role, id), token, id, expiresInSecond, TimeUnit.SECONDS);
+        return new AccessToken(token, expiresInSecond, "Bearer");
     }
 
     // 定义字符集，包含数字、大写字母和小写字母
-    private static final String CHARACTERS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
     private static final int TOKEN_LENGTH = 30;
     private static final SecureRandom secureRandom = new SecureRandom();
 
     public static String generateToken(int length) {
+        String characters = CommonConst.Str.CHARACTERS;
         StringBuilder token = new StringBuilder();
         for (int i = 0; i < length; i++) {
-            token.append(CHARACTERS.charAt(secureRandom.nextInt(CHARACTERS.length())));
+            token.append(characters.charAt(secureRandom.nextInt(characters.length())));
         }
         return token.toString();
     }

@@ -19,10 +19,10 @@ public enum EnumRechargeType implements IEnum {
 
     RECHARGE_BACK("后台充值"),
     RECHARGE_ONLINE("在线充值"),
-    RECHARGE_JACKPOT("充值彩金"),
+    RECHARGE_JACKPOT("充值2"),
     RECHARGE_REGISTER("注册赠送"),
     RECHARGE_PRESENT("充值奖励"),
-    DEDUCT_HANDLE("手动扣款"),// todo 手动扣款
+    DEDUCT_HANDLE("手动扣款"),
     ;
 
     private String label;

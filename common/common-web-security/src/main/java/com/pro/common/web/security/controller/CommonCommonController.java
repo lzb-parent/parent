@@ -145,14 +145,17 @@ public class CommonCommonController {
 
     @ApiOperation(value = "上传")
     @PostMapping("/uploadPre")
-    public List<String> upload(
+    public R<List<String>> upload(
             @RequestParam(name = "file") MultipartFile[] files,
             @RequestParam(name = "module") String module,
             @RequestParam(name = "sign", required = false) String sign) {
+//        if (true) {
+//            throw new BusinessException("11");
+//        }
         List<String> list = FileUploadUtils.uploadFiles(files, module, sign);
         // 拼接图片prefix
         list = list.stream().map(o -> StrUtil.addPrefixIfNot(o, FileUploadUtils.FILE_PREPEND)).collect(Collectors.toList());
-        return list;
+        return R.ok(list);
     }
 
     @RequestMapping("/uploadAdmin")
@@ -176,7 +179,9 @@ public class CommonCommonController {
                 if (JSONUtil.isJsonObj(body)) {
                     JSONObject rs = JSONUtil.parseObj(body);
                     String code = rs.getStr("code");
-                    if ("500".equals(code)) {
+                    if ("0".equals(code)) {
+                        return rs.getJSONArray("data").toList(String.class);
+                    } else {
                         throw new BusinessException(rs.getStr("msg"));
                     }
                 }

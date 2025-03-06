@@ -19,7 +19,7 @@ import lombok.EqualsAndHashCode;
 @Data
 
 @EqualsAndHashCode(callSuper = true)
-@ApiModel(value = "Customer对象", description = "客服")
+@ApiModel(description = "客服")
 @JTDTable(entityId = 311)
 public class Customer extends BaseModel implements IConfigClass {
 

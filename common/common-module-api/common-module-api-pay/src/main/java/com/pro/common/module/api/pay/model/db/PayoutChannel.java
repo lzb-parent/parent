@@ -19,7 +19,7 @@ import java.math.BigDecimal;
 @Data
 
 @EqualsAndHashCode(callSuper = true)
-@ApiModel(value = "PayoutChannel对象", description = "代付渠道")
+@ApiModel(description = "代付渠道")
 @JTDTable(entityId = 323)
 public class PayoutChannel extends BaseModel implements IConfigClass {
 
@@ -36,7 +36,7 @@ public class PayoutChannel extends BaseModel implements IConfigClass {
     @ApiModelProperty(value = "货币符号")
     private String coinCode;
     @ApiModelProperty(value = "汇率")
-    @JTDField(defaultValue = "1", description = "1平台币=*通道币")
+    @JTDField(defaultValue = "1", description = "1平台币等于多少通道币")
     private BigDecimal exchangeRate;
 
 

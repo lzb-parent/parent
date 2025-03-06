@@ -26,7 +26,7 @@ import java.util.List;
 @Data
 
 @EqualsAndHashCode(callSuper = true)
-@ApiModel(value = "Poster对象", description = "文章")
+@ApiModel(description = "文章")
 @JTDTable(sequences = {
         "UNIQUE KEY `uk_code_lang` (`code`,`lang`)"
 }, entityId = 324)

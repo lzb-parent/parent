@@ -46,7 +46,7 @@ public class UserBankCard extends BaseUserModel implements IUserDataClass {
 //    private String usdt;
     @ApiModelProperty("账号")
     private String bankAccount;
-    @ApiModelProperty(value = "二级账号", notes = "例如 pix号码 + cfp号码 才能定位唯一账号")
+    @ApiModelProperty(value = "二级账号", notes = "例如_pix号码和cfp号码_才能定位唯一账号")
     private String bankAccount1;
     @ApiModelProperty(value = "三级账号")
     private String bankAccount2;

@@ -21,8 +21,8 @@ import static com.pro.common.modules.api.dependencies.enums.EnumSysRole.AGENT;
 @Getter
 @AllArgsConstructor
 public enum EnumAuthRole implements IEnumToDbEnum<AuthRole> {
-    _1001(ADMIN,true,"superAdmin","",true,null),
-    _2001(AGENT,true,"superAgent","",true,null),
+    _1001(ADMIN,true,"超级管理员","",true,null),
+    _2001(AGENT,true,"超级代理员","",true,null),
     ;
     private EnumSysRole sysRole;
     private Boolean superFlag;

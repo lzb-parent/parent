@@ -6,15 +6,15 @@ import cn.hutool.http.HttpUtil;
 import com.pro.common.module.api.message.enums.EnumSysMsgBusinessCode;
 import com.pro.common.module.api.message.intf.ISysMsgService;
 import com.pro.common.module.api.system.model.enums.EnumAuthDict;
-import com.pro.common.module.service.user.dao.UserDao;
 import com.pro.common.module.api.user.enums.EnumRegisterUsernameFrom;
 import com.pro.common.module.api.user.intf.IUserService;
 import com.pro.common.module.api.user.model.db.User;
+import com.pro.common.module.service.user.dao.UserDao;
 import com.pro.common.modules.api.dependencies.CommonConst;
 import com.pro.common.modules.api.dependencies.R;
 import com.pro.common.modules.api.dependencies.enums.EnumSysRole;
 import com.pro.common.modules.api.dependencies.exception.BusinessException;
-import com.pro.common.modules.api.dependencies.model.ILoginInfo;
+import com.pro.common.modules.api.dependencies.model.ILoginInfoPrepare;
 import com.pro.common.modules.api.dependencies.model.LoginRequest;
 import com.pro.common.modules.api.dependencies.service.ILoginInfoService;
 import com.pro.common.modules.api.dependencies.user.intf.IUserRegisterInitService;
@@ -62,7 +62,8 @@ public class UserService<M extends UserDao<T>, T extends User> extends BaseServi
         return user;
     }
 
-    private T query(LoginRequest loginRequest) {
+    @Override
+    public  T query(LoginRequest loginRequest) {
         if (StrUtils.isNotBlank(loginRequest.getUsername())) {
             return this.lambdaQuery().eq(T::getUsername, loginRequest.getUsername()).one();
         }
@@ -190,7 +191,7 @@ public class UserService<M extends UserDao<T>, T extends User> extends BaseServi
                 throw new BusinessException("邀请码必填");
             }
         } else {
-            ILoginInfo loginInfo = UserOtherService.inviteCodeServices.stream().map(service -> service.getByCode(inviteCode)).filter(Objects::nonNull).findFirst().orElse(null);
+            ILoginInfoPrepare loginInfo = UserOtherService.inviteCodeServices.stream().map(service -> service.getByCode(inviteCode)).filter(Objects::nonNull).findFirst().orElse(null);
             if (loginInfo == null) {
                 throw new BusinessException("无效的邀请码", inviteCode);
             } else {
@@ -262,7 +263,7 @@ public class UserService<M extends UserDao<T>, T extends User> extends BaseServi
                 .collect(Collectors.toList());
     }
 
-    private void doSaveOrUpdate(T entity) {
+    public void doSaveOrUpdate(T entity) {
         if (StrUtils.isNotBlank(entity.getPassword())) {
             this.checkOldPassword(entity, T::getPassword);
             entity.setPassword(PasswordUtils.encrypt_Password(entity.getPassword()));
@@ -288,7 +289,7 @@ public class UserService<M extends UserDao<T>, T extends User> extends BaseServi
     }
 
     @Override
-    public ILoginInfo getByCode(String code) {
+    public ILoginInfoPrepare getByCode(String code) {
         return this.lambdaQuery().eq(T::getCode, code).one();
     }
 

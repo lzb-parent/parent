@@ -3,11 +3,10 @@ package com.pro.common.module.api.agent.model.db;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.pro.common.modules.api.dependencies.enums.EnumSysRole;
-import com.pro.common.modules.api.dependencies.model.ILoginInfo;
+import com.pro.common.modules.api.dependencies.model.BaseModel;
+import com.pro.common.modules.api.dependencies.model.ILoginInfoPrepare;
 import com.pro.common.modules.api.dependencies.model.classes.IAdminClass;
 import com.pro.common.modules.api.dependencies.model.classes.ISimpleInfo;
-import com.pro.framework.api.enums.IEnumToDbDb;
-import com.pro.common.modules.api.dependencies.model.BaseModel;
 import com.pro.framework.api.enums.IEnumToDbDbId;
 import com.pro.framework.javatodb.annotation.JTDField;
 import com.pro.framework.javatodb.annotation.JTDTable;
@@ -27,7 +26,7 @@ import java.time.LocalDateTime;
 @ApiModel(description = "代理")
 @NoArgsConstructor
 @JTDTable(entityId = 302)
-public class Agent extends BaseModel implements IAdminClass, IEnumToDbDbId, ILoginInfo, ISimpleInfo {
+public class Agent extends BaseModel implements IAdminClass, IEnumToDbDbId, ILoginInfoPrepare, ISimpleInfo {
     public static final Agent EMPTY = new Agent();
 
 
@@ -71,7 +70,7 @@ public class Agent extends BaseModel implements IAdminClass, IEnumToDbDbId, ILog
 
     @ApiModelProperty(value = "昵称")
     @JTDField(group = "通讯信息")
-    private String nickName;
+    private String nickname;
     @ApiModelProperty(value = "手机号")
     @JTDField(group = "通讯信息")
     private String phone;

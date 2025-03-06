@@ -11,7 +11,7 @@ public class CommonConst {
         public static final String login = "login";
         public static final String AuthDict = "AuthDict";
         public static final String UserLevelConfig = "UserLevelConfig";
-        public static final String AuthRoutePaths = "AuthRoutePaths";
+        public static final String LoginInfo = "LoginInfo";
         public static final String SmsCode = "SmsCode";//验证码
         /**
          * 验证码
@@ -93,6 +93,7 @@ public class CommonConst {
 
         public static final String DEFAULT_LANG_EN = "en-US";
         public static final String SPLIT = "##";
+        public static final String CHARACTERS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
     }
 
     public static class Num {

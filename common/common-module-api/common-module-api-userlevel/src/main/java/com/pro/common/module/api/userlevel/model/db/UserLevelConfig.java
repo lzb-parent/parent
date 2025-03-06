@@ -66,7 +66,7 @@ public class UserLevelConfig extends BaseModel implements IConfigClass, IEnumToD
     @JTDField(group = "佣金信息")
     private Boolean commissionLevelLimitOpen;
     @ApiModelProperty(value = "充值推广佣金百分比")
-    @JTDField(group = "佣金信息",description = "可逗号分隔多级分润，例如配置三个数字就分三个人，单位百分比 10,20,30")
+    @JTDField(group = "佣金信息",description = "可逗号分隔多级分润_例如配置三个数字就分三个人_单位百分比10_20_30")
     private String rechargeCommissionRate;
 
     @ApiModelProperty(value = "升级购买价格")

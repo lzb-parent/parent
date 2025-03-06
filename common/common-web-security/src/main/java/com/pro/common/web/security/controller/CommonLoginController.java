@@ -11,13 +11,15 @@ import com.pro.common.modules.api.dependencies.R;
 import com.pro.common.modules.api.dependencies.enums.EnumSysRole;
 import com.pro.common.modules.api.dependencies.exception.BusinessException;
 import com.pro.common.modules.api.dependencies.model.ILoginInfo;
+import com.pro.common.modules.api.dependencies.model.ILoginInfoPrepare;
 import com.pro.common.modules.api.dependencies.model.LoginRequest;
 import com.pro.common.modules.api.dependencies.service.IAuthRoleService;
 import com.pro.common.modules.api.dependencies.user.model.UserMsg;
+import com.pro.common.modules.service.dependencies.modelauth.base.AccessToken;
 import com.pro.common.modules.service.dependencies.properties.CommonProperties;
 import com.pro.common.modules.service.dependencies.util.IPUtils;
 import com.pro.common.web.security.service.CommonLoginService;
-import com.pro.common.web.security.service.TokenService;
+import com.pro.common.modules.service.dependencies.modelauth.base.TokenService;
 import com.pro.framework.api.cache.ICacheManagerCenter;
 import com.pro.framework.api.util.AssertUtil;
 import com.pro.framework.api.util.StrUtils;
@@ -51,7 +53,7 @@ public class CommonLoginController {
 
     @ApiOperation("注册")
     @PostMapping("/register")
-    public R<String> register(HttpServletRequest request, HttpServletResponse response, @RequestBody String requestBody) {
+    public R<AccessToken> register(HttpServletRequest request, HttpServletResponse response, @RequestBody String requestBody) {
         // 图形验证码
         JSONObject jo = JSONUtil.parseObj(requestBody);
         if (EnumAuthDict.REGISTER_PROPS.getValueCache().contains(",captcha,")) {
@@ -73,18 +75,18 @@ public class CommonLoginController {
 
         String ip = IPUtils.getIpAddress(request);
         // 返回token
-        String token = commonLoginService.register(requestBody, ip, LocaleContextHolder.getLocale().toLanguageTag());
-        response.setHeader("Authorization", token);
+        AccessToken token = commonLoginService.register(requestBody, ip, LocaleContextHolder.getLocale().toLanguageTag());
+        response.setHeader("Authorization", token.getAccessToken());
         response.setHeader("Access-Control-Expose-Headers", "Authorization");
         return R.ok(token);
     }
 
     @ApiOperation("登录")
     @PostMapping("/login")
-    public R<String> login(HttpServletResponse response, @RequestBody String request) {
+    public R<AccessToken> login(HttpServletResponse response, @RequestBody String request) {
         // 返回token
-        String token = commonLoginService.login(request);
-        response.setHeader("Authorization", token);
+        AccessToken token = commonLoginService.login(request);
+        response.setHeader("Authorization", token.getAccessToken());
         response.setHeader("Access-Control-Expose-Headers", "Authorization");
         return R.ok(token);
     }
@@ -102,7 +104,7 @@ public class CommonLoginController {
 
     @ApiOperation("查询登录信息")
     @GetMapping("/getLoginInfo")
-    public R<ILoginInfo> getLoginInfo(ILoginInfo loginInfo) {
+    public R<ILoginInfoPrepare> getLoginInfo(ILoginInfo loginInfo) {
         return R.ok(commonLoginService.getLoginInfo(loginInfo.getId()));
     }
 
@@ -121,9 +123,9 @@ public class CommonLoginController {
 
     @ApiOperation(value = "更新token")
     @PostMapping("/refreshToken")
-    public R<String> refreshToken(HttpServletRequest request) {
+    public R<AccessToken> refreshToken(HttpServletRequest request) {
         // 返回token
-        String token = tokenService.refresh(request.getHeader(TokenService.tokenKey));
+        AccessToken token = tokenService.refresh(request.getHeader(TokenService.tokenKey));
         return R.ok(token);
     }
 

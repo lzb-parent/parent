@@ -1,6 +1,7 @@
 package com.pro.common.module.api.common.model.enums;
 
 import com.pro.common.module.api.common.model.db.BannerType;
+import com.pro.framework.api.enums.IEnum;
 import com.pro.framework.api.enums.IEnumToDbEnum;
 import com.pro.framework.javatodb.annotation.JTDField;
 import com.pro.framework.javatodb.constant.JTDConst;
@@ -13,7 +14,7 @@ import lombok.Getter;
  */
 @Getter
 @AllArgsConstructor
-public enum EnumBannerType implements IEnumToDbEnum<BannerType> {
+public enum EnumBannerType implements IEnumToDbEnum<BannerType> , IEnum {
     _1("home_carousel", "首页轮播", null, null, ""),
     _2("userCenter_menus", "个人中心_菜单列表", null, null, ""),
     _3("bottom", "整站底部导航", null, null, ""),
@@ -31,4 +32,9 @@ public enum EnumBannerType implements IEnumToDbEnum<BannerType> {
     @ApiModelProperty(value = "内部描述")
     @JTDField(uiType = JTDConst.EnumFieldUiType.textarea)
     private String remark;
+
+    @Override
+    public String getLabel() {
+        return name;
+    }
 }

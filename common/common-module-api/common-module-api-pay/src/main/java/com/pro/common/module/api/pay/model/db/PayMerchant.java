@@ -20,7 +20,7 @@ import lombok.EqualsAndHashCode;
 @Data
 
 @EqualsAndHashCode(callSuper = true)
-@ApiModel(value = "PayMerchant对象", description = "支付商户")
+@ApiModel(description = "支付商户")
 @JTDTable(sequences = {
         "UNIQUE KEY `code` (`code`)"
 }, entityId = 322)

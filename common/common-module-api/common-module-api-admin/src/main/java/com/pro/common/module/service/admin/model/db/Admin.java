@@ -5,9 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.pro.common.module.api.common.model.db.AuthRole;
 import com.pro.common.modules.api.dependencies.enums.EnumSysRole;
 import com.pro.common.modules.api.dependencies.model.BaseModel;
-import com.pro.common.modules.api.dependencies.model.ILoginInfo;
+import com.pro.common.modules.api.dependencies.model.ILoginInfoPrepare;
 import com.pro.common.modules.api.dependencies.model.classes.IAdminClass;
-import com.pro.framework.api.enums.IEnumToDbDb;
 import com.pro.framework.api.enums.IEnumToDbDbId;
 import com.pro.framework.javatodb.annotation.JTDField;
 import com.pro.framework.javatodb.annotation.JTDTable;
@@ -28,7 +27,7 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(callSuper = false)
 @ApiModel(description = "管理员表")
 @JTDTable(entityId = 10001, sequences = {"KEY `username` (`username`)"})
-public class Admin extends BaseModel implements IAdminClass, ILoginInfo, IEnumToDbDbId {
+public class Admin extends BaseModel implements IAdminClass, ILoginInfoPrepare, IEnumToDbDbId {
 
     @ApiModelProperty(value = "登录名")
     private String username;
@@ -38,7 +37,7 @@ public class Admin extends BaseModel implements IAdminClass, ILoginInfo, IEnumTo
     private String password;
     @ApiModelProperty(value = "昵称")
     @JTDField(notNull = JTDConst.EnumFieldNullType.can_null)
-    private String nickName;
+    private String nickname;
     @ApiModelProperty(value = "手机号")
     @JTDField(notNull = JTDConst.EnumFieldNullType.can_null)
     private String phone;

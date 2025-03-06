@@ -1,12 +1,12 @@
-package com.pro.common.web.security.model;
+package com.pro.common.modules.api.dependencies.model;
 
-import com.pro.common.modules.api.dependencies.model.ILoginInfo;
 import com.pro.common.modules.api.dependencies.enums.EnumSysRole;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.security.Principal;
+import java.util.Collections;
 import java.util.Set;
 
 @Data
@@ -15,7 +15,8 @@ import java.util.Set;
 public class LoginInfo implements ILoginInfo, Principal {
     private EnumSysRole sysRole;
     private Long id;
-    private Set<String> paths;
+    private Set<String> permissionPaths = Collections.EMPTY_SET;
+    private Set<String> permissionPathsPrefix = Collections.EMPTY_SET;
 
     @Override
     public String getPassword() {

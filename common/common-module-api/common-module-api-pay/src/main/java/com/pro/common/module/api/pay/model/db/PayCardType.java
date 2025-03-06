@@ -46,9 +46,9 @@ public class PayCardType extends BaseModel implements IConfigClass, IWithdrawCom
     @ApiModelProperty(value = "启用")
     private Boolean enabled;
     @ApiModelProperty(value = "支付金额可选项")
-    @JTDField(description = "若多个,英文逗号分隔")
+    @JTDField(description = "若多个_英文逗号分隔")
     private String amountOptions;
-    @ApiModelProperty(value = "主题颜色", notes = "例如 blue 或 green")
+    @ApiModelProperty(value = "主题颜色", notes = "例如_blue_或_green")
     private String theme;
 
     //充值

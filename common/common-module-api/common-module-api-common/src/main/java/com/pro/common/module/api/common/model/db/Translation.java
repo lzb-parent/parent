@@ -12,7 +12,7 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-@ApiModel(value = "Translation对象", description = "自定义翻译")
+@ApiModel(description = "自定义翻译")
 @JTDTable(sequences = {
         "UNIQUE KEY `uk_code_lang` (`code`,`lang`)"
 }, entityId = 339)

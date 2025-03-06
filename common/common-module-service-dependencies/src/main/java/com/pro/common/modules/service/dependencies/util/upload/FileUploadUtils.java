@@ -134,7 +134,8 @@ public class FileUploadUtils {
         uploadFile.transferTo(saveFile);
         uploadFile.inputStreamClose();
 
-        return (File.separator + "file" + relativePath).replaceAll("\\\\", File.separator);
+        // 给前端的路径
+        return "/" + "file" + replaceAll(relativePath, "\\", "/");
     }
 
     public static String calSign(String fileName) {
@@ -142,5 +143,23 @@ public class FileUploadUtils {
                 .getUploadPassword() + fileName + +System.currentTimeMillis() / 1000 / 1000;
         log.info("上传文件|签名前数据:" + data);
         return SecureUtil.md5(data);
+    }
+
+    public static String replaceAll(String str, String search, String replacement) {
+        // 检查是否为空或目标字符串是否为 null 或空
+        if (str == null || search == null || replacement == null) {
+            return str;
+        }
+
+        // 如果字符串中包含 search，则替换
+        while (str.contains(search)) {
+            str = str.replace(search, replacement);
+        }
+
+        return str;
+    }
+    public static void main(String[] args) {
+        String x = replaceAll("{host}\\file\\front\\9cfe76340f4d4119bc519158b33f4d8a.png", "\\","/");
+        System.out.println(x);
     }
 }

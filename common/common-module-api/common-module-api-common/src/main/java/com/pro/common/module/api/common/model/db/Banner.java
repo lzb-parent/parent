@@ -33,7 +33,7 @@ public class Banner extends BaseConfigModel implements IConfigClass {
     @JTDField(uiType = JTDConst.EnumFieldUiType.image)
     private String pic;
     @ApiModelProperty(value = "图片2")
-    @JTDField(uiType = JTDConst.EnumFieldUiType.image, description = "选中图/封面图")
+    @JTDField(uiType = JTDConst.EnumFieldUiType.image, description = "选中图或封面图")
     private String picSelect;
     @ApiModelProperty(value = "字体图标名称")
     private String icon;

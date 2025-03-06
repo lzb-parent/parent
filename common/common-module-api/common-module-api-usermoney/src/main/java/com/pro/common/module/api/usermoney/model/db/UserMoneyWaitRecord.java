@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
  * @author admin
  */
 @Data
-@ApiModel(value = "", description = "资金待结算记录")
+@ApiModel(description = "资金待结算记录")
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder

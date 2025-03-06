@@ -21,7 +21,7 @@ import lombok.NoArgsConstructor;
 @Data
 
 @EqualsAndHashCode(callSuper = true)
-@ApiModel(value = "UserTransfer对象", description = "代付记录")
+@ApiModel(description = "代付记录")
 @NoArgsConstructor
 @AllArgsConstructor
 //@SuperBuilder

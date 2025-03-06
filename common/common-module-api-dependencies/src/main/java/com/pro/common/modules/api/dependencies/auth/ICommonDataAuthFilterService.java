@@ -9,9 +9,9 @@ import java.util.Map;
 public interface ICommonDataAuthFilterService {
     void filterQuery(Map<String, Object> paramMap, Long loginAgentId, UserDataQuery query);
 
-    <T extends IModel> void filterInsertUpdate(ILoginInfo loginInfo, List<T> records);
+    void filterQueryUserTeam(ILoginInfo loginInfo, Map<String, Object> paramMap, UserDataQuery query, String userIdPropName, Class<?> entityClass);
 
-    void filterQueryUserTeam(ILoginInfo loginInfo, Map<String, Object> paramMap, UserDataQuery query, String userIdPropName);
+    <T extends IModel> void filterInsertUpdate(ILoginInfo loginInfo, List<T> records);
 
     List<Long> getAgentUserIds(Long loginAgentId, Boolean isChildAll, Long agentId, Long userId);
 }

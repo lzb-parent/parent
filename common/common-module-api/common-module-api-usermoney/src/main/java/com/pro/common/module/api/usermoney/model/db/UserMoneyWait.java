@@ -14,7 +14,7 @@ import lombok.experimental.SuperBuilder;
  * @author admin
  */
 @Data
-@ApiModel(value = "", description = "资金待结算总计")
+@ApiModel(description = "资金待结算总计")
 @NoArgsConstructor
 //@AllArgsConstructor
 @SuperBuilder
