@@ -65,6 +65,11 @@
             </dependency>
             <dependency>
                 <groupId>com.pro</groupId>
+                <artifactId>framework-spring</artifactId>
+                <version>${framework.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.pro</groupId>
                 <artifactId>framework-generator</artifactId>
                 <version>${framework.version}</version>
             </dependency>
@@ -376,6 +381,10 @@
                             <include>
                                 <groupId>com.pro</groupId>
                                 <artifactId>framework-enums</artifactId>
+                            </include>
+                            <include>
+                                <groupId>com.pro</groupId>
+                                <artifactId>framework-spring</artifactId>
                             </include>
                             <include>
                                 <groupId>com.pro</groupId>

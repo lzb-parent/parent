@@ -38,9 +38,12 @@ public class CommonTableService {
     private IJTDService jtdService;
 
 
-    public JTDTableInfoVo simpleInfo(String entityClassName) {
+    public JTDTableInfoVo getTableSimpleInfo(String entityClassName) {
         JTDTableInfoVo tableInfo = jtdService.readTableInfo(
                 MultiClassRelationFactory.INSTANCE.getEntityClass(entityClassName));
+        if (tableInfo == null) {
+            int i = 0;
+        }
         List<JTDFieldInfoDbVo> fields = tableInfo.getFields();
         tableInfo.setTableName(StrUtil.toCamelCase(tableInfo.getTableName()));
         fields.forEach(field ->

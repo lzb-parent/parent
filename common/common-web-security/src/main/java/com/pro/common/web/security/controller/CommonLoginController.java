@@ -64,7 +64,7 @@ public class CommonLoginController {
     @ApiOperationSupport(order = 3)
     @Operation(summary = "退出登录")
     @PostMapping("/logout")
-    public R<?> logout(@Parameter(hidden = true) ILoginInfo loginInfo, @Parameter(required = true) TokenRequest request) {
+    public R<?> logout(@Parameter(hidden = true) ILoginInfo loginInfo, @RequestBody TokenRequest request) {
         Long id = loginInfo.getId();
         if (id != null) {
             // 移除token
