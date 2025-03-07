@@ -45,7 +45,7 @@ public class CommonTableService {
             int i = 0;
         }
         List<JTDFieldInfoDbVo> fields = tableInfo.getFields();
-        tableInfo.setTableName(StrUtil.toCamelCase(tableInfo.getTableName()));
+//        tableInfo.setTableName(StrUtil.toCamelCase(tableInfo.getTableName()));
         fields.forEach(field ->
                 {
                     field.setFieldName(StrUtil.toCamelCase(field.getFieldName()));
@@ -72,22 +72,21 @@ public class CommonTableService {
         UITableInfo jtdTableInfoVo = new UITableInfo();
         if (clazz != null) {
             JTDTableInfoVo tableInfo = jtdService.readTableInfo(clazz);
+            String entityName = tableInfo.getEntityName();
 
             List<JTDFieldInfoDbVo> fields = tableInfo.getFields();
             // 字段名改驼峰
             //noinspection UnnecessaryLocalVariable
-            String tableName = entityClassName;
-            tableInfo.setTableName(tableName);
+//            String tableName = entityClassName;
+//            tableInfo.setTableName(tableName);
             tableInfo.setLabel(I18nUtils.get(tableInfo.getLabel()));
             fields.forEach(field ->
                     {
                         field.setFieldName(StrUtil.toCamelCase(field.getFieldName()));
-                        field.setEntityName(field.getEntityName());
                         field.setDefaultValue(field.getDefaultValue().replaceAll("'", ""));
-                        Class<?> entityClass = field.getEntityClass();
-                        if (null != entityClass && !Object.class.equals(entityClass)) {
-                            String entityName = StrUtils.firstToLowerCase(entityClass.getSimpleName());
-                            field.setEntityName(entityName);
+                        Class<?> fieldEntityClass = field.getEntityClass();
+                        if (null != fieldEntityClass && !Object.class.equals(fieldEntityClass)) {
+                            field.setEntityName(StrUtils.firstToLowerCase(fieldEntityClass.getSimpleName()));
                         } else {
                             field.setEntityName(null);
                             field.setEntityClassTargetProp(null);
@@ -120,12 +119,12 @@ public class CommonTableService {
             tableConfigOne.setFieldNames(fieldNames);
 
             String urlTemplate = request.getUrlTemplate();
-            tableConfigOne.setGetOneUrl(getUrl(urlTemplate, "selectOne", tableName));
-            tableConfigOne.setInsertUrl(getUrl(urlTemplate, "insert", tableName));
-            tableConfigOne.setUpdateUrl(getUrl(urlTemplate, "update", tableName));
-            tableConfigOne.setGetPageUrl(getUrl(urlTemplate, "selectPage", tableName));
-            tableConfigOne.setDeleteUrl(getUrl(urlTemplate, "delete", tableName));
-            tableConfigOne.setExportUrl(getUrl(urlTemplate, "export", tableName));
+            tableConfigOne.setGetOneUrl(getUrl(urlTemplate, "selectOne", entityName));
+            tableConfigOne.setInsertUrl(getUrl(urlTemplate, "insert", entityName));
+            tableConfigOne.setUpdateUrl(getUrl(urlTemplate, "update", entityName));
+            tableConfigOne.setGetPageUrl(getUrl(urlTemplate, "selectPage", entityName));
+            tableConfigOne.setDeleteUrl(getUrl(urlTemplate, "delete", entityName));
+            tableConfigOne.setExportUrl(getUrl(urlTemplate, "export", entityName));
 
             if (IUserOrderClass.class.isAssignableFrom(clazz)) {
                 tableConfigOne.setAdminButtons(new JTDConst.EnumAdminButton[]{query, edit});
@@ -161,8 +160,8 @@ public class CommonTableService {
     }
 
 
-    private static String getUrl(String urlTemplate, String option, String tableName) {
-        return StrUtil.format(urlTemplate, Map.of("option", option, "entityName", tableName));
+    private static String getUrl(String urlTemplate, String option, String entityName) {
+        return StrUtil.format(urlTemplate, Map.of("option", option, "entityName", entityName));
     }
     /**
      *

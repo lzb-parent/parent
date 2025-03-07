@@ -16,6 +16,7 @@ import java.math.BigDecimal;
  */
 @Data
 @JTDTable(
+        label = "用户提现记录",
         sequences = {
                 "UNIQUE KEY `uk_no` (`no`)",
                 "KEY `uk_userId` (`user_id`)"

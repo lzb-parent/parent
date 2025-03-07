@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -47,7 +48,9 @@ public class CommonTableStructInfoController {
         // 测试或本地 或者 管理端登录 才能访问
         if ((!EnumEnv.prod.equals(commonProperties.getEnv())) || EnumApplication.admin.equals(commonProperties.getApplication())) {
             Collection<Class<?>> classes = MultiClassRelationFactory.INSTANCE.getClassMap().values();
-            return R.ok(classes.stream().map(c -> commonTableService.getTableSimpleInfo(StrUtils.firstToLowerCase(c.getSimpleName()))).collect(Collectors.toList()));
+            return R.ok(classes.stream().map(c -> commonTableService
+                    .getTableSimpleInfo(StrUtils.firstToLowerCase(c.getSimpleName())))
+                    .sorted(Comparator.comparing(JTDTableInfoVo::getEntityId).reversed()).collect(Collectors.toList()));
         }
         return R.ok();
     }

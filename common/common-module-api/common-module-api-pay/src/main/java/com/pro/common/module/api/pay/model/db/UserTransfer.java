@@ -26,6 +26,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 //@SuperBuilder
 @JTDTable(
+        label = "用户代付记录",
         sequences = {
                 "UNIQUE KEY `uk_no` (`no`)",
                 "KEY `idx_userId` (`user_id`)",

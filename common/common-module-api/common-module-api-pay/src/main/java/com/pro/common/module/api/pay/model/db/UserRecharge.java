@@ -21,6 +21,7 @@ import java.time.LocalDateTime;
  */
 @Data
 @JTDTable(
+        label = "用户充值记录",
         sequences = {
                 "UNIQUE KEY `uk_no` (`no`)",
                 "KEY `idx_type` (`type`)",
