@@ -5,7 +5,7 @@ import com.pro.framework.api.enums.IEnum;
 import com.pro.framework.api.enums.IEnumToDbEnum;
 import com.pro.framework.javatodb.annotation.JTDField;
 import com.pro.framework.javatodb.constant.JTDConst;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -21,15 +21,15 @@ public enum EnumBannerType implements IEnumToDbEnum<BannerType> , IEnum {
     _4("home_right", "首页右侧悬浮", null, null, ""),
     ;
     private String code;
-    @ApiModelProperty(value = "名称")
+    @Schema(description = "名称")
     @JTDField(notNull = JTDConst.EnumFieldNullType.can_null)
     private String name;
-    @ApiModelProperty(value = "启用")
+    @Schema(description = "启用")
     private Boolean enabled;
-    @ApiModelProperty(value = "排序")
+    @Schema(description = "排序")
     @JTDField(defaultValue = "100")
     private Integer sort;
-    @ApiModelProperty(value = "内部描述")
+    @Schema(description = "内部描述")
     @JTDField(uiType = JTDConst.EnumFieldUiType.textarea)
     private String remark;
 

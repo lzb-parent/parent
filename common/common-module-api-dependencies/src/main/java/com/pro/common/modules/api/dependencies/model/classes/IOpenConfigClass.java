@@ -11,7 +11,7 @@ import com.pro.framework.api.model.IModel;
  * 改    0      0      1       1
  * 查    1      1      1       1
  */
-public interface IConfigClass extends IModel {
+public interface IOpenConfigClass extends IModel {
     Boolean getEnabled();
     Integer getSort();
 }

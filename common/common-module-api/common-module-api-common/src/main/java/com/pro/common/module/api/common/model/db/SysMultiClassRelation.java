@@ -5,8 +5,8 @@ import com.pro.common.modules.api.dependencies.model.classes.IAdminClass;
 import com.pro.framework.javatodb.annotation.JTDTable;
 import com.pro.framework.mtq.service.multiwrapper.entity.ClassRelationOneOrManyEnum;
 import com.pro.framework.mtq.service.multiwrapper.entity.IMultiClassRelation;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -28,49 +28,49 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-@ApiModel(value = "系统表关系")
+@Schema(description = "系统表关系")
 @JTDTable(value = "系统表关系", keyFieldNames = "code", entityId = 334)
 public class SysMultiClassRelation extends BaseModel implements IMultiClassRelation, IAdminClass {
     /**
      * 表关系唯一编号,例如 userAndUserStaff
      */
 //    @TableId(type = IdType.INPUT)
-    @ApiModelProperty(value = "编号")
+    @Schema(description = "编号")
     private String code;
     /**
      * 两张表对应实体名称 例如 user userMoney
      */
-    @ApiModelProperty(value = "实体1_例如_user")
+    @Schema(description = "实体1_例如_user")
     private String className1;
-    @ApiModelProperty(value = "实体2_例如_userMoney")
+    @Schema(description = "实体2_例如_userMoney")
     private String className2;
 
 
     /***
      * 一对一 一对多 多对一 多对多
      */
-    @ApiModelProperty(value = "实体1_是1还是多")
+    @Schema(description = "实体1_是1还是多")
     private ClassRelationOneOrManyEnum class1OneOrMany;
-    @ApiModelProperty(value = "实体2_是1还是多")
+    @Schema(description = "实体2_是1还是多")
     private ClassRelationOneOrManyEnum class2OneOrMany;
 
     /***
      * 关系中 是否是否,表1一定该有数据/表2一定该有数据
      */
-    @ApiModelProperty(value = "实体1_必填")
+    @Schema(description = "实体1_必填")
     private Boolean class1Require;
-    @ApiModelProperty(value = "实体2_必填")
+    @Schema(description = "实体2_必填")
     private Boolean class2Require;
 
     /***
      * 两个表关联的字段
      */
-    @ApiModelProperty(value = "实体1_关联字段")
+    @Schema(description = "实体1_关联字段")
     private String class1KeyProp;
-    @ApiModelProperty(value = "实体2_关联字段")
+    @Schema(description = "实体2_关联字段")
     private String class2KeyProp;
 
-    @ApiModelProperty(value = "更新时间")
+    @Schema(description = "更新时间")
     protected LocalDateTime updateTime;
 
     public Set<String> getClassNames() {

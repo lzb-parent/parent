@@ -2,7 +2,7 @@ package com.pro.common.modules.api.dependencies.model;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.pro.framework.api.model.IModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,16 +23,16 @@ public abstract class BaseModel implements IModel {
     public static final String field_updateTime = "updateTime";
     public static final String field_deleted = "deleted";
 
-    @ApiModelProperty(value = "主键id")
+    @Schema(description = "主键id")
     @TableId
     protected Long id;
 
-    @ApiModelProperty(value = "创建时间")
+    @Schema(description = "创建时间")
     protected LocalDateTime createTime;
 
-    @ApiModelProperty(value = "更新时间")
+    @Schema(description = "更新时间")
     protected LocalDateTime updateTime;
 
-    @ApiModelProperty(value = "删除")
+    @Schema(description = "删除")
     protected Boolean deleted;
 }

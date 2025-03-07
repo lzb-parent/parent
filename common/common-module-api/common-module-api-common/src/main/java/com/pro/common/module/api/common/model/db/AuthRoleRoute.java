@@ -1,11 +1,10 @@
 package com.pro.common.module.api.common.model.db;
 
 import com.pro.common.modules.api.dependencies.model.BaseModel;
-import com.pro.common.modules.api.dependencies.model.classes.IConfigClass;
-import com.pro.framework.api.model.IdModel;
+import com.pro.common.modules.api.dependencies.model.classes.IOpenConfigClass;
 import com.pro.framework.javatodb.annotation.JTDField;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -16,13 +15,13 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-@ApiModel(description = "角色_路由表")
-public class AuthRoleRoute extends BaseModel implements IConfigClass {
-    @ApiModelProperty(value = "角色id")
+@Schema(description = "角色_路由表")
+public class AuthRoleRoute extends BaseModel implements IOpenConfigClass {
+    @Schema(description = "角色id")
     private Long roleId;
-    @ApiModelProperty(value = "路由id")
+    @Schema(description = "路由id")
     private Long routeId;
-    @ApiModelProperty(value = "排序")
+    @Schema(description = "排序")
     @JTDField(defaultValue = "100")
     private Integer sort;
     @Override

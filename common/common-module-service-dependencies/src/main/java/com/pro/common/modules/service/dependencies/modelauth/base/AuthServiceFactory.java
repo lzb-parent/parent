@@ -2,6 +2,7 @@ package com.pro.common.modules.service.dependencies.modelauth.base;
 
 import com.pro.common.modules.api.dependencies.enums.EnumSysRole;
 import com.pro.common.modules.api.dependencies.model.ILoginInfo;
+import io.swagger.v3.oas.annotations.Parameter;
 import com.pro.framework.EnumProperties;
 import com.pro.framework.api.IReloadService;
 import com.pro.framework.api.entity.IEntityProperties;
@@ -54,7 +55,7 @@ public class AuthServiceFactory implements IReloadService {
     }
 
     public <T> Class<T> getBeanClass(String classSimpleName) {
-        Class<T> tClass = (Class<T>) entityProperties.getEntityClassReplaceMap().computeIfAbsent(classSimpleName, c -> MultiClassRelationFactory.INSTANCE.getEntityClass(StrUtils.firstToLowerCase(classSimpleName)));
+        Class<T> tClass = MultiClassRelationFactory.INSTANCE.getEntityClass(StrUtils.firstToLowerCase(classSimpleName));
         AssertUtil.notEmpty(tClass, "entity not exist: " + classSimpleName);
         return tClass;
     }

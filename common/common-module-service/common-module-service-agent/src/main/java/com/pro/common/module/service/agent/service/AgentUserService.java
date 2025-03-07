@@ -6,10 +6,11 @@ import com.pro.common.module.api.agent.intf.IAgentService;
 import com.pro.common.module.api.agent.model.db.Agent;
 import com.pro.common.module.api.system.model.enums.EnumAuthDict;
 import com.pro.common.module.api.user.intf.IUserService;
-import com.pro.common.modules.api.dependencies.auth.ICommonDataAuthFilterService;
+import com.pro.common.modules.api.dependencies.auth.IAgentUserFilterService;
 import com.pro.common.modules.api.dependencies.auth.UserDataQuery;
 import com.pro.common.modules.api.dependencies.message.ISysMsgExtendInfoService;
 import com.pro.common.modules.api.dependencies.model.ILoginInfo;
+import io.swagger.v3.oas.annotations.Parameter;
 import com.pro.common.modules.api.dependencies.model.classes.IUserClass;
 import com.pro.common.modules.api.dependencies.user.model.IUserMsg;
 import com.pro.common.modules.service.dependencies.properties.CommonProperties;
@@ -26,7 +27,7 @@ import java.util.stream.Collectors;
 
 @SuppressWarnings("unchecked")
 @Service
-public class AgentUserService implements ICommonDataAuthFilterService, ISysMsgExtendInfoService {
+public class AgentUserService implements IAgentUserFilterService, ISysMsgExtendInfoService {
     @Autowired
     private CommonProperties commonProperties;
     //    @Autowired
@@ -90,7 +91,7 @@ public class AgentUserService implements ICommonDataAuthFilterService, ISysMsgEx
             } else {
                 if (agentService != null) {
                     Collection<Long> agentIdSubs = agentService.getAllChildIdList(loginAgentId);
-                    AssertUtil.isTrue(agentIdSubs.contains(agentId), "permission error");
+                    AssertUtil.isTrue(agentIdSubs.contains(agentId), "暂无权限");
                 }
             }
         }
@@ -104,18 +105,18 @@ public class AgentUserService implements ICommonDataAuthFilterService, ISysMsgEx
     }
 
     @Override
-    public void filterQuery(Map<String, Object> paramMap, Long loginAgentId, UserDataQuery query) {
+    public void filterAgentQuery(Map<String, Object> paramMap, Long loginAgentId, UserDataQuery query) {
         setUser(paramMap, loginAgentId, query);
     }
 
     @Override
-    public <T extends IModel> void filterInsertUpdate(ILoginInfo loginInfo, List<T> records) {
+    public <T extends IModel> void filterAgentInsertUpdate(@Parameter(hidden = true) ILoginInfo loginInfo, List<T> records) {
         List<Long> userIds = this.getAgentUserIds(loginInfo.getId(), true, null, null);
-        records.forEach(record -> AssertUtil.isTrue(userIds.contains(((IUserClass) record).getUserId()), "permission error"));
+        records.forEach(record -> AssertUtil.isTrue(userIds.contains(((IUserClass) record).getUserId()), "暂无权限"));
     }
 
     @Override
-    public void filterQueryUserTeam(ILoginInfo loginInfo, Map<String, Object> paramMap, UserDataQuery query, String userIdPropName, Class<?> entityClass) {
+    public void filterUserTeamQuery(@Parameter(hidden = true) ILoginInfo loginInfo, Map<String, Object> paramMap, UserDataQuery query, String userIdPropName, Class<?> entityClass) {
         Long userId = loginInfo.getId();
         // 是否查询用户下级的信息
         Boolean userTeamFlag = query.getUserTeamFlag();

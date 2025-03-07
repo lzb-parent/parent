@@ -15,7 +15,7 @@ import com.pro.common.module.service.paythird.util.RSAUtils;
 import com.pro.common.module.service.paythird.util.SignatureUtil;
 import com.pro.framework.api.util.LogicUtils;
 import com.pro.framework.api.util.StrUtils;
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -39,7 +39,7 @@ import java.util.Map;
 @Slf4j
 @Getter
 @RestController
-@Api(tags = "clickpay支付")
+@Tag(name = "clickpay支付")
 @RequestMapping("pay/clickpay/{MER_CODE}")
 public class ClickPayController extends PayCommonController {
     private static final String MAIL = "click@gmail.com";

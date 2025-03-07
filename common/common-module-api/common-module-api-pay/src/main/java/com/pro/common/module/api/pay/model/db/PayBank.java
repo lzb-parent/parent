@@ -1,36 +1,36 @@
 package com.pro.common.module.api.pay.model.db;
 
 import com.pro.common.modules.api.dependencies.model.BaseModel;
-import com.pro.common.modules.api.dependencies.model.classes.IConfigClass;
+import com.pro.common.modules.api.dependencies.model.classes.IOpenConfigClass;
 import com.pro.framework.javatodb.annotation.JTDField;
 import com.pro.framework.javatodb.annotation.JTDTable;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 /**
  * 支付银行卡
  */
 @Data
-@ApiModel(description = "商户支持的银行")
+@Schema(description = "商户支持的银行")
 @JTDTable(entityId = 319,
         sequences = {
                 "UNIQUE KEY `merchantCode_code` (`merchant_code`,`code`,`name`)",
         })
-public class PayBank extends BaseModel implements IConfigClass {
+public class PayBank extends BaseModel implements IOpenConfigClass {
 
-    @ApiModelProperty(value = "商户编码")
+    @Schema(description = "商户编码")
     @JTDField(entityClass = PayMerchant.class)
     private String merchantCode;
-    @ApiModelProperty(value = "银行卡编号")
+    @Schema(description = "银行卡编号")
     private String code;
-    @ApiModelProperty(value = "名称")
+    @Schema(description = "名称")
     private String name;
-    @ApiModelProperty(value = "排序")
+    @Schema(description = "排序")
     private Integer sort;
-    @ApiModelProperty(value = "启用")
+    @Schema(description = "启用")
     private Boolean enabled;
-    @ApiModelProperty(value = "管理端显示")
+    @Schema(description = "管理端显示")
     @JTDField(defaultValue = "1")
     private Boolean showAdmin;
 }

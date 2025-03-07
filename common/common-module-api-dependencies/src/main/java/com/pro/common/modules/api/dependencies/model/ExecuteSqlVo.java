@@ -1,10 +1,10 @@
 package com.pro.common.modules.api.dependencies.model;
 
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 @Data
 public class ExecuteSqlVo {
-    @ApiModelProperty("sql语句")
+    @Schema(description = "sql语句")
     private String sql;
 }

@@ -3,6 +3,7 @@ package com.pro.common.modules.service.dependencies.modelauth.base;
 import com.pro.common.modules.api.dependencies.CommonConst;
 import com.pro.common.modules.api.dependencies.enums.EnumSysRole;
 import com.pro.common.modules.api.dependencies.model.ILoginInfo;
+import io.swagger.v3.oas.annotations.Parameter;
 import com.pro.common.modules.api.dependencies.model.LoginInfo;
 import com.pro.common.modules.api.dependencies.service.IAuthRoleService;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -34,7 +34,7 @@ import com.pro.common.modules.service.dependencies.util.IPUtils;
 import com.pro.framework.api.util.AssertUtil;
 import com.pro.framework.api.util.LogicUtils;
 import com.pro.framework.api.util.StrUtils;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -54,7 +54,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-// @Api(tags = "XXXPAY支付")
+// @Tag(name = "XXXPAY支付")
 // @RestController
 // @RequestMapping("pay/xxxpay/{MER_CODE}")
 @Slf4j
@@ -157,7 +157,7 @@ public abstract class PayCommonController implements IPayController<Object, Obje
 
 
     // http://localhost:8088/pay/inrpay/INRPAY_INRPAY/unifiedOrder?amount=100&payType=BANK&returnUrl=http://www.baidu.com&userId=1
-    @ApiOperation("下单")
+    @Operation(summary = "下单")
     @GetMapping("unifiedOrder")
 //    @Transactional(rollbackFor = Exception.class)
     public UserRecharge unifiedOrder(@PathVariable String MER_CODE, UnifiedOrderRequest requestVo, HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -168,7 +168,7 @@ public abstract class PayCommonController implements IPayController<Object, Obje
         // 支付渠道信息
         PayChannel channel = channelService.getByPayType(requestVo.getPayChannelId(), merchant.getCode(), requestVo.getPayType(), requestVo.getCardType());
         AssertUtil.isTrue(null != channel && channel.getEnabled(), "无效商户支付渠道");
-        // ILoginInfo loginInfo
+        // @Parameter(hidden = true) ILoginInfo loginInfo
         User user = userService.getById(requestVo.getUserId());
         if (user == null) {
             user = userService.newInstant();
@@ -257,7 +257,7 @@ public abstract class PayCommonController implements IPayController<Object, Obje
     }
 
     @Override
-    @ApiOperation("支付回调")
+    @Operation(summary = "支付回调")
     @RequestMapping(value = "notify", produces = "application/json;charset=UTF-8", method = {RequestMethod.GET, RequestMethod.POST})
     public synchronized String notify(
             @PathVariable String MER_CODE,
@@ -311,7 +311,7 @@ public abstract class PayCommonController implements IPayController<Object, Obje
     }
 
 
-    @ApiOperation("代付")
+    @Operation(summary = "代付")
     @PostMapping("payout")
     @SneakyThrows
     public R<PayoutIO.Result> payout(@PathVariable String MER_CODE, @RequestBody UserTransferRequest requestVo, HttpServletRequest request, HttpServletResponse response) {
@@ -388,7 +388,7 @@ public abstract class PayCommonController implements IPayController<Object, Obje
     }
 
     @Override
-    @ApiOperation("代付回调")
+    @Operation(summary = "代付回调")
     @RequestMapping(value = "payout/notify", produces = "application/json;charset=UTF-8", method = {RequestMethod.GET, RequestMethod.POST})
     public synchronized String payoutNotify(
             @PathVariable String MER_CODE,

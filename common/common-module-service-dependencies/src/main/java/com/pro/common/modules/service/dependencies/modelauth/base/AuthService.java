@@ -140,7 +140,7 @@ public class AuthService<ENTITY extends IModel> {
                 switch (method) {
                     case QUERY:
                         // 查询
-                        if (IConfigClass.class.isAssignableFrom(entityClass)
+                        if (IOpenConfigClass.class.isAssignableFrom(entityClass)
                                 || IUserClass.class.isAssignableFrom(entityClass)
                         ) {
                             // 全开放
@@ -165,7 +165,7 @@ public class AuthService<ENTITY extends IModel> {
             case ANONYMOUS:
                 switch (method) {
                     case QUERY:
-                        if (IConfigClass.class.isAssignableFrom(entityClass)) {
+                        if (IOpenConfigClass.class.isAssignableFrom(entityClass)) {
                             props.addAll(fullProps);
                         }
                         break;
@@ -182,7 +182,7 @@ public class AuthService<ENTITY extends IModel> {
     private boolean filterMore(EnumSysRole role, Class<ENTITY> entityClass) {
         if (EnumSysRole.AGENT.equals(role)) {
             // 代理端不能改配置文件
-            return !IConfigClass.class.equals(entityClass);
+            return !IOpenConfigClass.class.equals(entityClass);
         }
         return true;
     }

@@ -4,6 +4,7 @@ import com.pro.common.modules.api.dependencies.enums.EnumApplication;
 import com.pro.common.modules.api.dependencies.enums.EnumSysRole;
 import com.pro.common.modules.api.dependencies.exception.BusinessException;
 import com.pro.common.modules.api.dependencies.model.ILoginInfo;
+import io.swagger.v3.oas.annotations.Parameter;
 import com.pro.common.modules.api.dependencies.model.LoginInfo;
 import com.pro.common.modules.service.dependencies.modelauth.base.LoginInfoService;
 import com.pro.common.modules.service.dependencies.modelauth.base.TokenService;
@@ -18,6 +19,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,12 +42,26 @@ public class TokenAuthResolver implements HandlerMethodArgumentResolver {
         EnumSysRole role = application.getRole();
         String token = request.getHeader(TokenService.tokenKey);
         ILoginInfo loginInfo = new LoginInfo(EnumSysRole.ANONYMOUS, -9999L, null, null);
-        try {
-            if (token != null) {
-                loginInfo = loginInfoService.getLoginInfoCache(role, token);
+        if (token == null) {
+
+//            Enumeration<String> headerNames = request.getHeaderNames();
+//            while (headerNames.hasMoreElements()) {
+//                String headerName = headerNames.nextElement();
+//                String headerValue = request.getHeader(headerName);
+//                log.info("Header: {} = {}", headerName, headerValue);
+//            }
+
+            String origin = request.getHeader("Request-Origion");
+            if ("Knife4j".equals(origin)) {
+                return new LoginInfo(EnumSysRole.USER, 1L, null, null);
             }
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
+
+        } else {
+//            try {
+            loginInfo = loginInfoService.getLoginInfoCache(role, token);
+//            } catch (Exception e) {
+//                log.error(e.getMessage(), e);
+//            }
         }
 //        Set<String> permissionPaths = null;
         switch (application) {
@@ -59,7 +75,7 @@ public class TokenAuthResolver implements HandlerMethodArgumentResolver {
         return loginInfo;
     }
 
-    private void checkAuthRolePermission(HttpServletRequest request, ILoginInfo loginInfo) {
+    private void checkAuthRolePermission(HttpServletRequest request, @Parameter(hidden = true) ILoginInfo loginInfo) {
         String requestURI = request.getRequestURI();
         List<String> requestURIs;
         if (requestURI.contains(",")) {

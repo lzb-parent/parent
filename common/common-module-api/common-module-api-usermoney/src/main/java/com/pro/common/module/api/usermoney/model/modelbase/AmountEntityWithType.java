@@ -2,7 +2,7 @@ package com.pro.common.module.api.usermoney.model.modelbase;
 
 import com.pro.framework.api.FrameworkConst;
 import com.pro.framework.javatodb.annotation.JTDField;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,7 +16,7 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AmountEntityWithType extends AmountEntity {
-    @ApiModelProperty("数额类型")
+    @Schema(description = "数额类型")
     @JTDField(defaultValue = FrameworkConst.Str.DEFAULT)
     private String amountType;
 

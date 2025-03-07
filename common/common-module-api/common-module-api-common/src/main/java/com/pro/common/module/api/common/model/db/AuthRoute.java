@@ -4,12 +4,13 @@ import com.pro.common.modules.api.dependencies.CommonConst;
 import com.pro.common.modules.api.dependencies.enums.EnumSysRole;
 import com.pro.common.modules.api.dependencies.model.classes.BaseConfigModel;
 import com.pro.common.modules.api.dependencies.enums.EnumAuthRouteType;
+import com.pro.common.modules.api.dependencies.model.classes.IOpenConfigClass;
 import com.pro.framework.api.enums.IEnumToDbDb;
 import com.pro.framework.javatodb.annotation.JTDField;
 import com.pro.framework.javatodb.annotation.JTDTable;
 import com.pro.framework.javatodb.constant.JTDConst;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,38 +22,38 @@ import lombok.experimental.SuperBuilder;
  * @author admin
  */
 @Data
-@ApiModel(description = "菜单路由")
+@Schema(description = "菜单路由")
 @JTDTable(sequences = {
         "UNIQUE KEY `code` (`code`,`sys_role`)"
 })
-public class AuthRoute extends BaseConfigModel implements IEnumToDbDb {
-    @ApiModelProperty(value = "名称")
+public class AuthRoute extends BaseConfigModel implements IEnumToDbDb, IOpenConfigClass {
+    @Schema(description = "名称")
     @JTDField(disabled = true)
     private String name;
-    @ApiModelProperty(value = "编号")
+    @Schema(description = "编号")
     private String code;
-    @ApiModelProperty(value = "系统角色")//admin/agent/user
+    @Schema(description = "系统角色")//admin/agent/user
     private EnumSysRole sysRole;
-    @ApiModelProperty(value = "上级")
+    @Schema(description = "上级")
     @JTDField(entityClass = AuthRoute.class)
     private String pcode;
-    @ApiModelProperty(value = "类型")
+    @Schema(description = "类型")
     private EnumAuthRouteType type;
-    @ApiModelProperty(value = "字体图标")
+    @Schema(description = "字体图标")
     private String icon;
-    @ApiModelProperty(value = "图片图标")
+    @Schema(description = "图片图标")
     @JTDField(uiType = JTDConst.EnumFieldUiType.image)
     private String pic;
-    @ApiModelProperty(value = "前端路由地址")
+    @Schema(description = "前端路由地址")
     private String componentPath;
-    @ApiModelProperty(value = "后端接口地址权限码")
+    @Schema(description = "后端接口地址权限码")
     private String permissionPaths;
-    @ApiModelProperty(value = "外部链接")
+    @Schema(description = "外部链接")
     private String url;
-    @ApiModelProperty(value = "总开关显示")//显示太乱了,强制不显示
+    @Schema(description = "总开关显示")//显示太乱了,强制不显示
     @JTDField(defaultValue = "1")
     private Boolean showFlag;
-    @ApiModelProperty(value = "管理端显示")//功能完整,但未收费隐藏
+    @Schema(description = "管理端显示")//功能完整,但未收费隐藏
     @JTDField(defaultValue = "1")
     private Boolean showAdmin;
 

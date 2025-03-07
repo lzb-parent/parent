@@ -1,20 +1,34 @@
 package com.pro.common.web.security.service;
 
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
+import com.pro.common.module.api.message.enums.EnumSysMsgBusinessCode;
+import com.pro.common.module.api.message.intf.ISysMsgService;
+import com.pro.common.module.api.system.model.enums.EnumAuthDict;
+import com.pro.common.modules.api.dependencies.CommonConst;
 import com.pro.common.modules.api.dependencies.exception.BusinessException;
 import com.pro.common.modules.api.dependencies.model.ILoginInfoPrepare;
 import com.pro.common.modules.api.dependencies.model.LoginRequest;
 import com.pro.common.modules.api.dependencies.service.ILoginInfoService;
+import com.pro.common.modules.api.dependencies.user.model.UserMsg;
 import com.pro.common.modules.service.dependencies.modelauth.base.AccessToken;
 import com.pro.common.modules.service.dependencies.modelauth.base.LoginInfoService;
 import com.pro.common.modules.service.dependencies.modelauth.base.TokenService;
 import com.pro.common.modules.service.dependencies.properties.CommonProperties;
+import com.pro.common.modules.service.dependencies.util.IPUtils;
+import com.pro.framework.api.cache.ICacheManagerCenter;
 import com.pro.framework.api.util.AssertUtil;
 import com.pro.framework.api.util.JSONUtils;
 import com.pro.framework.api.util.PasswordUtils;
+import com.pro.framework.api.util.StrUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.servlet.http.HttpServletRequest;
 
 @Service
 public class CommonLoginService {
@@ -26,8 +40,10 @@ public class CommonLoginService {
     private ApplicationContext applicationContext;
     @Autowired
     private LoginInfoService loginInfoService;
-//    @Autowired
-//    private CacheManager cacheManager;
+    @Autowired
+    private ISysMsgService sysMsgService;
+    @Autowired
+    private ICacheManagerCenter cacheManagerCenter;
 
     @Transactional
     public AccessToken login(String requestStr) {
@@ -71,5 +87,30 @@ public class CommonLoginService {
     public Boolean getGoogleAuthOpen(LoginRequest request) {
         ILoginInfoPrepare loginInfo = this.getLoginInfoService().doLogin(request);
         return null != loginInfo && loginInfo.getGoogleAuthOpen();
+    }
+
+    @Transactional
+    public AccessToken register(HttpServletRequest request, String captchaInner, String requestBody) {
+        JSONObject jo = JSONUtil.parseObj(requestBody);
+        // 图形验证码
+        if (EnumAuthDict.REGISTER_PROPS.getValueCache().contains(",captcha,")) {
+            String captcha = jo.getStr("captcha");
+            if (StrUtils.isBlank(captcha)) {
+                throw new BusinessException("图形验证码不正确");
+            } else if (!captcha.equals(captchaInner)) {
+                throw new BusinessException("图形验证码不正确");
+            }
+        }
+        if (EnumAuthDict.REGISTER_PROPS.getValueCache().contains(",smsCode,")) {
+            String codeInput = jo.getStr("smsCode");
+            String key = sysMsgService.getMsgKey(jo.toBean(UserMsg.class), EnumSysMsgBusinessCode.REGISTER_CODE.name());
+            String code = (String) cacheManagerCenter.get(CommonConst.CacheKey.SmsCode, key);
+            AssertUtil.isTrue(StrUtil.isNotBlank(code) && code.equals(codeInput), "短信或邮箱验证码不正确");
+        }
+
+
+        String ip = IPUtils.getIpAddress(request);
+        // 返回token
+        return this.register(requestBody, ip, LocaleContextHolder.getLocale().toLanguageTag());
     }
 }

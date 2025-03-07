@@ -2,7 +2,7 @@ package com.pro.common.module.api.usermoney.model.dto;
 
 import com.pro.common.module.api.usermoney.model.modelbase.AmountEntityRecordDTO;
 import com.pro.framework.api.FrameworkConst;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @SuperBuilder
 public class UserMoneyWaitChangeDTO extends AmountEntityRecordDTO {
 
-    @ApiModelProperty("下次状态更变时间")
+    @Schema(description = "下次状态更变时间")
     private LocalDateTime nextStateTime;
 
     //    @Override

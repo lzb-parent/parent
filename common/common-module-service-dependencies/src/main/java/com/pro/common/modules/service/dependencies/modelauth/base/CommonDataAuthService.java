@@ -1,13 +1,12 @@
-package com.pro.common.web.security.service;
+package com.pro.common.modules.service.dependencies.modelauth.base;
 
 import cn.hutool.core.collection.CollUtil;
-import com.pro.common.modules.api.dependencies.auth.ICommonDataAuthFilterService;
+import com.pro.common.modules.api.dependencies.auth.IAgentUserFilterService;
 import com.pro.common.modules.api.dependencies.exception.BusinessException;
 import com.pro.common.modules.api.dependencies.model.ILoginInfo;
-import com.pro.common.modules.api.dependencies.model.classes.IConfigClass;
+import io.swagger.v3.oas.annotations.Parameter;
+import com.pro.common.modules.api.dependencies.model.classes.IOpenConfigClass;
 import com.pro.common.modules.api.dependencies.model.classes.IUserClass;
-import com.pro.common.modules.service.dependencies.modelauth.base.AuthService;
-import com.pro.common.modules.service.dependencies.modelauth.base.AuthServiceFactory;
 import com.pro.common.modules.api.dependencies.auth.UserDataQuery;
 import com.pro.framework.api.database.OrderItem;
 import com.pro.framework.api.database.page.IPageInput;
@@ -29,45 +28,45 @@ public class CommonDataAuthService<T extends IModel> {
     @Autowired
     private AuthServiceFactory authServiceFactory;
     @Autowired(required = false)
-    private ICommonDataAuthFilterService commonDataAuthFilterService;
+    private IAgentUserFilterService commonDataAuthFilterService;
     @Autowired
     private IEntityProperties entityProperties;
 
 //    /**
 //     * 执行前 过滤数据来源
 //     */
-//    public void filterRequestModify(EnumCommonDataMethodType methodType, Class<T> beanClass, ILoginInfo loginInfo) {
+//    public void filterRequestModify(EnumCommonDataMethodType methodType, Class<T> beanClass, @Parameter(hidden = true) ILoginInfo loginInfo) {
 //        this.filterRequest(methodType, beanClass, loginInfo);
 //    }
 
     /**
      * 执行前 过滤数据来源
      */
-    public void filterRequestQuery(EnumCommonDataMethodType methodType, Class<T> beanClass, ILoginInfo loginInfo, Map<String, Object> paramMap, UserDataQuery query, IPageInput pageInput) {
+    public void filterRequestQuery(EnumCommonDataMethodType methodType, Class<T> beanClass, @Parameter(hidden = true) ILoginInfo loginInfo, Map<String, Object> paramMap, UserDataQuery query, IPageInput pageInput) {
         this.filterRequest(methodType, beanClass, loginInfo, () -> this.filterRequestQueryMore(methodType, beanClass, loginInfo, paramMap, query, pageInput));
     }
 
-    public void filterRequestQueryMore(EnumCommonDataMethodType methodType, Class<T> beanClass, ILoginInfo loginInfo, Map<String, Object> paramMap, UserDataQuery query, IPageInput pageInput) {
+    public void filterRequestQueryMore(EnumCommonDataMethodType methodType, Class<T> beanClass, @Parameter(hidden = true) ILoginInfo loginInfo, Map<String, Object> paramMap, UserDataQuery query, IPageInput pageInput) {
         // 需要登录的请求,都登录了
-        AssertUtil.isTrue(IConfigClass.class.isAssignableFrom(beanClass) || null != loginInfo.getId(), "error permission");
+        AssertUtil.isTrue(IOpenConfigClass.class.isAssignableFrom(beanClass) || null != loginInfo.getId(), "暂无权限");
         switch (loginInfo.getSysRole()) {
             case ADMIN:
                 if (commonDataAuthFilterService != null) {
-                    commonDataAuthFilterService.filterQuery(paramMap, null, query);
+                    commonDataAuthFilterService.filterAgentQuery(paramMap, null, query);
                 }
                 break;
             case AGENT:
                 if (commonDataAuthFilterService != null) {
-                    commonDataAuthFilterService.filterQuery(paramMap, loginInfo.getId(), query);
+                    commonDataAuthFilterService.filterAgentQuery(paramMap, loginInfo.getId(), query);
                 }
                 break;
             case USER:
                 String userIdPropName = entityProperties.getEntityClassReplaceMap().get("User").equals(beanClass) ? "id" : "userId";
-                commonDataAuthFilterService.filterQueryUserTeam(loginInfo, paramMap, query, userIdPropName, beanClass);
+                commonDataAuthFilterService.filterUserTeamQuery(loginInfo, paramMap, query, userIdPropName, beanClass);
                 break;
             case ANONYMOUS:
             default:
-                throw new BusinessException("error permission");
+                throw new BusinessException("暂无权限");
         }
 
         switch (loginInfo.getSysRole()) {
@@ -104,7 +103,7 @@ public class CommonDataAuthService<T extends IModel> {
                 // 检查userId
         }
         // 用户端,配置类,默认正序
-        if (IConfigClass.class.isAssignableFrom(beanClass)) {
+        if (IOpenConfigClass.class.isAssignableFrom(beanClass)) {
             if (null != pageInput && CollUtil.isEmpty(pageInput.getOrders())) {
                 pageInput.setOrders(Arrays.asList(new OrderItem("sort", true), new OrderItem("id", true)));
             }
@@ -112,12 +111,12 @@ public class CommonDataAuthService<T extends IModel> {
     }
 
 
-    public <T extends IModel> void filterRequest(EnumCommonDataMethodType methodType, Class<T> beanClass, ILoginInfo loginInfo) {
+    public <T extends IModel> void filterRequest(EnumCommonDataMethodType methodType, Class<T> beanClass, @Parameter(hidden = true) ILoginInfo loginInfo) {
         filterRequest(methodType, beanClass, loginInfo, () -> {
         });
     }
 
-    public <T extends IModel> void filterRequest(EnumCommonDataMethodType methodType, Class<T> beanClass, ILoginInfo loginInfo, Runnable filterMore) {
+    public <T extends IModel> void filterRequest(EnumCommonDataMethodType methodType, Class<T> beanClass, @Parameter(hidden = true) ILoginInfo loginInfo, Runnable filterMore) {
         switch (methodType) {
             case selectById:
             case selectOne:
@@ -126,7 +125,7 @@ public class CommonDataAuthService<T extends IModel> {
             case selectCountSum:
             case selectPage:
                 // 查询公共资料不用登录
-                if (!IConfigClass.class.isAssignableFrom(beanClass)) {
+                if (!IOpenConfigClass.class.isAssignableFrom(beanClass)) {
                     AssertUtil.notEmpty(loginInfo.getId(), "Please login first");
                     filterMore.run();
                 }
@@ -148,31 +147,32 @@ public class CommonDataAuthService<T extends IModel> {
     /**
      * (执行后) 过滤实体数据结果
      */
-    public T filterEntity(EnumCommonDataMethodType methodType, Class<T> beanClass, ILoginInfo loginInfo, T record) {
-        List<T> list = this.filterEntity(methodType, beanClass, loginInfo, Collections.singletonList(record), null);
+    public T filterEntity(EnumCommonDataMethodType methodType, Class<T> beanClass, @Parameter(hidden = true) ILoginInfo loginInfo, T record) {
+        List<T> list = this.filterEntity(methodType, beanClass, loginInfo, Collections.singletonList(record), record);
         return list.isEmpty() ? null : list.get(0);
     }
 
-    public T filterEntity(EnumCommonDataMethodType methodType, Class<T> beanClass, ILoginInfo loginInfo, T record, T entityOld) {
+    public T filterEntity(EnumCommonDataMethodType methodType, Class<T> beanClass, @Parameter(hidden = true) ILoginInfo loginInfo, T record, T entityOld) {
         List<T> list = this.filterEntity(methodType, beanClass, loginInfo, Collections.singletonList(record), entityOld);
         return list.isEmpty() ? null : list.get(0);
     }
 
-    public List<T> filterEntity(EnumCommonDataMethodType methodType, Class<T> beanClass, ILoginInfo loginInfo, List<T> records) {
+    public List<T> filterEntity(EnumCommonDataMethodType methodType, Class<T> beanClass, @Parameter(hidden = true) ILoginInfo loginInfo, List<T> records) {
         return filterEntity(methodType, beanClass, loginInfo, records, null);
     }
 
-    public List<T> filterEntity(EnumCommonDataMethodType methodType, Class<T> beanClass, ILoginInfo loginInfo, List<T> records, T entityOld) {
+    public List<T> filterEntity(EnumCommonDataMethodType methodType, Class<T> beanClass, @Parameter(hidden = true) ILoginInfo loginInfo, List<T> records, T entityOld) {
         AuthService<T> authService = (AuthService<T>) authServiceFactory.getService(beanClass.getSimpleName());
-        AssertUtil.notEmpty(authService, "permission error");
+        AssertUtil.notEmpty(authService, "暂无权限");
 
         if (records.isEmpty()) {
             return records;
         }
+        T newEntity = records.get(0);
         switch (methodType) {
             // id查询其他过滤无效 只能查询出来再过滤
             case insert:
-                if (records.get(0) instanceof IUserClass) {
+                if (newEntity instanceof IUserClass) {
                     switch (loginInfo.getSysRole()) {
                         case USER:
                             records.forEach(record -> ((IUserClass) record).setUserId(loginInfo.getId()));
@@ -180,24 +180,26 @@ public class CommonDataAuthService<T extends IModel> {
                         case AGENT:
 //                            Set<Long> userIds = new HashSet<>();
                             if (commonDataAuthFilterService != null) {
-                                commonDataAuthFilterService.filterInsertUpdate(loginInfo, records);
+                                commonDataAuthFilterService.filterAgentInsertUpdate(loginInfo, records);
                             }
                             break;
                     }
                 }
                 break;
             // id查询其他过滤无效 只能查询出来再过滤
+            case delete:
             case update:
-                if (records.get(0) instanceof IUserClass) {
-
+                AssertUtil.notEmpty(entityOld, "数据不存在");
+                if (newEntity instanceof IUserClass) {
                     switch (loginInfo.getSysRole()) {
                         case USER:
-                            records.forEach(record -> AssertUtil.isTrue(loginInfo.getId().equals(((IUserClass) record).getUserId()), "permission error"));
+                            AssertUtil.isTrue(loginInfo.getId().equals(((IUserClass) entityOld).getUserId()), "暂无权限");
+//                            records.forEach(record -> AssertUtil.isTrue(loginInfo.getId().equals(((IUserClass) record).getUserId()), "暂无权限"));
                             break;
                         case AGENT:
 //                            Set<Long> userIds = new HashSet<>();
                             if (commonDataAuthFilterService != null) {
-                                commonDataAuthFilterService.filterInsertUpdate(loginInfo, records);
+                                commonDataAuthFilterService.filterAgentInsertUpdate(loginInfo, records);
                             }
                             break;
                     }

@@ -26,8 +26,8 @@ import com.pro.common.modules.service.dependencies.util.I18nUtils;
 import com.pro.common.modules.service.dependencies.util.IPUtils;
 import com.pro.framework.api.util.LogicUtils;
 import com.pro.framework.api.util.StrUtils;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -53,7 +53,7 @@ import java.util.Map;
 @Slf4j
 @Getter
 @RestController
-@Api(tags = "nwaipay支付")
+@Tag(name = "nwaipay支付")
 @RequestMapping("pay/nwaipay/{MER_CODE}")
 public class NwaipayController extends PayCommonController {
     // http://localhost:8088/pay/nwaipay/NWAIPAY_NWAIPAY/unifiedOrder?amount=100&payType=GCASH_P&returnUrl=http://www.baidu.com&userId=1
@@ -101,7 +101,7 @@ public class NwaipayController extends PayCommonController {
     );
 
 
-    @ApiOperation("下单")
+    @Operation(summary = "下单")
 //    @GetMapping("unifiedOrder")
     @Transactional(rollbackFor = Exception.class)
     public UserRecharge unifiedOrder(@PathVariable String MER_CODE, UnifiedOrderRequest requestVo, HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -173,7 +173,7 @@ public class NwaipayController extends PayCommonController {
         return record;
     }
 
-    @ApiOperation("代付")
+    @Operation(summary = "代付")
 //    @PostMapping("payout")
     @SneakyThrows
     public R<PayoutIO.Result> payout(@PathVariable String MER_CODE, @RequestBody UserTransferRequest requestVo, HttpServletRequest request, HttpServletResponse response) {

@@ -11,8 +11,8 @@ import com.pro.framework.api.enums.IEnumToDbDbId;
 import com.pro.framework.javatodb.annotation.JTDField;
 import com.pro.framework.javatodb.annotation.JTDTable;
 import com.pro.framework.javatodb.constant.JTDConst;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -25,41 +25,41 @@ import java.time.LocalDateTime;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@ApiModel(description = "管理员表")
+@Schema(description = "管理员表")
 @JTDTable(entityId = 10001, sequences = {"KEY `username` (`username`)"})
 public class Admin extends BaseModel implements IAdminClass, ILoginInfoPrepare, IEnumToDbDbId {
 
-    @ApiModelProperty(value = "登录名")
+    @Schema(description = "登录名")
     private String username;
-    @ApiModelProperty(value = "登录密码")
+    @Schema(description = "登录密码")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @JTDField(uiType = JTDConst.EnumFieldUiType.password)
     private String password;
-    @ApiModelProperty(value = "昵称")
+    @Schema(description = "昵称")
     @JTDField(notNull = JTDConst.EnumFieldNullType.can_null)
     private String nickname;
-    @ApiModelProperty(value = "手机号")
+    @Schema(description = "手机号")
     @JTDField(notNull = JTDConst.EnumFieldNullType.can_null)
     private String phone;
-    @ApiModelProperty(value = "ip")
+    @Schema(description = "ip")
     @JTDField(notNull = JTDConst.EnumFieldNullType.can_null)
     private String ip;
-    @ApiModelProperty(value = "ip地址信息")
+    @Schema(description = "ip地址信息")
     @JTDField(notNull = JTDConst.EnumFieldNullType.can_null)
     private String ipAddress;
-    @ApiModelProperty(value = "登录次数")
+    @Schema(description = "登录次数")
     private Integer loginTimes;
     @JTDField(notNull = JTDConst.EnumFieldNullType.can_null)
-    @ApiModelProperty(value = "最后登录时间")
+    @Schema(description = "最后登录时间")
     private LocalDateTime lastLoginTime;
-    @ApiModelProperty(value = "启用")
+    @Schema(description = "启用")
     private Boolean enabled;
-//    @ApiModelProperty(value = "谷歌验证器")
+//    @Schema(description = "谷歌验证器")
 //    private Boolean googleAuthOpen;
-    @ApiModelProperty(value = "谷歌验证器密钥")
+    @Schema(description = "谷歌验证器密钥")
     @JTDField(notNull = JTDConst.EnumFieldNullType.can_null)
     private String googleAuthSecret;
-    @ApiModelProperty(value = "绑定角色")
+    @Schema(description = "绑定角色")
     @JTDField(entityClass = AuthRole.class, entityClassKey = "id", javaTypeEnumClassMultiple = true)
     private String roleIds;
 

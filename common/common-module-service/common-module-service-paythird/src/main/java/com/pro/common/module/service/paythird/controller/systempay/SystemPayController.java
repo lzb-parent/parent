@@ -16,7 +16,7 @@ import com.pro.common.module.service.paythird.controller.common.UnifiedOrderIO;
 import com.pro.common.modules.api.dependencies.CommonConst;
 import com.pro.common.modules.api.dependencies.message.ToSocket;
 import com.pro.common.modules.service.dependencies.modelauth.base.MessageService;
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +32,7 @@ import java.util.Map;
 
 @Slf4j
 @Getter
-@Api(tags = "系统支付")
+@Tag(name = "系统支付")
 @RestController
 @RequestMapping("pay/systempay/{MER_CODE}")
 public class SystemPayController extends PayCommonController {

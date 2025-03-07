@@ -36,7 +36,7 @@ public class AdminService extends BaseService<AdminDao, Admin> implements ILogin
 
     @Override
     public boolean updateById(Admin entity) {
-//        ILoginInfo loginInfo = ThreadLocalUtil.getLoginInfo();
+//        @Parameter(hidden = true) ILoginInfo loginInfo = ThreadLocalUtil.getLoginInfo();
 //        // 修改自己的密码
 //        if (loginInfo.getId().equals(entity.getId())) {
 //            if (StrUtils.isNotBlank(entity.getPassword())) {

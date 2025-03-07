@@ -6,8 +6,8 @@ import com.pro.common.modules.api.dependencies.model.classes.IUserOrderClass;
 import com.pro.framework.javatodb.annotation.JTDField;
 import com.pro.framework.javatodb.annotation.JTDTable;
 import com.pro.framework.javatodb.constant.JTDConst;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -21,7 +21,7 @@ import lombok.NoArgsConstructor;
 @Data
 
 @EqualsAndHashCode(callSuper = true)
-@ApiModel(description = "代付记录")
+@Schema(description = "代付记录")
 @NoArgsConstructor
 @AllArgsConstructor
 //@SuperBuilder
@@ -32,46 +32,46 @@ import lombok.NoArgsConstructor;
         }, entityId = 351
 )
 public class UserTransfer extends UserWithdraw implements IUserOrderClass {
-    //    @ApiModelProperty(value = "商户Id")
+    //    @Schema(description = "商户Id")
 //    private String merchantId;
-//    @ApiModelProperty(value = "商户名称")
+//    @Schema(description = "商户名称")
 //    private String merchantName;
-    @ApiModelProperty(value = "商户编号")
+    @Schema(description = "商户编号")
     @JTDField(group = "代付信息", entityClass = PayMerchant.class, uiType = JTDConst.EnumFieldUiType.hide)
     private String merchantCode;
-    @ApiModelProperty(value = "是否是线下支付")
+    @Schema(description = "是否是线下支付")
     @JTDField(group = "代付信息", notNull = JTDConst.EnumFieldNullType.can_null, disabled = true)
     private Boolean offlineFlag;
 
-    @ApiModelProperty(value = "提款订单Id")
+    @Schema(description = "提款订单Id")
     @JTDField(group = "代付信息")
     private Long userWithdrawId;
-    @ApiModelProperty(value = "代付渠道")
+    @Schema(description = "代付渠道")
     @JTDField(group = "代付信息", entityClass = PayoutChannel.class, entityClassKey = "id")
     private Long payoutChannelId;
-    @ApiModelProperty(value = "代付渠道名称")
+    @Schema(description = "代付渠道名称")
     @JTDField(group = "代付信息", entityClass = PayoutChannel.class, entityClassKey = "id", entityClassTargetProp = "name")
     private String payoutChannelName;
-    @ApiModelProperty(value = "代付银行")
+    @Schema(description = "代付银行")
     @JTDField(group = "代付信息", entityClass = PayBank.class)
     private String bankCode;
-    @ApiModelProperty(value = "代付银行")
+    @Schema(description = "代付银行")
     @JTDField(group = "代付信息", entityClass = PayBank.class, entityClassTargetProp = "name")
     private String bankName;
-    @ApiModelProperty(value = "代付三方返回单号")
+    @Schema(description = "代付三方返回单号")
     @JTDField(group = "代付信息", disabled = true)
     private String payNo;
-    @ApiModelProperty(value = "代付状态")
+    @Schema(description = "代付状态")
     @JTDField(group = "代付信息", disabled = true)
     private EnumTransferState state;
-    @ApiModelProperty(value = "代付失败信息")
+    @Schema(description = "代付失败信息")
     @JTDField(group = "代付信息", disabled = true)
     private String errorMessage;
-    @ApiModelProperty(value = "内部描述")
+    @Schema(description = "内部描述")
     @JTDField(uiType = JTDConst.EnumFieldUiType.textarea)
     private String remark;
 
-//    @ApiModelProperty("提现状态")
+//    @Schema(description = "提现状态")
 //    @JTDField(group = "基础信息", uiType = JTDConst.EnumFieldUiType.none)
 //    private EnumWithdrawStatus status;
 }

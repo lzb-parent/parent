@@ -1,6 +1,7 @@
 package com.pro.common.modules.api.dependencies.model;
 
 import com.pro.common.modules.api.dependencies.enums.EnumSysRole;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.io.Serializable;
 import java.util.Set;
@@ -15,6 +16,7 @@ public interface ILoginInfo extends Serializable {
 
     Boolean getEnabled();
 
+    @Schema(hidden = true)
     default Boolean getGoogleAuthOpen() {
         return false;
     }

@@ -3,7 +3,7 @@ package com.pro.common.module.api.agent.enums;
 import com.pro.common.module.api.agent.model.db.Agent;
 import com.pro.framework.api.enums.IEnumToDbEnum;
 import com.pro.framework.javatodb.annotation.JTDField;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

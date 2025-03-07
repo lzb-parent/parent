@@ -1,6 +1,7 @@
 package com.pro.common.web.security.websocket;
 
 import com.pro.common.modules.api.dependencies.model.ILoginInfo;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.NonNull;
 import org.springframework.web.socket.CloseStatus;

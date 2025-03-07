@@ -27,8 +27,8 @@ import com.pro.common.modules.api.dependencies.exception.BusinessException;
 import com.pro.common.modules.service.dependencies.util.I18nUtils;
 import com.pro.framework.api.util.LogicUtils;
 import com.pro.framework.api.util.StrUtils;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +44,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@Api(tags = "qepay支付")
+@Tag(name = "qepay支付")
 @RestController
 @RequestMapping("pay/qepaynew/{MER_CODE}")
 @Slf4j
@@ -62,7 +62,7 @@ public class QePayNewController implements IPayController<RechargeResult, Withdr
 
     // http://localhost:8088/pay/qepaynew/QEPAYNEW_8PAY/unifiedOrder?amount=100&payType=2600&returnUrl=http://www.baidu.com&userId=1
     @Override
-    @ApiOperation("下单")
+    @Operation(summary = "下单")
     @GetMapping("unifiedOrder")
     @Transactional(rollbackFor = Exception.class)
     public UserRecharge unifiedOrder(@PathVariable String MER_CODE, UnifiedOrderRequest requestVo, HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -134,7 +134,7 @@ public class QePayNewController implements IPayController<RechargeResult, Withdr
     }
 
     @Override
-    @ApiOperation("支付回调")
+    @Operation(summary = "支付回调")
 //    @RequestMapping(value = "notify", produces = "application/json;charset=UTF-8", method = {RequestMethod.GET, RequestMethod.POST})
     public synchronized String notify(
             @PathVariable String MER_CODE,
@@ -183,7 +183,7 @@ public class QePayNewController implements IPayController<RechargeResult, Withdr
     }
 
     @Override
-    @ApiOperation("代付")
+    @Operation(summary = "代付")
     @PostMapping("payout")
     public R<PayoutIO.Result> payout(@PathVariable String MER_CODE, @RequestBody UserTransferRequest requestVo, HttpServletRequest request, HttpServletResponse response) {
         log.error("***************************** 请求【" + _MER_CODE + "代付：{} 】*******************************", requestVo.getPayType());
@@ -260,7 +260,7 @@ public class QePayNewController implements IPayController<RechargeResult, Withdr
     }
 
     @Override
-    @ApiOperation("代付回调")
+    @Operation(summary = "代付回调")
 //    @RequestMapping(value = "payout/notify", produces = "application/json;charset=UTF-8", method = {RequestMethod.GET, RequestMethod.POST})
     public synchronized String payoutNotify(
             @PathVariable String MER_CODE,
