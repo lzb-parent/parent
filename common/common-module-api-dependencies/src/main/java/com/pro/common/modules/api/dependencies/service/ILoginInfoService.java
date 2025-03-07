@@ -8,7 +8,7 @@ import java.io.Serializable;
 import java.util.Set;
 
 public interface ILoginInfoService<T extends ILoginInfoPrepare> {
-    T doLogin(LoginRequest loginRequest);
+    T getLoginInfo(LoginRequest loginRequest);
 
     default T register(String request, String ip, String lang){
         throw new BusinessException("can not register now");
@@ -17,4 +17,6 @@ public interface ILoginInfoService<T extends ILoginInfoPrepare> {
     T getById(Serializable id);
 
     Set<Long> getRoleIds(Long loginId);
+
+   default void doAfterLogin(ILoginInfoPrepare loginInfo){}
 }

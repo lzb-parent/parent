@@ -6,6 +6,7 @@ import com.pro.common.modules.api.dependencies.CommonConst;
 import com.pro.common.modules.api.dependencies.R;
 import com.pro.common.modules.api.dependencies.enums.EnumSysRole;
 import com.pro.common.modules.api.dependencies.model.ILoginInfo;
+import com.pro.common.modules.api.dependencies.model.TokenRequest;
 import io.swagger.v3.oas.annotations.Parameter;
 import com.pro.common.modules.api.dependencies.model.ILoginInfoPrepare;
 import com.pro.common.modules.api.dependencies.model.LoginRequest;
@@ -16,10 +17,8 @@ import com.pro.common.modules.service.dependencies.properties.CommonProperties;
 import com.pro.common.web.security.service.CommonLoginService;
 import com.pro.framework.api.cache.ICacheManagerCenter;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.annotation.Order;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -39,26 +38,22 @@ public class CommonLoginController {
     private CommonProperties commonProperties;
     @Autowired
     private IAuthRoleService authRoleService;
-    @Autowired(required = false)
-    private ISysMsgService msgService;
-    @Autowired
-    private ICacheManagerCenter cacheManagerCenter;
 
     @ApiOperationSupport(order = 1)
     @Operation(summary = "注册")
     @PostMapping("/register")
-    public R<AccessToken> register(HttpServletRequest request, @SessionAttribute(value = CommonConst.Str.SYSTEM_CAPTCHA, required = false) String captchaInner, HttpServletResponse response, @RequestBody String requestBody) {
+    public R<AccessToken> register(HttpServletRequest request, HttpServletResponse response, @Parameter(description = "用户基础信息") @RequestBody String requestBody) {
+        String captchaInner = (String) request.getSession().getAttribute(CommonConst.Str.SYSTEM_CAPTCHA);
         AccessToken token = commonLoginService.register(request, captchaInner, requestBody);
         response.setHeader("Authorization", token.getAccessToken());
         response.setHeader("Access-Control-Expose-Headers", "Authorization");
         return R.ok(token);
     }
 
-
     @ApiOperationSupport(order = 2)
     @Operation(summary = "登录")
     @PostMapping("/login")
-    public R<AccessToken> login(HttpServletResponse response, @RequestBody String request) {
+    public R<AccessToken> login(HttpServletResponse response, @RequestBody LoginRequest request) {
         // 返回token
         AccessToken token = commonLoginService.login(request);
         response.setHeader("Authorization", token.getAccessToken());
@@ -69,7 +64,7 @@ public class CommonLoginController {
     @ApiOperationSupport(order = 3)
     @Operation(summary = "退出登录")
     @PostMapping("/logout")
-    public R<?> logout(@Parameter(hidden = true) ILoginInfo loginInfo, @RequestBody(required = false) LoginRequest request) {
+    public R<?> logout(@Parameter(hidden = true) ILoginInfo loginInfo, @Parameter(required = true) TokenRequest request) {
         Long id = loginInfo.getId();
         if (id != null) {
             // 移除token

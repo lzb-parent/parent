@@ -13,7 +13,6 @@ import com.pro.common.modules.api.dependencies.model.LoginRequest;
 import com.pro.common.modules.api.dependencies.service.ILoginInfoService;
 import com.pro.common.modules.api.dependencies.user.model.UserMsg;
 import com.pro.common.modules.service.dependencies.modelauth.base.AccessToken;
-import com.pro.common.modules.service.dependencies.modelauth.base.LoginInfoService;
 import com.pro.common.modules.service.dependencies.modelauth.base.TokenService;
 import com.pro.common.modules.service.dependencies.properties.CommonProperties;
 import com.pro.common.modules.service.dependencies.util.IPUtils;
@@ -39,17 +38,16 @@ public class CommonLoginService {
     @Autowired
     private ApplicationContext applicationContext;
     @Autowired
-    private LoginInfoService loginInfoService;
-    @Autowired
     private ISysMsgService sysMsgService;
     @Autowired
     private ICacheManagerCenter cacheManagerCenter;
 
     @Transactional
-    public AccessToken login(String requestStr) {
-        LoginRequest request = JSONUtils.fromString(requestStr, LoginRequest.class);
+    public AccessToken login(LoginRequest request) {
+//        LoginRequest request = JSONUtils.fromString(requestStr, LoginRequest.class);
         // 查询 userService / adminService /agentService
-        ILoginInfoPrepare loginInfo = this.getLoginInfoService().doLogin(request);
+        ILoginInfoService<?> loginInfoService = this.getLoginInfoService();
+        ILoginInfoPrepare loginInfo = loginInfoService.getLoginInfo(request);
         if (loginInfo == null) {
 //            I18nUtils.throwBusinessException("用户不存在", request.getUsername());
             throw new BusinessException("用户不存在_", request.getUsername());
@@ -62,6 +60,8 @@ public class CommonLoginService {
         if (!loginInfo.getPassword().equals(PasswordUtils.encrypt_Password(request.getPassword()))) {
             throw new BusinessException("密码错误");
         }
+
+        loginInfoService.doAfterLogin(loginInfo);
         // 重载(清理)菜单缓存
 //        loginInfoService.clearCache(commonProperties.getApplication().getRole(), loginInfo.getId());
         // 返回登录token
@@ -85,7 +85,7 @@ public class CommonLoginService {
     }
 
     public Boolean getGoogleAuthOpen(LoginRequest request) {
-        ILoginInfoPrepare loginInfo = this.getLoginInfoService().doLogin(request);
+        ILoginInfoPrepare loginInfo = this.getLoginInfoService().getLoginInfo(request);
         return null != loginInfo && loginInfo.getGoogleAuthOpen();
     }
 

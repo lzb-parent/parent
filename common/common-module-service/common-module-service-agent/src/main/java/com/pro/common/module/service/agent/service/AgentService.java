@@ -77,7 +77,7 @@ public class AgentService extends BaseService<AgentDao, Agent> implements IAgent
     }
 
     @Override
-    public Agent doLogin(LoginRequest loginRequest) {
+    public Agent getLoginInfo(LoginRequest loginRequest) {
         return this.lambdaQuery().eq(Agent::getUsername, loginRequest.getUsername()).one();
     }
 

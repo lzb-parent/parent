@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 @Component(CommonConst.Bean.adminService)
 public class AdminService extends BaseService<AdminDao, Admin> implements ILoginInfoService<Admin> {
     @Override
-    public Admin doLogin(LoginRequest loginRequest) {
+    public Admin getLoginInfo(LoginRequest loginRequest) {
         return this.lambdaQuery().eq(Admin::getUsername, loginRequest.getUsername()).one();
     }
 

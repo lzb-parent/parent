@@ -54,12 +54,13 @@ public class UserService<M extends UserDao<T>, T extends User> extends BaseServi
 
 
     @Override
-    public T doLogin(LoginRequest loginRequest) {
-        T user = this.query(loginRequest);
-        if (user != null) {
-            this.addIncreaseField(user.getId(), T::getLoginTimes, 1);
-        }
-        return user;
+    public T getLoginInfo(LoginRequest loginRequest) {
+        return this.query(loginRequest);
+    }
+
+    @Override
+    public void doAfterLogin(ILoginInfoPrepare loginInfo) {
+        this.addIncreaseField(loginInfo.getId(), T::getLoginTimes, 1);
     }
 
     @Override
