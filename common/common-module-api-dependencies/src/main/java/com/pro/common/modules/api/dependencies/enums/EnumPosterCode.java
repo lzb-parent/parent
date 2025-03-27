@@ -4,7 +4,7 @@ import com.pro.framework.api.enums.EnumToDbEnum;
 import com.pro.framework.api.enums.IEnumToDbEnum;
 import com.pro.framework.javatodb.annotation.JTDField;
 import com.pro.framework.javatodb.constant.JTDConst;
-import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -20,18 +20,18 @@ public enum EnumPosterCode implements IEnumToDbEnum {
     register_phone_error("注册手机号格式不正确", null, null, ""),
     notice("首页弹窗通知", null, null, ""),
     ;
-    //    @Schema(description = "固有文章编号")
+    //    @ApiModelProperty(value = "固有文章编号")
 //    @JTDField(notNull = JTDConst.EnumFieldNullType.can_null)
 //    private String code; // 等同于name
-    @Schema(description = "中文名字")
+    @ApiModelProperty(value = "中文名字")
     @JTDField(notNull = JTDConst.EnumFieldNullType.can_null)
     private String name;
-    @Schema(description = "启用")
+    @ApiModelProperty(value = "启用")
     private Boolean enabled;
-    @Schema(description = "排序")
+    @ApiModelProperty(value = "排序")
     @JTDField(defaultValue = "100")
     private Integer sort;
-    @Schema(description = "内部描述")
+    @ApiModelProperty(value = "内部描述")
     @JTDField(uiType = JTDConst.EnumFieldUiType.textarea)
     private String remark;
 }

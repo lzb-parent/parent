@@ -2,7 +2,7 @@ package com.pro.common.modules.api.dependencies.model.classes;
 
 import com.pro.common.modules.api.dependencies.model.BaseModel;
 import com.pro.framework.javatodb.annotation.JTDField;
-import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,14 +13,14 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 //@EqualsAndHashCode(callSuper = true)
-public abstract class BaseConfigModel extends BaseModel {
-//    @Schema(description = "主键id")
+public abstract class BaseConfigModel extends BaseModel implements IConfigClass {
+//    @ApiModelProperty(value = "主键id")
 //    protected Long id;
-    @Schema(description = "启用")// 功能关闭
+    @ApiModelProperty(value = "启用")// 功能关闭
     private Boolean enabled;
-    @Schema(description = "排序")
+    @ApiModelProperty(value = "排序")
     @JTDField(defaultValue = "100")
     private Integer sort;
-    @Schema(description = "描述")
+    @ApiModelProperty(value = "描述")
     private String remark;
 }

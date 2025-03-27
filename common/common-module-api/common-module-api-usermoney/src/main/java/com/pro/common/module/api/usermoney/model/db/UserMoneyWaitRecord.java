@@ -4,8 +4,8 @@ import com.pro.common.module.api.usermoney.model.enums.EnumUserMoneyWaitState;
 import com.pro.common.module.api.usermoney.model.modelbase.AmountEntityRecord;
 import com.pro.common.modules.api.dependencies.model.classes.IUserRecordClass;
 import com.pro.framework.javatodb.annotation.JTDTable;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
  * @author admin
  */
 @Data
-@Schema(description = "资金待结算记录")
+@ApiModel(value = "", description = "资金待结算记录")
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
@@ -27,10 +27,10 @@ import java.time.LocalDateTime;
         entityId = 348
 )
 public class UserMoneyWaitRecord extends AmountEntityRecord implements IUserRecordClass {
-    @Schema(description = "状态")
+    @ApiModelProperty("状态")
     private EnumUserMoneyWaitState state;
-    @Schema(description = "状态更变时间")
+    @ApiModelProperty("状态更变时间")
     private LocalDateTime stateTime;
-    @Schema(description = "下次状态更变时间")
+    @ApiModelProperty("下次状态更变时间")
     private LocalDateTime nextStateTime;
 }

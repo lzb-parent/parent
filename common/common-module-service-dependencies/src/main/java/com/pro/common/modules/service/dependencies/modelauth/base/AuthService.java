@@ -3,7 +3,10 @@ package com.pro.common.modules.service.dependencies.modelauth.base;
 import cn.hutool.core.util.ClassUtil;
 import com.pro.common.modules.api.dependencies.enums.EnumSysRole;
 import com.pro.common.modules.api.dependencies.exception.BusinessException;
-import com.pro.common.modules.api.dependencies.model.classes.*;
+import com.pro.common.modules.api.dependencies.model.classes.IConfigClass;
+import com.pro.common.modules.api.dependencies.model.classes.IUserDataClass;
+import com.pro.common.modules.api.dependencies.model.classes.IUserOrderClass;
+import com.pro.common.modules.api.dependencies.model.classes.IUserRecordClass;
 import com.pro.framework.api.clazz.ClassCaches;
 import com.pro.framework.api.enums.EnumMethodType;
 import com.pro.framework.api.model.IModel;
@@ -15,6 +18,7 @@ import lombok.Getter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.annotation.PostConstruct;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.*;
@@ -140,8 +144,10 @@ public class AuthService<ENTITY extends IModel> {
                 switch (method) {
                     case QUERY:
                         // 查询
-                        if (IOpenConfigClass.class.isAssignableFrom(entityClass)
-                                || IUserClass.class.isAssignableFrom(entityClass)
+                        if (IConfigClass.class.isAssignableFrom(entityClass)
+                                || IUserDataClass.class.isAssignableFrom(entityClass)
+                                || IUserOrderClass.class.isAssignableFrom(entityClass)
+                                || IUserRecordClass.class.isAssignableFrom(entityClass)
                         ) {
                             // 全开放
                             props.addAll(fullProps);
@@ -165,7 +171,7 @@ public class AuthService<ENTITY extends IModel> {
             case ANONYMOUS:
                 switch (method) {
                     case QUERY:
-                        if (IOpenConfigClass.class.isAssignableFrom(entityClass)) {
+                        if (IConfigClass.class.isAssignableFrom(entityClass)) {
                             props.addAll(fullProps);
                         }
                         break;
@@ -182,7 +188,7 @@ public class AuthService<ENTITY extends IModel> {
     private boolean filterMore(EnumSysRole role, Class<ENTITY> entityClass) {
         if (EnumSysRole.AGENT.equals(role)) {
             // 代理端不能改配置文件
-            return !IOpenConfigClass.class.equals(entityClass);
+            return !IConfigClass.class.equals(entityClass);
         }
         return true;
     }

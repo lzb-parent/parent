@@ -8,7 +8,7 @@ import com.pro.common.module.service.pay.model.request.UserTransferRequest;
 import com.pro.common.modules.api.dependencies.R;
 import com.pro.framework.api.util.JSONUtils;
 import com.pro.framework.api.util.StrUtils;
-import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,11 +18,11 @@ import java.util.Map;
 
 public interface IPayController<RechargeResult, WithdrawResult> {
 
-    @Operation(summary = "下单")
+    @ApiOperation("下单")
     @GetMapping("unifiedOrder")
     UserRecharge unifiedOrder(@PathVariable String MER_CODE, UnifiedOrderRequest requestVo, HttpServletRequest request, HttpServletResponse response) throws IOException;
 
-    @Operation(summary = "支付回调")// 旧的灵活方式
+    @ApiOperation("支付回调")// 旧的灵活方式
     default String notify(
             @PathVariable String MER_CODE,
             RechargeResult result,
@@ -30,7 +30,7 @@ public interface IPayController<RechargeResult, WithdrawResult> {
         return "empty";
     }
 
-    @Operation(summary = "支付回调")// 新的统一方式
+    @ApiOperation("支付回调")// 新的统一方式
     @RequestMapping(value = "notify", produces = "application/json;charset=UTF-8", method = {RequestMethod.GET, RequestMethod.POST})
     default String notify(
             @PathVariable String MER_CODE,
@@ -45,11 +45,11 @@ public interface IPayController<RechargeResult, WithdrawResult> {
         return notify(MER_CODE, rechargeResult, request);
     }
 
-    @Operation(summary = "代付")
+    @ApiOperation("代付")
     @PostMapping("payout")
     R<PayoutIO.Result> payout(@PathVariable String MER_CODE, @RequestBody UserTransferRequest requestVo, HttpServletRequest request, HttpServletResponse response);
 
-    @Operation(summary = "代付回调")// 旧的灵活方式
+    @ApiOperation("代付回调")// 旧的灵活方式
 //    @RequestMapping(value = "payout/notify", produces = "application/json;charset=UTF-8", method = {RequestMethod.GET, RequestMethod.POST})
     default String payoutNotify(
             @PathVariable String MER_CODE,
@@ -58,7 +58,7 @@ public interface IPayController<RechargeResult, WithdrawResult> {
         return "empty";
     }
 
-    @Operation(summary = "代付回调")// 新的统一方式
+    @ApiOperation("代付回调")// 新的统一方式
     @RequestMapping(value = "payout/notify", produces = "application/json;charset=UTF-8", method = {RequestMethod.GET, RequestMethod.POST})
     default String payoutNotify(
             @PathVariable String MER_CODE,

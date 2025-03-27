@@ -3,7 +3,7 @@ package com.pro.common.module.api.message.enums;
 import com.pro.common.module.api.message.model.db.SysMsgChannelMerchant;
 import com.pro.framework.api.enums.IEnumToDbEnum;
 import com.pro.framework.javatodb.annotation.JTDField;
-import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

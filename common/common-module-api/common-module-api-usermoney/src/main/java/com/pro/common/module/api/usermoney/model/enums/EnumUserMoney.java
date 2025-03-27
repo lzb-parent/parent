@@ -3,7 +3,7 @@ package com.pro.common.module.api.usermoney.model.enums;
 import com.pro.common.module.api.usermoney.model.db.UserMoney;
 import com.pro.framework.api.enums.IEnumToDbEnum;
 import com.pro.framework.javatodb.annotation.JTDField;
-import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

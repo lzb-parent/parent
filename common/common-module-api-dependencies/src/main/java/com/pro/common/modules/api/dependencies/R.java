@@ -1,7 +1,8 @@
 package com.pro.common.modules.api.dependencies;
 
 import com.pro.common.modules.api.dependencies.model.IResponse;
-import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiParam;
 import lombok.Data;
 
 import java.util.Map;
@@ -9,23 +10,23 @@ import java.util.Map;
 /**
  * 通用返回数据
  */
-@Schema(description = "响应")
+@ApiModel(description = "响应")
 @Data
 public class R<T> implements IResponse<T> {
     public static final Integer SUCCESS = 0;
-    @Schema(description = "响应码")
+    @ApiParam("响应码")
     private Integer code = SUCCESS;
-    @Schema(description = "响应成功内容")
+    @ApiParam("响应成功内容")
     private T data;
-    @Schema(description = "响应错误信息")
+    @ApiParam("响应错误信息")
     private String msg;
-    @Schema(description = "响应时间戳")
+    @ApiParam("响应时间戳")
     private Long timestamp;
 
 
-    @Schema(description = "文章编号",hidden = true)
+    @ApiParam("文章编号")
     private String posterCode;
-    @Schema(description = "文章参数", hidden = true)
+    @ApiParam("文章参数")
     private Map<String, Object> paramMap;
 
     public static <T> R<T> ok() {

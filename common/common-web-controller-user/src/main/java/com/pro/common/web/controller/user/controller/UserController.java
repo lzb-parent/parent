@@ -9,13 +9,12 @@
 //import com.pro.common.module.api.usermoney.model.intf.IUserMoneyUnitService;
 //import com.pro.common.modules.api.dependencies.R;
 //import com.pro.common.modules.api.dependencies.model.ILoginInfo;
-import io.swagger.v3.oas.annotations.Parameter;
 //import com.pro.common.web.controller.user.model.request.TeamRequest;
 //import com.pro.common.web.controller.user.model.response.TeamChildInfo;
 //import com.pro.common.web.controller.user.model.response.UserChildVo;
 //import com.pro.framework.api.util.CollUtils;
-//import io.swagger.v3.oas.annotations.tags.Tag;
-//import io.swagger.v3.oas.annotations.Operation;
+//import io.swagger.annotations.Api;
+//import io.swagger.annotations.ApiOperation;
 //import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.web.bind.annotation.PostMapping;
 //import org.springframework.web.bind.annotation.RequestBody;
@@ -27,7 +26,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 //import java.util.Map;
 //import java.util.stream.Collectors;
 //
-//@Tag(name = "用户接口")
+//@Api(tags = "用户接口")
 //@RestController
 //@RequestMapping("user")
 //public class UserController {
@@ -45,9 +44,9 @@ import io.swagger.v3.oas.annotations.Parameter;
 ////    private IUserBillService userBillService;
 //    public static final UserChildVo EMPTY_CHILD = new UserChildVo();
 //
-//    @Operation(summary = "团队报表")
+//    @ApiOperation(value = "团队报表")
 //    @PostMapping("team/data")
-//    public R<?> teamData(@Parameter(hidden = true) ILoginInfo loginInfo, @RequestBody TeamRequest requestVo) {
+//    public R<?> teamData(ILoginInfo loginInfo, @RequestBody TeamRequest requestVo) {
 //        int level = EnumDict.USER_TEAM_LEVELS.getValueCacheOrDefault(3);
 //        Integer requestLevel = requestVo.getLevel();
 //        if (null != requestLevel) {
