@@ -26,10 +26,9 @@
         <!--        <guava.version>27.1-jre</guava.version>-->
         <fastjson.version>1.2.73</fastjson.version>
         <mybatis-plus-boot-starter.version>3.5.5</mybatis-plus-boot-starter.version>
-        <swagger.annotations.version>2.2.9</swagger.annotations.version>
-        <!--        <swagger.annotations.version>1.5.22</swagger.annotations.version>-->
-        <!--        <swagger-bootstrap-ui.version>1.9.6</swagger-bootstrap-ui.version>-->
-        <knife4j-openapi3.version>4.5.0</knife4j-openapi3.version>
+        <swagger.annotations.version>1.5.22</swagger.annotations.version>
+        <swagger-bootstrap-ui.version>1.9.6</swagger-bootstrap-ui.version>
+        <knife4j.version>2.0.4</knife4j.version>
         <p6spy.version>3.8.5</p6spy.version>
         <jwt.version>3.10.3</jwt.version>
         <shiro.version>1.6.0</shiro.version>
@@ -61,11 +60,6 @@
             <dependency>
                 <groupId>com.pro</groupId>
                 <artifactId>framework-enums</artifactId>
-                <version>${framework.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.pro</groupId>
-                <artifactId>framework-spring</artifactId>
                 <version>${framework.version}</version>
             </dependency>
             <dependency>
@@ -294,10 +288,10 @@
             <optional>true</optional>
             <scope>test</scope>
             <exclusions>
-                <!--                <exclusion>-->
-                <!--                    <groupId>org.springframework.boot</groupId>-->
-                <!--                    <artifactId>spring-boot-starter</artifactId>-->
-                <!--                </exclusion>-->
+<!--                <exclusion>-->
+<!--                    <groupId>org.springframework.boot</groupId>-->
+<!--                    <artifactId>spring-boot-starter</artifactId>-->
+<!--                </exclusion>-->
                 <exclusion>
                     <groupId>org.apache.logging.log4j</groupId>
                     <artifactId>log4j-to-slf4j</artifactId>
@@ -314,13 +308,8 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <!--        <dependency>-->
-        <!--            <groupId>io.swagger</groupId>-->
-        <!--            <artifactId>swagger-annotations</artifactId>-->
-        <!--            <version>${swagger.annotations.version}</version>-->
-        <!--        </dependency>-->
         <dependency>
-            <groupId>io.swagger.core.v3</groupId>
+            <groupId>io.swagger</groupId>
             <artifactId>swagger-annotations</artifactId>
             <version>${swagger.annotations.version}</version>
         </dependency>
@@ -384,10 +373,6 @@
                             </include>
                             <include>
                                 <groupId>com.pro</groupId>
-                                <artifactId>framework-spring</artifactId>
-                            </include>
-                            <include>
-                                <groupId>com.pro</groupId>
                                 <artifactId>framework-java-to-db</artifactId>
                             </include>
                             <include>
@@ -426,18 +411,18 @@
                                 <groupId>com.pro</groupId>
                                 <artifactId>common-web-security</artifactId>
                             </include>
-                            <include>
+                            <dependency>
                                 <groupId>com.pro</groupId>
                                 <artifactId>common-web-controller-user</artifactId>
-                            </include>
-                            <include>
+                            </dependency>
+                            <dependency>
                                 <groupId>com.pro</groupId>
                                 <artifactId>common-web-controller-admin</artifactId>
-                            </include>
-                            <include>
+                            </dependency>
+                            <dependency>
                                 <groupId>com.pro</groupId>
                                 <artifactId>common-web-controller-agent</artifactId>
-                            </include>
+                            </dependency>
                             <include>
                                 <groupId>com.pro</groupId>
                                 <artifactId>common-module-api-dependencies</artifactId>
@@ -578,11 +563,6 @@
                                 <groupId>org.projectlombok</groupId>
                                 <artifactId>lombok</artifactId>
                                 <version>${lombok.version}</version>
-                            </path>
-                            <path>
-                                <groupId>org.mapstruct</groupId>
-                                <artifactId>mapstruct-processor</artifactId>
-                                <version>1.6.3</version>
                             </path>
                         </annotationProcessorPaths>
                     </configuration>

@@ -42,17 +42,5 @@
             <groupId>com.pro</groupId>
             <artifactId>common-module-api-message</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.github.xiaoymin</groupId>
-            <artifactId>knife4j-core</artifactId>
-            <version>${knife4j-openapi3.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        <!--        <dependency>-->
-<!--            <groupId>com.github.xiaoymin</groupId>-->
-<!--            <artifactId>knife4j-annotations</artifactId>-->
-<!--            <version>${knife4j.version}</version>-->
-<!--            <scope>compile</scope>-->
-<!--        </dependency>-->
     </dependencies>
 </project>

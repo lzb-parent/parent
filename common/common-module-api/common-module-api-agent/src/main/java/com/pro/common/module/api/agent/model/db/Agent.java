@@ -3,16 +3,17 @@ package com.pro.common.module.api.agent.model.db;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.pro.common.modules.api.dependencies.enums.EnumSysRole;
-import com.pro.common.modules.api.dependencies.model.BaseModel;
-import com.pro.common.modules.api.dependencies.model.ILoginInfoPrepare;
+import com.pro.common.modules.api.dependencies.model.ILoginInfo;
 import com.pro.common.modules.api.dependencies.model.classes.IAdminClass;
 import com.pro.common.modules.api.dependencies.model.classes.ISimpleInfo;
+import com.pro.framework.api.enums.IEnumToDbDb;
+import com.pro.common.modules.api.dependencies.model.BaseModel;
 import com.pro.framework.api.enums.IEnumToDbDbId;
 import com.pro.framework.javatodb.annotation.JTDField;
 import com.pro.framework.javatodb.annotation.JTDTable;
 import com.pro.framework.javatodb.constant.JTDConst;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -23,82 +24,82 @@ import java.time.LocalDateTime;
 @Data
 
 @EqualsAndHashCode(callSuper = true)
-@Schema(description = "代理")
+@ApiModel(description = "代理")
 @NoArgsConstructor
 @JTDTable(entityId = 302)
-public class Agent extends BaseModel implements IAdminClass, IEnumToDbDbId, ILoginInfoPrepare, ISimpleInfo {
+public class Agent extends BaseModel implements IAdminClass, IEnumToDbDbId, ILoginInfo, ISimpleInfo {
     public static final Agent EMPTY = new Agent();
 
 
-    @Schema(description = "登录名")
+    @ApiModelProperty(value = "登录名")
     @JTDField(group = "基础信息")
     private String username;
-    @Schema(description = "登录密码")
+    @ApiModelProperty(value = "登录密码")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @JTDField(group = "基础信息", uiType = JTDConst.EnumFieldUiType.password)
     private String password;
-    @Schema(description = "邀请码")
+    @ApiModelProperty(value = "邀请码")
     @JTDField(group = "基础信息")
     private String codeNumber;
-    @Schema(description = "启用")
+    @ApiModelProperty(value = "启用")
     @JTDField(group = "基础信息")
     private Boolean enabled;
-    @Schema(description = "内部")
+    @ApiModelProperty(value = "内部")
     @JTDField(group = "基础信息")
     private Boolean isDemo;
 
-    @Schema(description = "上级")
+    @ApiModelProperty(value = "上级")
     @JTDField(group = "基础信息", notNull = JTDConst.EnumFieldNullType.can_null, entityClass = Agent.class, entityClassKey = "id", entityClassLabel = "username")
     private Long pid;
-    @Schema(description = "层级")
+    @ApiModelProperty(value = "层级")
     @JTDField(group = "基础信息", uiType = JTDConst.EnumFieldUiType.hide, defaultValue = "1")
     private Integer level;
-    @Schema(description = "父级id集合")
+    @ApiModelProperty(value = "父级id集合")
     @JTDField(group = "基础信息", uiType = JTDConst.EnumFieldUiType.hide)
     private String pids;
 
-    @Schema(description = "推广域名")
+    @ApiModelProperty(value = "推广域名")
     @JTDField(group = "配置")
     private String domain;
-    @Schema(description = "代理比例")
+    @ApiModelProperty(value = "代理比例")
     @JTDField(group = "配置")
     private BigDecimal rate;
-    @Schema(description = "余额")
+    @ApiModelProperty(value = "余额")
     @JTDField(group = "配置")
     private BigDecimal balance;
 
 
-    @Schema(description = "昵称")
+    @ApiModelProperty(value = "昵称")
     @JTDField(group = "通讯信息")
-    private String nickname;
-    @Schema(description = "手机号")
+    private String nickName;
+    @ApiModelProperty(value = "手机号")
     @JTDField(group = "通讯信息")
     private String phone;
-    @Schema(description = "telegram")
+    @ApiModelProperty(value = "telegram")
     @JTDField(group = "通讯信息")
     private String telegram;
-    @Schema(description = "whatsapp")
+    @ApiModelProperty(value = "whatsapp")
     @JTDField(group = "通讯信息")
     private String whatsapp;
-    @Schema(description = "邮箱")
+    @ApiModelProperty(value = "邮箱")
     @JTDField(group = "通讯信息")
     private String email;
 
 
-    @Schema(description = "ip")
+    @ApiModelProperty(value = "ip")
     @JTDField(group = "登录注册")
     private String ip;
-    @Schema(description = "ip地址信息")
+    @ApiModelProperty(value = "ip地址信息")
     @JTDField(group = "登录注册")
     private String ipAddress;
-    @Schema(description = "登录次数")
+    @ApiModelProperty(value = "登录次数")
     @JTDField(group = "登录注册")
     private Integer loginTimes;
-    @Schema(description = "最后登录时间")
+    @ApiModelProperty(value = "最后登录时间")
     @JTDField(group = "登录注册")
     private LocalDateTime lastLoginTime;
 
-    @Schema(description = "绑定角色")
+    @ApiModelProperty(value = "绑定角色")
     @JTDField(entityName = "authRole", entityClassKey = "id", javaTypeEnumClassMultiple = true)
     private String roleIds;
 //    private transient String parentName;

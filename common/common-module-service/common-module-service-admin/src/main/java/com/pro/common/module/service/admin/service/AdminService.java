@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 @Component(CommonConst.Bean.adminService)
 public class AdminService extends BaseService<AdminDao, Admin> implements ILoginInfoService<Admin> {
     @Override
-    public Admin getLoginInfo(LoginRequest loginRequest) {
+    public Admin doLogin(LoginRequest loginRequest) {
         return this.lambdaQuery().eq(Admin::getUsername, loginRequest.getUsername()).one();
     }
 
@@ -36,7 +36,7 @@ public class AdminService extends BaseService<AdminDao, Admin> implements ILogin
 
     @Override
     public boolean updateById(Admin entity) {
-//        @Parameter(hidden = true) ILoginInfo loginInfo = ThreadLocalUtil.getLoginInfo();
+//        ILoginInfo loginInfo = ThreadLocalUtil.getLoginInfo();
 //        // 修改自己的密码
 //        if (loginInfo.getId().equals(entity.getId())) {
 //            if (StrUtils.isNotBlank(entity.getPassword())) {

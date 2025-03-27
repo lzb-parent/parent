@@ -57,10 +57,6 @@
         </dependency>
         <dependency>
             <groupId>com.pro</groupId>
-            <artifactId>framework-spring</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.pro</groupId>
             <artifactId>framework-java-to-db-annotations</artifactId>
         </dependency>
         <dependency>
