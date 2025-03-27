@@ -31,9 +31,7 @@ import com.pro.framework.javatodb.model.JTDTableInfoVo;
 import com.pro.framework.javatodb.model.UITableInfo;
 import com.pro.framework.javatodb.service.IJTDService;
 import com.pro.framework.mtq.service.multiwrapper.util.MultiClassRelationFactory;
-import com.pro.framework.service.EnumsServiceImpl;
 import io.swagger.annotations.ApiOperation;
-import lombok.Cleanup;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -253,12 +251,12 @@ public class CommonTableInfoController {
 //    );
     @SneakyThrows
     @ApiOperation(value = "查询表格信息")
-    @GetMapping("/info/{entityClassName}")
-    public R<UITableInfo> info(ILoginInfo loginInfo, @PathVariable(required = false) String entityClassName, JTDTableInfoRequest request) {
+    @GetMapping("/info/{entityName}")
+    public R<UITableInfo> info(ILoginInfo loginInfo, @PathVariable(required = false) String entityName, JTDTableInfoRequest request) {
         checkPermission(loginInfo);
         Class<?> clazz = entityProperties.getEntityClassReplaceMap()
-                .computeIfAbsent(StrUtils.firstToUpperCase(entityClassName),
-                        c -> MultiClassRelationFactory.INSTANCE.getEntityClass(entityClassName));
+                .computeIfAbsent(StrUtils.firstToUpperCase(entityName),
+                        c -> MultiClassRelationFactory.INSTANCE.getEntityClass(entityName));
         if (clazz == null) {
             return R.ok();
         }
@@ -266,19 +264,18 @@ public class CommonTableInfoController {
 
         List<JTDFieldInfoDbVo> fields = tableInfo.getFields();
         // 字段名改驼峰
-        //noinspection UnnecessaryLocalVariable
-        String tableName = entityClassName;
-        tableInfo.setTableName(tableName);
+        tableInfo.setTableName(tableInfo.getTableName());
+        tableInfo.setEntityName(entityName);
         tableInfo.setLabel(I18nUtils.get(tableInfo.getLabel()));
         fields.forEach(field ->
                 {
                     field.setFieldName(StrUtil.toCamelCase(field.getFieldName()));
-                    field.setEntityName(field.getEntityName());
+                    String entityNameField = field.getEntityName();
+                    field.setEntityName(entityNameField);
                     field.setDefaultValue(field.getDefaultValue().replaceAll("'", ""));
-                    Class<?> entityClass = field.getEntityClass();
-                    if (null != entityClass && !Object.class.equals(entityClass)) {
-                        String entityName = StrUtils.firstToLowerCase(entityClass.getSimpleName());
-                        field.setEntityName(entityName);
+                    Class<?> entityClassField = field.getEntityClass();
+                    if (null != entityClassField && !Object.class.equals(entityClassField)) {
+                        field.setEntityName(entityNameField);
                     } else {
                         field.setEntityName(null);
                         field.setEntityClassTargetProp(null);
@@ -312,12 +309,12 @@ public class CommonTableInfoController {
         tableConfigOne.setFieldNames(fieldNames);
 
         String urlTemplate = request.getUrlTemplate();
-        tableConfigOne.setGetOneUrl(getUrl(urlTemplate, "selectOne", tableName));
-        tableConfigOne.setInsertUrl(getUrl(urlTemplate, "insert", tableName));
-        tableConfigOne.setUpdateUrl(getUrl(urlTemplate, "update", tableName));
-        tableConfigOne.setGetPageUrl(getUrl(urlTemplate, "selectPage", tableName));
-        tableConfigOne.setDeleteUrl(getUrl(urlTemplate, "delete", tableName));
-        tableConfigOne.setExportUrl(getUrl(urlTemplate, "export", tableName));
+        tableConfigOne.setGetOneUrl(getUrl(urlTemplate, "selectOne", entityName));
+        tableConfigOne.setInsertUrl(getUrl(urlTemplate, "insert", entityName));
+        tableConfigOne.setUpdateUrl(getUrl(urlTemplate, "update", entityName));
+        tableConfigOne.setGetPageUrl(getUrl(urlTemplate, "selectPage", entityName));
+        tableConfigOne.setDeleteUrl(getUrl(urlTemplate, "delete", entityName));
+        tableConfigOne.setExportUrl(getUrl(urlTemplate, "export", entityName));
 
         if (IUserOrderClass.class.isAssignableFrom(clazz)) {
             tableConfigOne.setAdminButtons(new JTDConst.EnumAdminButton[]{query, edit});
@@ -537,7 +534,6 @@ public class CommonTableInfoController {
                 infoCopy.setExtendProp(configField.getExtendProp());
                 infoCopy.setSort(configField.getSort());
                 infoCopy.setDisabled(trueOrNull(configField.getDisabled()));
-                infoCopy.setEntityName(configField.getEntityName());
                 infoCopy.setClearable(trueOrNull(configField.getClearable()));
                 infoCopy.setWidth(configField.getWidth());
                 infoCopy.setAlign(configField.getAlign());

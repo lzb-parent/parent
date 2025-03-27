@@ -9,18 +9,13 @@ spring:
     enabled: true # swagger是否启动
   servlet:
     multipart:
-      location: /Users/Shared/filetemp # 临时目录,上传图片用，需要手动创建
-knife4j:
-  enable: true
-  #  markdowns: classpath:markdown/*
-  basic:
-    enable: true
-    username: developer
-    password: developer2023
+      location: C:/Users/Public/filetemp # 临时目录,上传图片用，需要手动创建
+#      location: /Users/Shared/filetemp # 临时目录,上传图片用，需要手动创建
 common:
   env: dev # EnumEnv
   files:
-    savePath: /Users/Shared/file
+    savePath: C:/Users/Public
+#    savePath: /Users/Shared/file
 jtd:
   runOnStartUp: true
   runType: createModifyDeleteAll # 注意 EnumSqlRunType.createModifyDeleteAll 会删除代码移除的字段
@@ -29,3 +24,10 @@ logging:
     com.pro: DEBUG
     com.baomidou.mybatisplus.mapper: DEBUG
     org.springframework.web.socket: DEBUG
+knife4j:
+  enable: true
+  #  markdowns: classpath:markdown/*
+  basic:
+    enable: true
+    username: developer
+    password: developer2023
