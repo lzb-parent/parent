@@ -1,7 +1,6 @@
 package com.pro.common.module.api.user.intf;
 
 import com.pro.common.module.api.user.model.db.User;
-import com.pro.common.modules.api.dependencies.model.LoginRequest;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -28,6 +27,4 @@ public interface IUserService<T extends User> {
     List<Long> listIdByPids(List<Long> userIds);
 
     String buildCode(String valueCache);
-
-    T query(LoginRequest loginRequest);
 }

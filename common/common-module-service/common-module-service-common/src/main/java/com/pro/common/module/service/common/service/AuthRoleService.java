@@ -1,8 +1,9 @@
 package com.pro.common.module.service.common.service;
 
+import com.pro.common.module.service.common.dao.AuthRoleDao;
 import com.pro.common.module.api.common.model.db.AuthRole;
 import com.pro.common.module.api.common.model.db.AuthRoute;
-import com.pro.common.module.service.common.dao.AuthRoleDao;
+import com.pro.common.modules.api.dependencies.CommonConst;
 import com.pro.common.modules.api.dependencies.enums.EnumSysRole;
 import com.pro.common.modules.api.dependencies.service.IAuthRoleService;
 import com.pro.common.modules.api.dependencies.service.ILoginInfoService;
@@ -10,6 +11,8 @@ import com.pro.framework.api.database.TimeQuery;
 import com.pro.framework.api.util.StrUtils;
 import com.pro.framework.mybatisplus.BaseService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
@@ -28,13 +31,19 @@ public class AuthRoleService extends BaseService<AuthRoleDao, AuthRole> implemen
     @Autowired
     private ApplicationContext applicationContext;
 
+    @Override
+    @CacheEvict(value = CommonConst.CacheKey.AuthRoutePaths, key = "#role+'_'+#loginId")
+    public void clearCache(EnumSysRole role, Long loginId) {
+
+    }
 
     private ILoginInfoService<?> getLoginInfoService(EnumSysRole role) {
         return applicationContext.getBean(role.getServiceBean(), ILoginInfoService.class);
     }
 
     @Override
-    public Set<String> getPath(EnumSysRole role, Long loginId) {
+    @Cacheable(value = CommonConst.CacheKey.AuthRoutePaths, key = "#role+'_'+#loginId")
+    public Set<String> getPathCache(EnumSysRole role, Long loginId) {
         Set<String> routeCodes = this.getRouteCodes(role, loginId);
         if (null == routeCodes || routeCodes.isEmpty()) {
             return Collections.emptySet();
@@ -103,7 +112,7 @@ public class AuthRoleService extends BaseService<AuthRoleDao, AuthRole> implemen
         switch (role) {
             case USER:
                 // 暂时不需要鉴权
-                return authRouteService.selectList("authRoute", new HashMap<>(), new TimeQuery(), null,  null, null, null, null).stream().map(AuthRoute::getCode).collect(Collectors.toSet());
+                return null;
         }
         Set<Long> roleIds = this.getLoginInfoService(role).getRoleIds(loginId);
         if (roleIds.isEmpty()) {
@@ -111,8 +120,7 @@ public class AuthRoleService extends BaseService<AuthRoleDao, AuthRole> implemen
         }
         Set<String> routeCodes;
         // 超级管理员 全部权限
-        boolean isSuperAdmin = this.listByIds(roleIds).stream().anyMatch(AuthRole::getSuperFlag);
-        if (isSuperAdmin) {
+        if (this.listByIds(roleIds).stream().anyMatch(AuthRole::getSuperFlag)) {
             routeCodes = authRouteService.selectList("authRoute", new HashMap<>(), new TimeQuery(), null,  null, null, null, null).stream().map(AuthRoute::getCode).collect(Collectors.toSet());
         } else {
             // 普通角色权限

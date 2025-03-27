@@ -1,1 +1,13 @@
+Country                 国家
+Address(SysAddress)     地址(多级)
+
+Poster                  文章
+PosterCategory          文章目录
+PosterCode              文章固有编号
+
 AuthDict                字典
+AuthDictType            字典类型
+
+Banner                  导航单位
+Translation             自定义翻译
+Activity                活动

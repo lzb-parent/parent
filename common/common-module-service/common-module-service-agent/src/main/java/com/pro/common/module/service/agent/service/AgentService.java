@@ -1,11 +1,11 @@
 package com.pro.common.module.service.agent.service;
 
+import com.pro.common.module.service.agent.dao.AgentDao;
 import com.pro.common.module.api.agent.intf.IAgentService;
 import com.pro.common.module.api.agent.model.db.Agent;
-import com.pro.common.module.service.agent.dao.AgentDao;
 import com.pro.common.modules.api.dependencies.CommonConst;
 import com.pro.common.modules.api.dependencies.exception.BusinessException;
-import com.pro.common.modules.api.dependencies.model.ILoginInfoPrepare;
+import com.pro.common.modules.api.dependencies.model.ILoginInfo;
 import com.pro.common.modules.api.dependencies.model.LoginRequest;
 import com.pro.common.modules.api.dependencies.service.ILoginInfoService;
 import com.pro.common.modules.api.dependencies.user.intf.InviteCodeService;
@@ -28,7 +28,7 @@ public class AgentService extends BaseService<AgentDao, Agent> implements IAgent
     }
 
     @Override
-    public ILoginInfoPrepare getByCode(String code) {
+    public ILoginInfo getByCode(String code) {
         return this.lambdaQuery().eq(Agent::getCodeNumber, code).last("limit 1").one();
     }
 
@@ -77,7 +77,7 @@ public class AgentService extends BaseService<AgentDao, Agent> implements IAgent
     }
 
     @Override
-    public Agent getLoginInfo(LoginRequest loginRequest) {
+    public Agent doLogin(LoginRequest loginRequest) {
         return this.lambdaQuery().eq(Agent::getUsername, loginRequest.getUsername()).one();
     }
 

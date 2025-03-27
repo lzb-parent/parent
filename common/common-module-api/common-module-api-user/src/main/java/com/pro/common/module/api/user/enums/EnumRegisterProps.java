@@ -16,7 +16,7 @@ public enum EnumRegisterProps implements IEnum {
     inviteCode("邀请码"),
     phone("手机号"),
     realName("真实姓名"),
-    nickname("昵称"),
+    nickName("昵称"),
 //    telegram("telegram"),
 //    whatsapp("whatsapp"),
     email("邮箱"),

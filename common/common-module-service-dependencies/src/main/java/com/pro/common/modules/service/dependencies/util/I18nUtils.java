@@ -52,9 +52,6 @@ public class I18nUtils {
     }
 
     public static String getByLang(String languageTag, String msgKey, Object... params) {
-        if (null == msgKey || msgKey.isEmpty()) {
-            return msgKey;
-        }
         languageTag = LogicUtils.or(languageTag, CommonConst.Str.DEFAULT_LANG_EN);
         Map<String, String> langMap = getLangMap(languageTag);
         String message = langMap.get(msgKey);

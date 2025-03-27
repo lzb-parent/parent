@@ -6,15 +6,15 @@ import cn.hutool.http.HttpUtil;
 import com.pro.common.module.api.message.enums.EnumSysMsgBusinessCode;
 import com.pro.common.module.api.message.intf.ISysMsgService;
 import com.pro.common.module.api.system.model.enums.EnumAuthDict;
+import com.pro.common.module.service.user.dao.UserDao;
 import com.pro.common.module.api.user.enums.EnumRegisterUsernameFrom;
 import com.pro.common.module.api.user.intf.IUserService;
 import com.pro.common.module.api.user.model.db.User;
-import com.pro.common.module.service.user.dao.UserDao;
 import com.pro.common.modules.api.dependencies.CommonConst;
 import com.pro.common.modules.api.dependencies.R;
 import com.pro.common.modules.api.dependencies.enums.EnumSysRole;
 import com.pro.common.modules.api.dependencies.exception.BusinessException;
-import com.pro.common.modules.api.dependencies.model.ILoginInfoPrepare;
+import com.pro.common.modules.api.dependencies.model.ILoginInfo;
 import com.pro.common.modules.api.dependencies.model.LoginRequest;
 import com.pro.common.modules.api.dependencies.service.ILoginInfoService;
 import com.pro.common.modules.api.dependencies.user.intf.IUserRegisterInitService;
@@ -54,17 +54,15 @@ public class UserService<M extends UserDao<T>, T extends User> extends BaseServi
 
 
     @Override
-    public T getLoginInfo(LoginRequest loginRequest) {
-        return this.query(loginRequest);
+    public T doLogin(LoginRequest loginRequest) {
+        T user = this.query(loginRequest);
+        if (user != null) {
+            this.addIncreaseField(user.getId(), T::getLoginTimes, 1);
+        }
+        return user;
     }
 
-    @Override
-    public void doAfterLogin(ILoginInfoPrepare loginInfo) {
-        this.addIncreaseField(loginInfo.getId(), T::getLoginTimes, 1);
-    }
-
-    @Override
-    public  T query(LoginRequest loginRequest) {
+    private T query(LoginRequest loginRequest) {
         if (StrUtils.isNotBlank(loginRequest.getUsername())) {
             return this.lambdaQuery().eq(T::getUsername, loginRequest.getUsername()).one();
         }
@@ -192,7 +190,7 @@ public class UserService<M extends UserDao<T>, T extends User> extends BaseServi
                 throw new BusinessException("邀请码必填");
             }
         } else {
-            ILoginInfoPrepare loginInfo = UserOtherService.inviteCodeServices.stream().map(service -> service.getByCode(inviteCode)).filter(Objects::nonNull).findFirst().orElse(null);
+            ILoginInfo loginInfo = UserOtherService.inviteCodeServices.stream().map(service -> service.getByCode(inviteCode)).filter(Objects::nonNull).findFirst().orElse(null);
             if (loginInfo == null) {
                 throw new BusinessException("无效的邀请码", inviteCode);
             } else {
@@ -264,7 +262,7 @@ public class UserService<M extends UserDao<T>, T extends User> extends BaseServi
                 .collect(Collectors.toList());
     }
 
-    public void doSaveOrUpdate(T entity) {
+    private void doSaveOrUpdate(T entity) {
         if (StrUtils.isNotBlank(entity.getPassword())) {
             this.checkOldPassword(entity, T::getPassword);
             entity.setPassword(PasswordUtils.encrypt_Password(entity.getPassword()));
@@ -290,7 +288,7 @@ public class UserService<M extends UserDao<T>, T extends User> extends BaseServi
     }
 
     @Override
-    public ILoginInfoPrepare getByCode(String code) {
+    public ILoginInfo getByCode(String code) {
         return this.lambdaQuery().eq(T::getCode, code).one();
     }
 

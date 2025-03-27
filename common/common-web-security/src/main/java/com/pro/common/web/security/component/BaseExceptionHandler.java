@@ -66,8 +66,7 @@ public class BaseExceptionHandler {
                 log.info("{} {} {}", exceptionClass, request.getRequestURI(), logThrowable(e));
                 return translate((BusinessException) e);
             case "FrameworkException":
-                String str = I18nUtils.get(msg, ((FrameworkException) e).getParams());
-                msg = LogicUtils.or(str, msg);
+                msg = LogicUtils.or(I18nUtils.get(msg, ((FrameworkException) e).getParams()), msg);
                 log.info("{} {} {}", exceptionClass, request.getRequestURI(), logThrowable(e));
                 break;
             case "DuplicateKeyException":

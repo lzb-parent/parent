@@ -4,10 +4,11 @@ import cn.hutool.core.util.ObjUtil;
 import com.pro.common.modules.api.dependencies.CommonConst;
 import com.pro.common.modules.api.dependencies.common.model.ICountry;
 import com.pro.common.modules.api.dependencies.common.service.ICountryService;
-import com.pro.common.modules.service.dependencies.modelauth.base.LoginInfoService;
+import com.pro.common.modules.api.dependencies.service.IAuthRoleService;
 import com.pro.common.modules.service.dependencies.properties.CommonProperties;
-import com.pro.common.web.security.component.MyLocalResolver;
 import com.pro.common.web.security.component.TokenAuthResolver;
+import com.pro.common.web.security.component.MyLocalResolver;
+import com.pro.common.web.security.service.TokenService;
 import com.pro.framework.api.util.AssertUtil;
 import com.pro.framework.api.util.LogicUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,6 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.LocaleResolver;
-import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -30,16 +30,18 @@ import java.util.List;
 @DependsOn("jTDServiceImpl")
 public class WebConfig implements WebMvcConfigurer {
     @Autowired
+    private IAuthRoleService authRouteService;
+    @Autowired
     private CommonProperties commonProperties;
     @Autowired
-    private LoginInfoService loginInfoService;
+    private TokenService tokenService;
 
     /**
      * 获取登录信息token
      */
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
-        resolvers.add(new TokenAuthResolver(commonProperties, loginInfoService));
+        resolvers.add(new TokenAuthResolver(authRouteService, tokenService, commonProperties));
     }
 
     @Bean
@@ -94,13 +96,5 @@ public class WebConfig implements WebMvcConfigurer {
         source.registerCorsConfiguration("/**", config);
 
         return new CorsFilter(source);
-    }
-
-    /**
-     * 和 knife4j-spring-boot-starter 依赖有关，而这个库是基于 springfox 的，而 springfox 在 Spring Boot 2.6+ 之后和 Spring MVC 产生了一些兼容性问题，尤其是路径匹配策略的变化。
-     */
-    @Override
-    public void configurePathMatch(PathMatchConfigurer configurer) {
-        configurer.setPatternParser(null);
     }
 }

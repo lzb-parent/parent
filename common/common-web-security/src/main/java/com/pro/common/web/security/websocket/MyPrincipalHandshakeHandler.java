@@ -1,7 +1,7 @@
 package com.pro.common.web.security.websocket;
 
-import com.pro.common.modules.api.dependencies.model.LoginInfo;
-import com.pro.common.modules.service.dependencies.modelauth.base.TokenService;
+import com.pro.common.web.security.model.LoginInfo;
+import com.pro.common.web.security.service.TokenService;
 import com.pro.framework.api.util.StrUtils;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +22,6 @@ public class MyPrincipalHandshakeHandler extends DefaultHandshakeHandler {
         Map<String, String> paramMap = StrUtils.parseParameters(request.getURI().getQuery());
         String token = paramMap.get("token");
         Long loginId = tokenService.getIdByToken(token);
-        return new LoginInfo(null, loginId, null, null);
+        return new LoginInfo(null, loginId, null);
     }
 }

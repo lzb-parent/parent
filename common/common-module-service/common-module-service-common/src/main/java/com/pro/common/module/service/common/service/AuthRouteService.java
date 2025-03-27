@@ -11,8 +11,8 @@ import com.pro.framework.api.database.OrderItem;
 import com.pro.framework.api.database.TimeQuery;
 import com.pro.framework.api.database.page.IPageInput;
 import com.pro.framework.api.enums.IEnumToDbEnum;
-import com.pro.framework.core.EnumConstant;
-import com.pro.framework.core.EnumUtil;
+import com.pro.framework.enums.EnumConstant;
+import com.pro.framework.enums.EnumUtil;
 import com.pro.framework.mtq.service.multiwrapper.dto.MultiPageResult;
 import com.pro.framework.mtq.service.multiwrapper.entity.IMultiPageResult;
 import com.pro.framework.mybatisplus.BaseService;
@@ -65,7 +65,7 @@ public class AuthRouteService extends BaseService<AuthRouteDao, AuthRoute> imple
         List<AuthRoute> authRoutes = queryListFunction.apply(paramMap);
         switch (application) {
             case user:
-                return authRoutes;
+                return Collections.emptyList();
             case agent:
                 Map<String, List<AuthRoute>> listMap = authRoutes.stream()
                         .collect(Collectors.groupingBy(AuthRoute::getCode));
