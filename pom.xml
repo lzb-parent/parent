@@ -591,7 +591,7 @@
         <profile>
             <id>dev</id>   <!-- 本地开发环 -->
             <properties>
-                <profiles_active>platform,dev</profiles_active>
+                <profiles_active>platform,dev,dev-local</profiles_active>
             </properties>
             <activation>
                 <activeByDefault>true</activeByDefault>

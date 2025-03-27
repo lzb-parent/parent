@@ -1,3 +1,4 @@
 .idea/
 **/target/
 *.iml
+/common/common-module-service-dependencies/src/main/resources/config/application-dev-local.yml

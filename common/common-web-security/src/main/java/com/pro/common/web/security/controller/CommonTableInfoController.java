@@ -199,7 +199,6 @@ public class CommonTableInfoController {
     }
 
 
-
     private List<String> getTranslateKeysEntity(boolean isCommon) {
         List<JTDTableInfoVo> tables = MultiClassRelationFactory.INSTANCE.getClassMap().values().stream()
                 .map(aClass -> jtdService.readTableInfo(aClass)).filter(Objects::nonNull)
@@ -269,20 +268,21 @@ public class CommonTableInfoController {
         tableInfo.setLabel(I18nUtils.get(tableInfo.getLabel()));
         fields.forEach(field ->
                 {
-                    field.setFieldName(StrUtil.toCamelCase(field.getFieldName()));
                     String entityNameField = field.getEntityName();
-                    field.setEntityName(entityNameField);
+
+                    field.setFieldName(StrUtil.toCamelCase(field.getFieldName()));
                     field.setDefaultValue(field.getDefaultValue().replaceAll("'", ""));
                     Class<?> entityClassField = field.getEntityClass();
-                    if (null != entityClassField && !Object.class.equals(entityClassField)) {
-                        field.setEntityName(entityNameField);
-                    } else {
-                        field.setEntityName(null);
+                    if (null == entityNameField && null != entityClassField && !Object.class.equals(entityClassField)) {
+                        entityNameField = StrUtil.lowerFirst(entityClassField.getSimpleName());
+                    }
+                    if (null == entityNameField) {
                         field.setEntityClassTargetProp(null);
                         field.setEntityClassLabel(null);
                         field.setEntityClassKey(null);
                         field.setEntityClassTargetProp(null);
                     }
+                    field.setEntityName(entityNameField);
                 }
         );
         fields = fields.stream()
@@ -516,7 +516,8 @@ public class CommonTableInfoController {
             case base:
 //                UITableInfo.FieldConfigOne fieldConfigOne = new UITableInfo.FieldConfigOne();
                 infoCopy.setFieldName(configField.getFieldName());
-                infoCopy.setLabel(StrUtils.or(I18nUtils.get(StrUtils.replaceSpecialStr(configField.getLabel())), configField.getLabel()));
+                infoCopy.setLabel(StrUtils.or(I18nUtils.get(StrUtils.replaceSpecialStr(configField.getLabel())),
+                        configField.getLabel()));
                 infoCopy.setUiType(defaultUiType.equals(configField.getUiType()) ? null : configField.getUiType());
                 infoCopy.setMainLength(
                         defaultMainLength.equals(configField.getMainLength()) ? null : configField.getMainLength());

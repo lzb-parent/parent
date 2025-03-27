@@ -9,12 +9,12 @@ spring:
     enabled: true # swagger是否启动
   servlet:
     multipart:
-      location: C:/Users/Public/filetemp # 临时目录,上传图片用，需要手动创建
+#      location: C:/Users/Public/filetemp # 临时目录,上传图片用，需要手动创建
 #      location: /Users/Shared/filetemp # 临时目录,上传图片用，需要手动创建
 common:
   env: dev # EnumEnv
   files:
-    savePath: C:/Users/Public
+#    savePath: C:/Users/Public
 #    savePath: /Users/Shared/file
 jtd:
   runOnStartUp: true

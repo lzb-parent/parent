@@ -1,0 +1,7 @@
+spring:
+  servlet:
+    multipart:
+      location: C:/Users/Public/filetemp # 临时目录,上传图片用，需要手动创建   windows电脑
+common:
+  files:
+    savePath: C:/Users/Public/file

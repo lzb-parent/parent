@@ -1,0 +1,7 @@
+spring:
+  servlet:
+    multipart:
+      location: /Users/Shared/filetemp # 临时目录,上传图片用，需要手动创建
+common:
+  files:
+    savePath: /Users/Shared/file
