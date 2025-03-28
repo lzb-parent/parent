@@ -9,7 +9,6 @@ import com.pro.common.modules.service.dependencies.properties.CommonProperties;
 import com.pro.common.web.security.component.TokenAuthResolver;
 import com.pro.common.web.security.component.MyLocalResolver;
 import com.pro.common.web.security.service.TokenService;
-import com.pro.framework.api.FrameworkConst;
 import com.pro.framework.api.util.AssertUtil;
 import com.pro.framework.api.util.LogicUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,7 +73,7 @@ public class WebConfig implements WebMvcConfigurer {
         // 新建目录
         String savePath = commonProperties.getFiles().getSavePath();
         commonProperties.getFiles().getModules().values().forEach(fileModule -> {
-            File saveFile = new File(savePath + FrameworkConst.Str.file_separator + fileModule.getCode());
+            File saveFile = new File(savePath + File.separator + fileModule.getCode());
             if (!saveFile.exists()) {
                 boolean mkdirs = saveFile.mkdirs();
                 AssertUtil.isTrue(mkdirs,"目录创建失败:"+saveFile.getAbsolutePath());

@@ -6,7 +6,6 @@ import cn.hutool.core.util.IdUtil;
 import cn.hutool.crypto.SecureUtil;
 import com.pro.common.modules.api.dependencies.exception.BusinessException;
 import com.pro.common.modules.service.dependencies.properties.CommonProperties;
-import com.pro.framework.api.FrameworkConst;
 import com.pro.framework.api.structure.Tuple2;
 import com.pro.framework.api.util.StrUtils;
 import lombok.SneakyThrows;
@@ -70,14 +69,14 @@ public class FileUploadUtils {
      */
     @SneakyThrows
     public static Tuple2<String, String> newFile(UploadModuleModel moduleEnum, LocalDateTime time, String fileSubFolder, String fileName, boolean forceToEmpty) {
-        String relativePath = moduleEnum.getPath(time, fileSubFolder) + FrameworkConst.Str.file_separator + fileName;
+        String relativePath = moduleEnum.getPath(time, fileSubFolder) + File.separator + fileName;
         String fullPath = commonProperties.getFiles().getSavePath() + relativePath;
         File file = new File(fullPath);
         file.createNewFile();
         if (forceToEmpty) {
             FileUtil.writeUtf8String("", file);
         }
-        return new Tuple2<>((FrameworkConst.Str.file_separator + "file" + relativePath).replaceAll("\\\\", FrameworkConst.Str.file_separator), fullPath);
+        return new Tuple2<>((File.separator + "file" + relativePath).replaceAll("\\\\", File.separator), fullPath);
     }
 
     /**
@@ -85,10 +84,10 @@ public class FileUploadUtils {
      */
     @SneakyThrows
     public static Tuple2<String, String> newFolder(UploadModuleModel moduleEnum, LocalDateTime time, String fileSubFolder) {
-        String relativePath = moduleEnum.getPath(time, fileSubFolder) + FrameworkConst.Str.file_separator;
+        String relativePath = moduleEnum.getPath(time, fileSubFolder) + File.separator;
         String fullPath = commonProperties.getFiles().getSavePath() + relativePath;
         new File(fullPath).mkdirs();
-        return new Tuple2<>((FrameworkConst.Str.file_separator + "file" + relativePath).replaceAll("\\\\", FrameworkConst.Str.file_separator), fullPath);
+        return new Tuple2<>((File.separator + "file" + relativePath).replaceAll("\\\\", File.separator), fullPath);
     }
 
     /**
@@ -107,9 +106,9 @@ public class FileUploadUtils {
             throw new BusinessException("file max size: " + maxSize + "M");
         }
         //相对路径 (包括文件名,相对于根路径)
-//        String relativePath = moduleEnum.getPath(time) + FrameworkConst.Str.file_separator + IdUtil.simpleUUID() + "_" + oriName;
+//        String relativePath = moduleEnum.getPath(time) + File.separator + IdUtil.simpleUUID() + "_" + oriName;
         String relativePath = moduleEnum.getPath(time,
-                null) + FrameworkConst.Str.file_separator + IdUtil.simpleUUID() + uploadFile.getSuffix();
+                null) + File.separator + IdUtil.simpleUUID() + uploadFile.getSuffix();
         File saveFile = new File(commonProperties.getFiles().getSavePath() + relativePath);
         boolean dirOK = true;
         if (!saveFile.getParentFile().exists()) {
@@ -135,7 +134,7 @@ public class FileUploadUtils {
         uploadFile.transferTo(saveFile);
         uploadFile.inputStreamClose();
 
-        return (FrameworkConst.Str.file_separator + "file" + relativePath).replaceAll("\\\\", FrameworkConst.Str.file_separator);
+        return (File.separator + "file" + relativePath).replaceAll("\\\\", File.separator);
     }
 
     public static String calSign(String fileName) {

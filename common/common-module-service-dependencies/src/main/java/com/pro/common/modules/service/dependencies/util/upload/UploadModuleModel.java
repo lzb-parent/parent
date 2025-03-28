@@ -1,7 +1,6 @@
 package com.pro.common.modules.service.dependencies.util.upload;
 
 import com.pro.common.modules.service.dependencies.util.MathUtils;
-import com.pro.framework.api.FrameworkConst;
 import lombok.Data;
 
 import java.io.File;
@@ -28,13 +27,13 @@ public class UploadModuleModel {
      */
     public String getPath(LocalDateTime time, String fileSubFolder) {
         List<String> list = new ArrayList<>();
-        list.add(FrameworkConst.Str.file_separator + code);
+        list.add(File.separator + code);
         if (dateFolder) {//按照日期分目录
-            list.add(FrameworkConst.Str.file_separator + time.getYear() + MathUtils.appendZore(time.getMonthValue(), 2));
-            list.add(FrameworkConst.Str.file_separator + time.format(DateTimeFormatter.ofPattern("dd")));
+            list.add(File.separator + time.getYear() + MathUtils.appendZore(time.getMonthValue(), 2));
+            list.add(File.separator + time.format(DateTimeFormatter.ofPattern("dd")));
         }
         if (fileSubFolder != null) {
-            list.add(FrameworkConst.Str.file_separator + fileSubFolder);
+            list.add(File.separator + fileSubFolder);
         }
         return String.join("", list);
     }
