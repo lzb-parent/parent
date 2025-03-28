@@ -31,7 +31,7 @@ spring:
     fallback-to-system-locale: false
     use-code-as-default-message: false
     encoding: UTF-8 # i18n进行国际化乱码解决
-    basename: i18n_platform/messages, i18n_login/messages
+    basename: i18n_platform/messages,i18n_platform_error/messages, i18n_login/messages
 #    basename: i18n_service/messages, i18n_platform/messages, i18n_admin/messages, i18n_agent/messages, i18n_auth/messages, i18n_common/messages, i18n_login/messages, i18n_message/messages, i18n_pay/messages, i18n_user/messages, i18n_userlevel/messages, i18n_usermoney/messages
   transaction:
     rollback-on-commit-failure: true
