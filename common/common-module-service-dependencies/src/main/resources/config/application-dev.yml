@@ -18,6 +18,7 @@ common:
 #    savePath: /Users/Shared/file
 jtd:
   runOnStartUp: true
+#  runType: none
   runType: createModifyDeleteAll # 注意 EnumSqlRunType.createModifyDeleteAll 会删除代码移除的字段
 logging:
   level:
