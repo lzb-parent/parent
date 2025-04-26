@@ -58,6 +58,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureWebSocketTransport(WebSocketTransportRegistration registration) {
-        registration.addDecoratorFactory(webSocketFactory());
+        registration.addDecoratorFactory(webSocketFactory())
+                .setSendTimeLimit(30000)     // 30s
+                .setSendBufferSizeLimit(512 * 1024); // 512KB
     }
 }
