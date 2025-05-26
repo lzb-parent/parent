@@ -11,7 +11,6 @@ import com.pro.common.module.service.paythird.controller.common.NotifyIO;
 import com.pro.common.module.service.paythird.controller.common.PayCommonController;
 import com.pro.common.module.service.paythird.controller.common.PayoutNotifyIO;
 import com.pro.common.module.service.paythird.controller.common.UnifiedOrderIO;
-import com.pro.common.module.service.paythird.util.RSAUtils;
 import com.pro.common.module.service.paythird.util.SignatureUtil;
 import com.pro.framework.api.util.LogicUtils;
 import com.pro.framework.api.util.StrUtils;
@@ -66,7 +65,7 @@ public class ClickPayController extends PayCommonController {
         String signString = SignatureUtil.sortParamValue(params);
         Console.log("待签名参数：{}", signString);
         Console.log("私钥key：{}", key);
-        String sign = RSAUtils.encryptByPrivate(signString, key);
+        String sign = RsaUtils.encryptByPrivate(signString, key);
         Console.log("签名：{}", sign);
         return sign;
     }
@@ -98,7 +97,7 @@ public class ClickPayController extends PayCommonController {
         log.info("key: {}", merchant.getPlatPublicKey());
         // 这里merchant.getPlatPublicKey()是公钥
         log.info("公钥: {}", merchant.getPlatPublicKey());
-        return RSAUtils.verifySignByPub(srcStr, sign, merchant.getPlatPublicKey());
+        return RsaUtils.verifySignByPub(srcStr, sign, merchant.getPlatPublicKey());
     }
 
     //代收下单 构造参数
