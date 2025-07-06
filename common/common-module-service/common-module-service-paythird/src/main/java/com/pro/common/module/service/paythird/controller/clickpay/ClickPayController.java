@@ -191,7 +191,8 @@ public class ClickPayController extends PayCommonController {
         try {
             signedStr = privateEncrypt(keyStr, getPrivateKey(merKey));  // 私钥加密
         } catch (Exception e) {
-            System.out.println(e);
+            e.printStackTrace();
+//            System.out.println(e);
         }
         return signedStr;
 //        return super.buildPayoutSignPost(createMap, key, signName);

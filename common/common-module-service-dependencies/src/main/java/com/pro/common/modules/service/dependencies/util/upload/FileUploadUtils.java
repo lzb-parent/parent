@@ -7,6 +7,7 @@ import cn.hutool.crypto.SecureUtil;
 import com.pro.common.modules.api.dependencies.exception.BusinessException;
 import com.pro.common.modules.service.dependencies.properties.CommonProperties;
 import com.pro.framework.api.structure.Tuple2;
+import com.pro.framework.api.util.AssertUtil;
 import com.pro.framework.api.util.StrUtils;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -86,7 +87,10 @@ public class FileUploadUtils {
     public static Tuple2<String, String> newFolder(UploadModuleModel moduleEnum, LocalDateTime time, String fileSubFolder) {
         String relativePath = moduleEnum.getPath(time, fileSubFolder) + File.separator;
         String fullPath = commonProperties.getFiles().getSavePath() + relativePath;
-        new File(fullPath).mkdirs();
+        boolean mkdirs = new File(fullPath).mkdirs();
+        if (!mkdirs) {
+            log.warn("目录创建失败: {}" ,fullPath);
+        }
         return new Tuple2<>((File.separator + "file" + relativePath).replaceAll("\\\\", File.separator), fullPath);
     }
 

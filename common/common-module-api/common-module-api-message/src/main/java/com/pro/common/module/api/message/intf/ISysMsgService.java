@@ -2,7 +2,6 @@ package com.pro.common.module.api.message.intf;
 
 import com.pro.common.module.api.message.enums.EnumSysMsgChannel;
 import com.pro.common.module.api.message.model.db.SysMsgRecord;
-import com.pro.common.module.api.user.model.db.User;
 import com.pro.common.modules.api.dependencies.user.model.IUserMsg;
 import lombok.SneakyThrows;
 

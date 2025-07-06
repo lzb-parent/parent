@@ -21,7 +21,7 @@ public class NWHttp {
             getParam = "?"+getParam;
         }
         URL obj = new URL(url+getParam);
-        System.out.println(url+getParam);
+//        System.out.println(url+getParam);
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
         con.setRequestMethod("GET");
         con.setRequestProperty("User-Agent", "NWHttpClient");
